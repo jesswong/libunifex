@@ -1,0 +1,52 @@
+\doxysection{\+\_\+operation\texorpdfstring{$<$}{<} Receiver, Sender \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type}{}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type}\index{\_operation$<$ Receiver, Sender $>$::type@{\_operation$<$ Receiver, Sender $>$::type}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_a8e1bfff3399dca71b43345ba03948430}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_a8e1bfff3399dca71b43345ba03948430} 
+{\bfseries type} (Receiver \&\&receiver, std\+::vector$<$ Sender $>$ \&\&senders)
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_aaae8622d1ca58d9960aad31655e548f3}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_aaae8622d1ca58d9960aad31655e548f3} 
+{\bfseries type} (\mbox{\hyperlink{structunifex_1_1__when__all__range_1_1__operation_1_1type}{type}} \&\&)=delete
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_af49c603a002db3c46b470d2fcfd96046}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_af49c603a002db3c46b470d2fcfd96046} 
+void {\bfseries start} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_ad3bd1cfefa835cf4159315a36b274a79}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_ad3bd1cfefa835cf4159315a36b274a79} 
+void {\bfseries request\+\_\+stop} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_a24f6fbe57f52e8d01b78210bf68eb230}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_a24f6fbe57f52e8d01b78210bf68eb230} 
+void {\bfseries element\+\_\+complete} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_aa66e5def23bb4185fb8a7cce3a453787}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_aa66e5def23bb4185fb8a7cce3a453787} 
+\+\_\+operation\+\_\+holder \texorpdfstring{$\ast$}{*} {\bfseries holders\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_a7adf26ada19bd464d1c886affe644b14}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_a7adf26ada19bd464d1c886affe644b14} 
+std\+::size\+\_\+t {\bfseries num\+Holders\+\_\+} \{0\}
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_a54a2ebf4ffdf5aabd3db7f0f3c22a94d}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_a54a2ebf4ffdf5aabd3db7f0f3c22a94d} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS std\+::optional$<$ unifex\+::sender\+\_\+error\+\_\+types\+\_\+t$<$ Sender, std\+::variant $>$ $>$ {\bfseries error\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_a98acc52586acc097d6adbf325427606d}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_a98acc52586acc097d6adbf325427606d} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS \mbox{\hyperlink{classunifex_1_1manual__lifetime}{unifex\+::manual\+\_\+lifetime}}$<$ typename unifex\+::stop\+\_\+token\+\_\+type\+\_\+t$<$ Receiver \& $>$\+::template callback\+\_\+type$<$ cancel\+\_\+operation $>$ $>$ {\bfseries stop\+Callback\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_a3be0ca754ec0c558018d71e7a4426369}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_a3be0ca754ec0c558018d71e7a4426369} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Receiver {\bfseries receiver\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_ad66ce928decd11d85c8fa800f4c381f7}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_ad66ce928decd11d85c8fa800f4c381f7} 
+std\+::atomic$<$ std\+::size\+\_\+t $>$ {\bfseries ref\+Count\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_a051bff739ba4d8ff36df830f34955538}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_a051bff739ba4d8ff36df830f34955538} 
+std\+::atomic$<$ bool $>$ {\bfseries done\+Or\+Error\+\_\+} \{false\}
+\item 
+\Hypertarget{structunifex_1_1__when__all__range_1_1__operation_1_1type_a5c33d67f0250a6fc688257806fb59b6d}\label{structunifex_1_1__when__all__range_1_1__operation_1_1type_a5c33d67f0250a6fc688257806fb59b6d} 
+\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{unifex\+::inplace\+\_\+stop\+\_\+source}} {\bfseries stop\+Source\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/when\+\_\+all\+\_\+range.\+hpp\end{DoxyCompactItemize}

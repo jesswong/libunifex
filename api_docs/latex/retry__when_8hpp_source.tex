@@ -1,0 +1,436 @@
+\doxysection{retry\+\_\+when.\+hpp}
+\hypertarget{retry__when_8hpp_source}{}\label{retry__when_8hpp_source}\index{include/unifex/retry\_when.hpp@{include/unifex/retry\_when.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/type\_list.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/manual\_lifetime.hpp>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <unifex/manual\_lifetime\_union.hpp>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <unifex/async\_trace.hpp>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/bind\_back.hpp>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00036\ \textcolor{keyword}{namespace\ }\_retry\_when\ \{}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00039\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1__op}{\_op}}\ \{}
+\DoxyCodeLine{00040\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__op_1_1type}{type}};}
+\DoxyCodeLine{00041\ \};}
+\DoxyCodeLine{00042\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00043\ \textcolor{keyword}{using\ }operation\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__retry__when_1_1__op}{\_op<Source,\ Func,\ remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00046\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1__source__receiver}{\_source\_receiver}}\ \{}
+\DoxyCodeLine{00047\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__source__receiver_1_1type}{type}};}
+\DoxyCodeLine{00048\ \};}
+\DoxyCodeLine{00049\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00050\ \textcolor{keyword}{using\ }source\_receiver\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__source__receiver_1_1type}{\_source\_receiver<Source,\ Func,\ Receiver>::type}};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Receiver,\ \textcolor{keyword}{typename}\ Trigger>}
+\DoxyCodeLine{00053\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1__trigger__receiver}{\_trigger\_receiver}}\ \{}
+\DoxyCodeLine{00054\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__trigger__receiver_1_1type}{type}};}
+\DoxyCodeLine{00055\ \};}
+\DoxyCodeLine{00056\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Receiver,\ \textcolor{keyword}{typename}\ Trigger>}
+\DoxyCodeLine{00057\ \textcolor{keyword}{using\ }trigger\_receiver\ =}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__trigger__receiver_1_1type}{\_trigger\_receiver<Source,\ Func,\ Receiver,\ Trigger>::type}};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Receiver,\ \textcolor{keyword}{typename}\ Trigger>}
+\DoxyCodeLine{00061\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1__trigger__receiver}{\_trigger\_receiver}}<Source,\ Func,\ Receiver,\ Trigger>::\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__trigger__receiver_1_1type}{type}}\ \{}
+\DoxyCodeLine{00062\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__trigger__receiver_1_1type}{trigger\_receiver}}\ =\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__trigger__receiver_1_1type}{type}};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__trigger__receiver_1_1type}{type}}(operation<Source,\ Func,\ Receiver>*\ op)\ noexcept}
+\DoxyCodeLine{00066\ \ \ \ \ :\ op\_(op)\ \{\}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__trigger__receiver_1_1type}{type}}(\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__trigger__receiver_1_1type}{trigger\_receiver}}\&\&\ other)\ noexcept}
+\DoxyCodeLine{00069\ \ \ \ \ :\ op\_(std::exchange(other.op\_,\ \textcolor{keyword}{nullptr}))}
+\DoxyCodeLine{00070\ \ \ \{\}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \textcolor{keywordtype}{void}\ set\_value()\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00073\ \ \ \ \ UNIFEX\_ASSERT(op\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{comment}{//\ This\ signals\ to\ retry\ the\ operation.}}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{auto}*\ \textcolor{keyword}{const}\ op\ =\ op\_;}
+\DoxyCodeLine{00077\ \ \ \ \ destroy\_trigger\_op();}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{using\ }source\_receiver\_t\ =\ source\_receiver<Source,\ Func,\ Receiver>;}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (is\_nothrow\_connectable\_v<Source\&,\ source\_receiver\_t>)\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ sourceOp\ =\ unifex::activate\_union\_member\_with(op-\/>sourceOp\_,\ [\&]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ return\ unifex::connect(op-\/>source\_,\ source\_receiver\_t\{op\});}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ op-\/>isSourceOpConstructed\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ unifex::start(sourceOp);}
+\DoxyCodeLine{00087\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ UNIFEX\_TRY\ \{}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ sourceOp\ =\ unifex::activate\_union\_member\_with(op-\/>sourceOp\_,\ [\&]\ \{}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ return\ unifex::connect(op-\/>source\_,\ source\_receiver\_t\{op\});}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ op-\/>isSourceOpConstructed\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ unifex::start(sourceOp);}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \}\ UNIFEX\_CATCH\ (...)\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ unifex::set\_error((Receiver\&\&)op-\/>receiver\_,\ std::current\_exception());}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00097\ \ \ \ \ \}}
+\DoxyCodeLine{00098\ \ \ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ R\ =\ Receiver)}
+\DoxyCodeLine{00101\ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<R>)}
+\DoxyCodeLine{00102\ \ \ \textcolor{keywordtype}{void}\ set\_done()\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00103\ \ \ \ \ UNIFEX\_ASSERT(op\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keyword}{auto}*\ \textcolor{keyword}{const}\ op\ =\ op\_;}
+\DoxyCodeLine{00106\ \ \ \ \ destroy\_trigger\_op();}
+\DoxyCodeLine{00107\ \ \ \ \ unifex::set\_done((Receiver\&\&)op-\/>receiver\_);}
+\DoxyCodeLine{00108\ \ \ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Error)}
+\DoxyCodeLine{00111\ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver,\ Error>)}
+\DoxyCodeLine{00112\ \ \ \textcolor{keywordtype}{void}\ set\_error(Error\ error)\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00113\ \ \ \ \ UNIFEX\_ASSERT(op\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{auto}*\ \textcolor{keyword}{const}\ op\ =\ op\_;}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{comment}{//\ Note,\ parameter\ taken\ by\ value\ so\ that\ its\ lifetime\ will\ continue}}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{comment}{//\ to\ be\ valid\ after\ we\ destroy\ the\ operation-\/state\ that\ sent\ it.}}
+\DoxyCodeLine{00119\ \ \ \ \ destroy\_trigger\_op();}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \ \ unifex::set\_error((Receiver\&\&)op-\/>receiver\_,\ (Error\&\&)error);}
+\DoxyCodeLine{00122\ \ \ \}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ CPO)}
+\DoxyCodeLine{00127\ \ \ \ \ (\textcolor{keyword}{requires}\ is\_receiver\_query\_cpo\_v<CPO>\ AND}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ is\_callable\_v<CPO,\ const\ Receiver\&>)}
+\DoxyCodeLine{00129\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(CPO\ cpo,\ \textcolor{keyword}{const}\ trigger\_receiver\&\ r)}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<CPO,\ const\ Receiver\&>)}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ -\/>\ callable\_result\_t<CPO,\ const\ Receiver\&>\ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(cpo)(r.get\_receiver());}
+\DoxyCodeLine{00133\ \ \ \}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00136\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ VisitFunc>}
+\DoxyCodeLine{00137\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ tag\_invoke(}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ tag\_t<visit\_continuations>,}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \textcolor{keyword}{const}\ trigger\_receiver\&\ r,}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ VisitFunc\&\&\ func)\ \textcolor{keyword}{noexcept}(std::is\_nothrow\_invocable\_v<}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ VisitFunc\&,}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Receiver\&>)\ \{}
+\DoxyCodeLine{00143\ \ \ \ \ std::invoke(func,\ r.get\_receiver());}
+\DoxyCodeLine{00144\ \ \ \}}
+\DoxyCodeLine{00145\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \textcolor{keyword}{const}\ Receiver\&\ get\_receiver()\ const\ noexcept\ \{}
+\DoxyCodeLine{00148\ \ \ \ \ UNIFEX\_ASSERT(op\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keywordflow}{return}\ op\_-\/>receiver\_;}
+\DoxyCodeLine{00150\ \ \ \}}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \textcolor{keywordtype}{void}\ destroy\_trigger\_op()\ noexcept\ \{}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keyword}{using\ }trigger\_op\ =\ connect\_result\_t<Trigger,\ trigger\_receiver>;}
+\DoxyCodeLine{00154\ \ \ \ \ unifex::deactivate\_union\_member<trigger\_op>(op\_-\/>triggerOps\_);}
+\DoxyCodeLine{00155\ \ \ \}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \ operation<Source,\ Func,\ Receiver>*\ op\_;}
+\DoxyCodeLine{00158\ \};}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00161\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1__source__receiver}{\_source\_receiver}}<Source,\ Func,\ Receiver>::\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__source__receiver_1_1type}{type}}\ \{}
+\DoxyCodeLine{00162\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__source__receiver_1_1type}{source\_receiver}}\ =\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__source__receiver_1_1type}{type}};}
+\DoxyCodeLine{00163\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00164\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__source__receiver_1_1type}{type}}(operation<Source,\ Func,\ Receiver>*\ op)\ noexcept}
+\DoxyCodeLine{00165\ \ \ :\ op\_(op)\ \{\}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \ \ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__source__receiver_1_1type}{type}}(\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__source__receiver_1_1type}{type}}\&\&\ other)\ noexcept}
+\DoxyCodeLine{00168\ \ \ :\ op\_(std::exchange(other.op\_,\ \{\}))}
+\DoxyCodeLine{00169\ \ \ \{\}}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}...\ Values)}
+\DoxyCodeLine{00172\ \ \ \ \ (\textcolor{keyword}{requires}\ receiver\_of<Receiver,\ Values...>)}
+\DoxyCodeLine{00173\ \ \ \textcolor{keywordtype}{void}\ set\_value(Values\&\&...\ values)}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_receiver\_of\_v<Receiver,\ Values...>)\ \{}
+\DoxyCodeLine{00175\ \ \ \ \ UNIFEX\_ASSERT(op\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00176\ \ \ \ \ unifex::set\_value(std::move(op\_-\/>receiver\_),\ (Values\&\&)values...);}
+\DoxyCodeLine{00177\ \ \ \}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \ \ \textcolor{keywordtype}{void}\ set\_done()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00180\ \ \ \ \ UNIFEX\_ASSERT(op\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00181\ \ \ \ \ unifex::set\_done(std::move(op\_-\/>receiver\_));}
+\DoxyCodeLine{00182\ \ \ \}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Error)}
+\DoxyCodeLine{00185\ \ \ \ \ (\textcolor{keyword}{requires}\ std::is\_invocable\_v<Func\&,\ Error>)}
+\DoxyCodeLine{00186\ \ \ \textcolor{keywordtype}{void}\ set\_error(Error\ error)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00187\ \ \ \ \ UNIFEX\_ASSERT(op\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keyword}{auto}*\ \textcolor{keyword}{const}\ op\ =\ op\_;}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \ \ \ \ op-\/>isSourceOpConstructed\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00191\ \ \ \ \ unifex::deactivate\_union\_member(op-\/>sourceOp\_);}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{keyword}{using\ }trigger\_sender\_t\ =\ std::invoke\_result\_t<Func\&,\ Error>;}
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keyword}{using\ }trigger\_receiver\_t\ =\ trigger\_receiver<Source,\ Func,\ Receiver,\ trigger\_sender\_t>;}
+\DoxyCodeLine{00195\ \ \ \ \ \textcolor{keyword}{using\ }trigger\_op\_t\ =\ unifex::connect\_result\_t<trigger\_sender\_t,\ trigger\_receiver\_t>;}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_nothrow\_invocable\_v<Func\&,\ Error>\ \&\&}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_connectable\_v<trigger\_sender\_t,\ trigger\_receiver\_t>)\ \{}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ triggerOp\ =\ unifex::activate\_union\_member\_with<trigger\_op\_t>(}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ op-\/>triggerOps\_,}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ [\&]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ return\ unifex::connect(}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ std::invoke(op-\/>func\_,\ (Error\&\&)error),\ trigger\_receiver\_t\{op\});}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ unifex::start(triggerOp);}
+\DoxyCodeLine{00206\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ UNIFEX\_TRY\ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ triggerOp\ =\ unifex::activate\_union\_member\_with<trigger\_op\_t>(}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ op-\/>triggerOps\_,}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ [\&]()\ \{}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ unifex::connect(}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::invoke(op-\/>func\_,\ (Error\&\&)error),\ trigger\_receiver\_t\{op\});}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ unifex::start(triggerOp);}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \}\ UNIFEX\_CATCH\ (...)\ \{}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ unifex::set\_error((Receiver\&\&)op-\/>receiver\_,\ std::current\_exception());}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00218\ \ \ \ \ \}}
+\DoxyCodeLine{00219\ \ \ \}}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00222\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ CPO)}
+\DoxyCodeLine{00223\ \ \ \ \ (\textcolor{keyword}{requires}\ is\_receiver\_query\_cpo\_v<CPO>\ AND}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ is\_callable\_v<CPO,\ const\ Receiver\&>)}
+\DoxyCodeLine{00225\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(CPO\ cpo,\ \textcolor{keyword}{const}\ source\_receiver\&\ r)}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<CPO,\ const\ Receiver\&>)}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ -\/>\ callable\_result\_t<CPO,\ const\ Receiver\&>\ \{}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(cpo)(r.get\_receiver());}
+\DoxyCodeLine{00229\ \ \ \}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00232\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ VisitFunc>}
+\DoxyCodeLine{00233\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ tag\_invoke(}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ tag\_t<visit\_continuations>,}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \textcolor{keyword}{const}\ source\_receiver\&\ r,}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ VisitFunc\&\&\ func)\ \textcolor{keyword}{noexcept}(std::is\_nothrow\_invocable\_v<}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ VisitFunc\&,}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Receiver\&>)\ \{}
+\DoxyCodeLine{00239\ \ \ \ \ std::invoke(func,\ r.get\_receiver());}
+\DoxyCodeLine{00240\ \ \ \}}
+\DoxyCodeLine{00241\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00242\ }
+\DoxyCodeLine{00243\ \ \ \textcolor{keyword}{const}\ Receiver\&\ get\_receiver()\ const\ noexcept\ \{}
+\DoxyCodeLine{00244\ \ \ \ \ UNIFEX\_ASSERT(op\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{keywordflow}{return}\ op\_-\/>receiver\_;}
+\DoxyCodeLine{00246\ \ \ \}}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \ \ operation<Source,\ Func,\ Receiver>*\ op\_;}
+\DoxyCodeLine{00249\ \};}
+\DoxyCodeLine{00250\ }
+\DoxyCodeLine{00251\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00252\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1__op}{\_op}}<Source,\ Func,\ Receiver>::\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__op_1_1type}{type}}\ \{}
+\DoxyCodeLine{00253\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__op_1_1type}{operation}}\ =\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__op_1_1type}{type}};}
+\DoxyCodeLine{00254\ \ \ \textcolor{keyword}{using\ }source\_receiver\_t\ =\ source\_receiver<Source,\ Func,\ Receiver>;}
+\DoxyCodeLine{00255\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00256\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source2,\ \textcolor{keyword}{typename}\ Func2,\ \textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00257\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__op_1_1type}{type}}(Source2\&\&\ source,\ Func2\&\&\ func,\ Receiver2\&\&\ receiver)}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<Source,\ Source2>\ \&\&}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<Func,\ Func2>\ \&\&}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<Receiver,\ Receiver2>\ \&\&}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_connectable\_v<Source\&,\ source\_receiver\_t>)}
+\DoxyCodeLine{00262\ \ \ :\ source\_((Source2\&\&)source)}
+\DoxyCodeLine{00263\ \ \ ,\ func\_((Func2\&\&)func)}
+\DoxyCodeLine{00264\ \ \ ,\ receiver\_((Receiver\&\&)receiver)\ \{}
+\DoxyCodeLine{00265\ \ \ \ \ unifex::activate\_union\_member\_with(sourceOp\_,\ [\&]\ \{}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::connect(source\_,\ source\_receiver\_t\{\textcolor{keyword}{this}\});}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00268\ \ \ \}}
+\DoxyCodeLine{00269\ }
+\DoxyCodeLine{00270\ \ \ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__op_1_1type}{\string~type}}()\ \{}
+\DoxyCodeLine{00271\ \ \ \ \ \textcolor{keywordflow}{if}\ (isSourceOpConstructed\_)\ \{}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ unifex::deactivate\_union\_member(sourceOp\_);}
+\DoxyCodeLine{00273\ \ \ \ \ \}}
+\DoxyCodeLine{00274\ \ \ \}}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \ \ \textcolor{keywordtype}{void}\ start()\ \&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00277\ \ \ \ \ unifex::start(sourceOp\_.get());}
+\DoxyCodeLine{00278\ \ \ \}}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00280\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00281\ \ \ \textcolor{keyword}{friend}\ source\_receiver\_t;}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00283\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source2,\ \textcolor{keyword}{typename}\ Func2,\ \textcolor{keyword}{typename}\ Receiver2,\ \textcolor{keyword}{typename}\ Trigger>}
+\DoxyCodeLine{00284\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1__trigger__receiver}{\_trigger\_receiver}};}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00286\ \ \ \textcolor{keyword}{using\ }source\_op\_t\ =\ connect\_result\_t<Source\&,\ source\_receiver\_t>;}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Error>}
+\DoxyCodeLine{00289\ \ \ \textcolor{keyword}{using\ }trigger\_sender\_t\ =\ std::invoke\_result\_t<Func\&,\ remove\_cvref\_t<Error>>;}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Error>}
+\DoxyCodeLine{00292\ \ \ \textcolor{keyword}{using\ }trigger\_receiver\_t\ =\ trigger\_receiver<Source,\ Func,\ Receiver,\ trigger\_sender\_t<Error>>;}
+\DoxyCodeLine{00293\ }
+\DoxyCodeLine{00294\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Error>}
+\DoxyCodeLine{00295\ \ \ \textcolor{keyword}{using\ }trigger\_op\_t\ =\ connect\_result\_t<}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ trigger\_sender\_t<Error>,}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ trigger\_receiver\_t<Error>>;}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Errors>}
+\DoxyCodeLine{00300\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1manual__lifetime__union}{trigger\_op\_union}}\ =\ \mbox{\hyperlink{classunifex_1_1manual__lifetime__union}{manual\_lifetime\_union<trigger\_op\_t<Errors>}}...>;}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Source\ source\_;}
+\DoxyCodeLine{00303\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Func\ func\_;}
+\DoxyCodeLine{00304\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00305\ \ \ \textcolor{keywordtype}{bool}\ isSourceOpConstructed\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00306\ \ \ \textcolor{keyword}{union\ }\{}
+\DoxyCodeLine{00307\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<source\_op\_t>}}\ sourceOp\_;}
+\DoxyCodeLine{00308\ \ \ \ \ \textcolor{keyword}{typename}\ Source::template\ error\_types<trigger\_op\_union>\ triggerOps\_;}
+\DoxyCodeLine{00309\ \ \ \};}
+\DoxyCodeLine{00310\ \};}
+\DoxyCodeLine{00311\ }
+\DoxyCodeLine{00312\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00313\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1__sender}{\_sender}}\ \{}
+\DoxyCodeLine{00314\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__sender_1_1type}{type}};}
+\DoxyCodeLine{00315\ \};}
+\DoxyCodeLine{00316\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00317\ \textcolor{keyword}{using\ }sender\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__retry__when_1_1__sender}{\_sender<remove\_cvref\_t<Source>}},\ std::decay\_t<Func>>::type;}
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00319\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00320\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1sends__done__impl}{sends\_done\_impl}}\ :\ std::bool\_constant<sender\_traits<Sender>::sends\_done>\ \{\};}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00322\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}...\ Senders>}
+\DoxyCodeLine{00323\ \textcolor{keyword}{using\ }any\_sends\_done\ =\ std::disjunction<sends\_done\_impl<Senders>...>;}
+\DoxyCodeLine{00324\ }
+\DoxyCodeLine{00325\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00326\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__retry__when_1_1__sender}{\_sender}}<Source,\ Func>::\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__sender_1_1type}{type}}\ \{}
+\DoxyCodeLine{00327\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__retry__when_1_1__sender_1_1type}{sender}}\ =\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__sender_1_1type}{type}};}
+\DoxyCodeLine{00328\ }
+\DoxyCodeLine{00329\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Error>}
+\DoxyCodeLine{00330\ \ \ \textcolor{keyword}{using\ }trigger\_sender\ =\ std::invoke\_result\_t<Func\&,\ remove\_cvref\_t<Error>>;}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Errors>}
+\DoxyCodeLine{00333\ \ \ \textcolor{keyword}{using\ }make\_error\_type\_list\ =}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1concat__type__lists__unique}{concat\_type\_lists\_unique}}<}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \ \ sender\_error\_types\_t<trigger\_sender<Errors>,\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}>...,}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list<std::exception\_ptr>}}>::type;}
+\DoxyCodeLine{00337\ }
+\DoxyCodeLine{00338\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Errors>}
+\DoxyCodeLine{00339\ \ \ \textcolor{keyword}{using\ }sends\_done\_impl\ =\ any\_sends\_done<Source,\ trigger\_sender<Errors>...>;}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00342\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00344\ \ \ \textcolor{keyword}{using\ }value\_types\ =\ sender\_value\_types\_t<Source,\ Variant,\ Tuple>;}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00346\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00347\ \ \ \textcolor{keyword}{using\ }error\_types\ =}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ sender\_error\_types\_t<Source,\ make\_error\_type\_list>::template}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \ \ apply<Variant>;}
+\DoxyCodeLine{00350\ }
+\DoxyCodeLine{00351\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =}
+\DoxyCodeLine{00352\ \ \ \ \ sender\_error\_types\_t<Source,\ sends\_done\_impl>::value;}
+\DoxyCodeLine{00353\ }
+\DoxyCodeLine{00354\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source2,\ \textcolor{keyword}{typename}\ Func2>}
+\DoxyCodeLine{00355\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__sender_1_1type}{type}}(Source2\&\&\ source,\ Func2\&\&\ func)}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<Source,\ Source2>\ \&\&}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<Func,\ Func2>)}
+\DoxyCodeLine{00358\ \ \ \ \ :\ source\_((Source2\&\&)source)}
+\DoxyCodeLine{00359\ \ \ \ \ ,\ func\_((Func2\&\&)func)}
+\DoxyCodeLine{00360\ \ \ \{\}}
+\DoxyCodeLine{00361\ }
+\DoxyCodeLine{00362\ \ \ \textcolor{comment}{//\ TODO:\ The\ connect()\ methods\ are\ currently\ under-\/constrained.}}
+\DoxyCodeLine{00363\ \ \ \textcolor{comment}{//\ Ideally\ they\ should\ also\ check\ that\ func()\ invoked\ with\ each\ of\ the\ errors\ can\ be\ connected}}
+\DoxyCodeLine{00364\ \ \ \textcolor{comment}{//\ with\ the\ corresponding\ trigger\_receiver.}}
+\DoxyCodeLine{00365\ }
+\DoxyCodeLine{00366\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Self,\ \textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ same\_as<remove\_cvref\_t<Self>,\ \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__sender_1_1type}{type}}>\ AND}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ \ \ receiver<Receiver>\ AND}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \ \ constructible\_from<Source,\ member\_t<Self,\ Source>>\ AND}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \ \ constructible\_from<Func,\ member\_t<Self,\ Func>>\ AND}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ \ \ constructible\_from<remove\_cvref\_t<Receiver>,\ Receiver>\ AND}
+\DoxyCodeLine{00372\ \ \ \ \ \ \ \ \ \ \ sender\_to<Source\&,\ source\_receiver<Source,\ Func,\ remove\_cvref\_t<Receiver>>>)}
+\DoxyCodeLine{00373\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<connect>,\ Self\&\&\ self,\ Receiver\&\&\ r)}
+\DoxyCodeLine{00374\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<Source,\ member\_t<Self,\ Source>>\ \&\&}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<Func,\ member\_t<Self,\ Func>>\ \&\&}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<remove\_cvref\_t<Receiver>,\ Receiver>\ \&\&}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ is\_nothrow\_connectable\_v<Source\&,\ source\_receiver<Source,\ Func,\ remove\_cvref\_t<Receiver>>>)}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ -\/>\ operation<Source,\ Func,\ Receiver>\ \{}
+\DoxyCodeLine{00380\ \ \ \ \ \textcolor{keywordflow}{return}\ operation<Source,\ Func,\ Receiver>\{}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Self\&\&\textcolor{keyword}{>}(self).source\_,\ \textcolor{keyword}{static\_cast<}Self\&\&\textcolor{keyword}{>}(self).func\_,\ (Receiver\&\&)r\};}
+\DoxyCodeLine{00382\ \ \ \}}
+\DoxyCodeLine{00383\ }
+\DoxyCodeLine{00384\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00385\ \ \ Source\ source\_;}
+\DoxyCodeLine{00386\ \ \ Func\ func\_;}
+\DoxyCodeLine{00387\ \};}
+\DoxyCodeLine{00388\ \}\ \textcolor{comment}{//\ namespace\ \_retry\_when}}
+\DoxyCodeLine{00389\ }
+\DoxyCodeLine{00390\ \textcolor{keyword}{namespace\ }\_retry\_when\_cpo\ \{}
+\DoxyCodeLine{00391\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__retry__when__cpo_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00392\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00393\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00394\ \ \ \ \ \textcolor{keyword}{using\ }\_result\_t\ =}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ conditional\_t<}
+\DoxyCodeLine{00396\ \ \ \ \ \ \ \ \ tag\_invocable<\_fn,\ Source,\ Func>,}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote1___1_1bind__front}{meta\_tag\_invoke\_result<\_fn>}},}
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote2}{meta\_quote2<\_retry\_when::sender>}}>::template\ apply<Source,\ Func>;}
+\DoxyCodeLine{00399\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00400\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func)}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ Source,\ Func>)}
+\DoxyCodeLine{00402\ \ \ \ \ \textcolor{keyword}{auto}\ operator()(Source\&\&\ source,\ Func\&\&\ func)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ Source,\ Func>)}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<Source,\ Func>\ \{}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::tag\_invoke(\mbox{\hyperlink{structunifex_1_1__retry__when__cpo_1_1__fn}{\_fn}}\{\},\ (Source\&\&)source,\ (Func\&\&)func);}
+\DoxyCodeLine{00406\ \ \ \ \ \}}
+\DoxyCodeLine{00407\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func)}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_fn,\ Source,\ Func>)\ AND}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ \ \ constructible\_from<remove\_cvref\_t<Source>,\ Source>\ AND}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ \ \ constructible\_from<remove\_cvref\_t<Func>,\ Func>)}
+\DoxyCodeLine{00411\ \ \ \ \ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(Source\&\&\ source,\ Func\&\&\ func)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \ \ \_retry\_when::sender<Source,\ Func>,\ Source,\ Func>)}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<Source,\ Func>\ \{}
+\DoxyCodeLine{00415\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \_retry\_when::sender<Source,\ Func>\{(Source\&\&)source,\ (Func\&\&)func\};}
+\DoxyCodeLine{00416\ \ \ \ \ \}}
+\DoxyCodeLine{00417\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00418\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Func\&\&\ func)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<}
+\DoxyCodeLine{00420\ \ \ \ \ \ \ \ \ \ \ tag\_t<bind\_back>,\ \mbox{\hyperlink{structunifex_1_1__retry__when__cpo_1_1__fn}{\_fn}},\ Func>)}
+\DoxyCodeLine{00421\ \ \ \ \ \ \ \ \ -\/>\ bind\_back\_result\_t<\_fn,\ Func>\ \{}
+\DoxyCodeLine{00422\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ bind\_back(*\textcolor{keyword}{this},\ (Func\&\&)func);}
+\DoxyCodeLine{00423\ \ \ \ \ \}}
+\DoxyCodeLine{00424\ \ \ \}\ retry\_when\{\};}
+\DoxyCodeLine{00425\ \}\ \textcolor{comment}{//\ namespace\ \_retry\_when\_cpo}}
+\DoxyCodeLine{00426\ \textcolor{keyword}{using\ }\_retry\_when\_cpo::retry\_when;}
+\DoxyCodeLine{00427\ }
+\DoxyCodeLine{00428\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00429\ }
+\DoxyCodeLine{00430\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

@@ -1,0 +1,95 @@
+\doxysection{just\+\_\+done.\+hpp}
+\hypertarget{just__done_8hpp_source}{}\label{just__done_8hpp_source}\index{include/unifex/just\_done.hpp@{include/unifex/just\_done.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/blocking.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/std\_concepts.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <tuple>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00032\ \textcolor{keyword}{namespace\ }\_just\_done\ \{}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00035\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__just__done_1_1__op}{\_op}}\ \{}
+\DoxyCodeLine{00036\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__just__done_1_1__op_1_1type}{type}};}
+\DoxyCodeLine{00037\ \};}
+\DoxyCodeLine{00038\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00039\ \textcolor{keyword}{using\ }operation\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__just__done_1_1__op}{\_op<remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00042\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__just__done_1_1__op}{\_op}}<Receiver>::\mbox{\hyperlink{structunifex_1_1__just__done_1_1__op_1_1type}{type}}\ \{}
+\DoxyCodeLine{00043\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \textcolor{keywordtype}{void}\ start()\ \&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00046\ \ \ \ \ unifex::set\_done((Receiver\ \&\&)\ receiver\_);}
+\DoxyCodeLine{00047\ \ \ \}}
+\DoxyCodeLine{00048\ \};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__just__done_1_1sender}{sender}}\ \{}
+\DoxyCodeLine{00051\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00055\ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<>;}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<>;}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ This,\ \textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ same\_as<remove\_cvref\_t<This>,\ \mbox{\hyperlink{classunifex_1_1__just__done_1_1sender}{sender}}>\ AND}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ receiver<Receiver>)}
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<connect>,\ This\&\&,\ Receiver\&\&\ r)}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ -\/>\ operation<Receiver>\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordflow}{return}\ \{\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(r)\};}
+\DoxyCodeLine{00069\ \ \ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<blocking>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__just__done_1_1sender}{sender}}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::always\_inline;}
+\DoxyCodeLine{00073\ \ \ \}}
+\DoxyCodeLine{00074\ \};}
+\DoxyCodeLine{00075\ \}\ \textcolor{comment}{//\ namespace\ \_just\_done}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{namespace\ }\_just\_done\_cpo\ \{}
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__just__done__cpo_1_1just__done__fn}{just\_done\_fn}}\ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ -\/>\ \mbox{\hyperlink{classunifex_1_1__just__done_1_1sender}{\_just\_done::sender}}\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classunifex_1_1__just__done_1_1sender}{\_just\_done::sender}}\{\};}
+\DoxyCodeLine{00082\ \ \ \ \ \}}
+\DoxyCodeLine{00083\ \ \ \}\ just\_done\{\};}
+\DoxyCodeLine{00084\ \}\ \textcolor{comment}{//\ namespace\ \_just\_done\_cpo}}
+\DoxyCodeLine{00085\ \textcolor{keyword}{using\ }\_just\_done\_cpo::just\_done;}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

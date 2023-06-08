@@ -1,0 +1,32 @@
+\doxysection{promise\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structunifex_1_1__sync__wait_1_1promise}{}\label{structunifex_1_1__sync__wait_1_1promise}\index{promise$<$ T $>$@{promise$<$ T $>$}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__sync__wait_1_1promise_adc6e5733fc3c22f0a7b2914188c49c90}\label{structunifex_1_1__sync__wait_1_1promise_adc6e5733fc3c22f0a7b2914188c49c90} 
+enum class {\bfseries state} \{ {\bfseries incomplete}
+, {\bfseries done}
+, {\bfseries value}
+, {\bfseries error}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__sync__wait_1_1promise_a3b12fe5506687d145ac01d2a059ff346}\label{structunifex_1_1__sync__wait_1_1promise_a3b12fe5506687d145ac01d2a059ff346} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime}}$<$ T $>$ {\bfseries value\_}\\
+\>\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime}}$<$ std::exception\_ptr $>$ {\bfseries exception\_}\\
+\}; \\
+
+\end{tabbing}\item 
+\Hypertarget{structunifex_1_1__sync__wait_1_1promise_a8ea9bac32e512bcc6713ac8316a94dca}\label{structunifex_1_1__sync__wait_1_1promise_a8ea9bac32e512bcc6713ac8316a94dca} 
+state {\bfseries state\+\_\+} = state\+::incomplete
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/sync\+\_\+wait.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,154 @@
+\doxysection{bind\+\_\+back.\+hpp}
+\hypertarget{bind__back_8hpp_source}{}\label{bind__back_8hpp_source}\index{include/unifex/bind\_back.hpp@{include/unifex/bind\_back.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/std\_concepts.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <tuple>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{namespace\ }\_compose\ \{}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__compose_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00032\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Target,\ \textcolor{keyword}{typename}\ Other,\ \textcolor{keyword}{typename}\ Self>}
+\DoxyCodeLine{00033\ \ \ \textcolor{keyword}{auto}\ operator()(Target\&\&\ target,\ Other\&\&\ other,\ Self\&\&\ self)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ is\_nothrow\_callable\_v<Other,\ Target>\ \&\&}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ is\_nothrow\_callable\_v<Self,\ callable\_result\_t<Other,\ Target>>)}
+\DoxyCodeLine{00037\ \ \ \ \ -\/>\ callable\_result\_t<Self,\ callable\_result\_t<Other,\ Target>>\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordflow}{return}\ ((Self\&\&)\ self)(((Other\&\&)\ other)((Target\&\&)\ target));}
+\DoxyCodeLine{00039\ \ \ \}}
+\DoxyCodeLine{00040\ \};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \}\ \textcolor{comment}{//\ namespace\ \_compose}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{namespace\ }\_bind\_back\ \{}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Cpo,\ \textcolor{keyword}{typename}\ Target>}
+\DoxyCodeLine{00047\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__apply__fn__impl}{\_apply\_fn\_impl}}\ \{}
+\DoxyCodeLine{00048\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__apply__fn__impl_1_1type}{type}};}
+\DoxyCodeLine{00049\ \};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Cpo,\ \textcolor{keyword}{typename}...\ ArgN>}
+\DoxyCodeLine{00052\ \textcolor{keyword}{using\ }\_apply\_fn\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__apply__fn__impl}{\_apply\_fn\_impl}}<Cpo,\ ArgN...>::type;}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Cpo,\ \textcolor{keyword}{typename}\ Target>}
+\DoxyCodeLine{00055\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__apply__fn__impl}{\_apply\_fn\_impl}}<Cpo,\ Target>::\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__apply__fn__impl_1_1type}{type}}\ \{}
+\DoxyCodeLine{00056\ \ \ Cpo\&\&\ cpo\_;}
+\DoxyCodeLine{00057\ \ \ Target\&\&\ target\_;}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}...\ ArgN)}
+\DoxyCodeLine{00060\ \ \ \ \ (\textcolor{keyword}{requires}\ callable<Cpo,\ Target,\ ArgN...>)}
+\DoxyCodeLine{00061\ \ \ \textcolor{keyword}{auto}\ operator()(ArgN\&\&...\ argN)}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<Cpo,\ Target,\ ArgN...>)}
+\DoxyCodeLine{00063\ \ \ \ \ -\/>\ callable\_result\_t<Cpo,\ Target,\ ArgN...>\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordflow}{return}\ ((Cpo\&\&)\ cpo\_)((Target\&\&)\ target\_,\ (ArgN\&\&)\ argN...);}
+\DoxyCodeLine{00065\ \ \ \}}
+\DoxyCodeLine{00066\ \};}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__base}{\_result\_base}}\ \{\};}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Cpo,\ \textcolor{keyword}{typename}...\ ArgN>}
+\DoxyCodeLine{00071\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__impl}{\_result\_impl}}\ \{}
+\DoxyCodeLine{00072\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__impl_1_1type}{type}};}
+\DoxyCodeLine{00073\ \};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Cpo,\ \textcolor{keyword}{typename}...\ ArgN>}
+\DoxyCodeLine{00076\ \textcolor{keyword}{using\ }\_result\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__impl}{\_result\_impl}}<Cpo,\ ArgN...>::type;}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Cpo,\ \textcolor{keyword}{typename}...\ ArgN>}
+\DoxyCodeLine{00079\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__impl}{\_result\_impl}}<Cpo,\ ArgN...>::\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__impl_1_1type}{type}}\ :\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__base}{\_result\_base}}\ \{}
+\DoxyCodeLine{00080\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Cpo\ cpo\_;}
+\DoxyCodeLine{00081\ \ \ std::tuple<ArgN...>\ argN\_;}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Target)}
+\DoxyCodeLine{00084\ \ \ \ \ (\textcolor{keyword}{requires}\ (!derived\_from<remove\_cvref\_t<Target>,\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__base}{\_result\_base}}>)\ AND}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ callable<Cpo\ \textcolor{keyword}{const}\&,\ Target,\ ArgN\ \textcolor{keyword}{const}\&...>)}
+\DoxyCodeLine{00086\ \ \ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ operator()(Target\&\&\ target)\ \textcolor{keyword}{const}\ \&}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<Cpo\ \textcolor{keyword}{const}\&,\ Target,\ ArgN\ \textcolor{keyword}{const}\&...>)\ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keywordflow}{return}\ std::apply(\_apply\_fn<Cpo\ const\&,\ Target>\{cpo\_,\ (Target\&\&)\ target\},\ argN\_);}
+\DoxyCodeLine{00089\ \ \ \}}
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Target)}
+\DoxyCodeLine{00091\ \ \ \ \ (\textcolor{keyword}{requires}\ (!derived\_from<remove\_cvref\_t<Target>,\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__base}{\_result\_base}}>)\ AND}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ callable<Cpo,\ Target,\ ArgN...>)}
+\DoxyCodeLine{00093\ \ \ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ operator()(Target\&\&\ target)\ \&\&}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<Cpo,\ Target,\ ArgN...>)\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keywordflow}{return}\ std::apply(}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \_apply\_fn<Cpo,\ Target>\{(Cpo\&\&)\ cpo\_,\ (Target\&\&)\ target\},}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ std::move(argN\_));}
+\DoxyCodeLine{00098\ \ \ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Target,\ \textcolor{keyword}{typename}\ Self)}
+\DoxyCodeLine{00101\ \ \ \ \ (\textcolor{keyword}{requires}\ (!derived\_from<remove\_cvref\_t<Target>,\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__base}{\_result\_base}}>)\ AND}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ same\_as<remove\_cvref\_t<Self>,\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__impl_1_1type}{type}}>\ AND}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ callable<member\_t<Self,\ Cpo>,\ Target,\ member\_t<Self,\ ArgN>...>)}
+\DoxyCodeLine{00104\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ operator|(Target\&\&\ target,\ Self\&\&\ self)}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ is\_nothrow\_callable\_v<member\_t<Self,\ Cpo>,\ Target,\ member\_t<Self,\ ArgN>...>)\ \{}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordflow}{return}\ std::apply(}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \_apply\_fn<member\_t<Self,\ Cpo>,\ Target>\{((Self\&\&)\ self).cpo\_,\ (Target\&\&)\ target\},}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ ((Self\&\&)\ self).argN\_);}
+\DoxyCodeLine{00110\ \ \ \}}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Other,\ \textcolor{keyword}{typename}\ Self)}
+\DoxyCodeLine{00113\ \ \ \ \ (\textcolor{keyword}{requires}\ derived\_from<remove\_cvref\_t<Other>,\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__base}{\_result\_base}}>\ AND}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ same\_as<remove\_cvref\_t<Self>,\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__impl_1_1type}{type}}>)}
+\DoxyCodeLine{00115\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ \textcolor{keyword}{operator}|(Other\&\&\ other,\ Self\&\&\ self)}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \_result<\_compose::\_fn,\ remove\_cvref\_t<Other>,\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__impl_1_1type}{type}}>\{}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \{\},\ \textcolor{comment}{//\ \_result\_base}}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \{\},\ \textcolor{comment}{//\ \_compose::\_fn}}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ std::tuple\{(Other\&\&)\ other,\ (Self\&\&)\ self\}\}))\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keywordflow}{return}\ \_result<\_compose::\_fn,\ remove\_cvref\_t<Other>,\ \mbox{\hyperlink{structunifex_1_1__bind__back_1_1__result__impl_1_1type}{type}}>\{}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \{\},\ \textcolor{comment}{//\ \_result\_base}}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \{\},\ \textcolor{comment}{//\ \_compose::\_fn}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ std::tuple\{(Other\&\&)\ other,\ (Self\&\&)\ self\}\};}
+\DoxyCodeLine{00125\ \ \ \}}
+\DoxyCodeLine{00126\ \};}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bind__back_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00129\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Cpo,\ \textcolor{keyword}{typename}...\ ArgN>}
+\DoxyCodeLine{00130\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Cpo\ cpo,\ ArgN\&\&...\ argN)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \_result<Cpo,\ std::decay\_t<ArgN>...>\{\{\},\ (Cpo\&\&)\ cpo,\ std::tuple\{(ArgN\ \&\&)\ argN...\}\}))}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ -\/>\ \_result<Cpo,\ std::decay\_t<ArgN>...>\ \{}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordflow}{return}\ \_result<Cpo,\ std::decay\_t<ArgN>...>\{\{\},\ (Cpo\&\&)\ cpo,\ std::tuple\{(ArgN\ \&\&)\ argN...\}\};}
+\DoxyCodeLine{00135\ \ \ \}}
+\DoxyCodeLine{00136\ \}\ bind\_back\{\};}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \}\ \textcolor{comment}{//\ namespace\ \_bind\_back}}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \textcolor{keyword}{using\ }\_bind\_back::bind\_back;}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Cpo,\ \textcolor{keyword}{typename}...\ ArgN>}
+\DoxyCodeLine{00143\ \textcolor{keyword}{using\ }bind\_back\_result\_t\ =}
+\DoxyCodeLine{00144\ \ \ \ \ \_bind\_back::\_result<std::decay\_t<Cpo>,\ std::decay\_t<ArgN>...>;}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

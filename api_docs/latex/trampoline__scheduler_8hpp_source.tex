@@ -1,0 +1,174 @@
+\doxysection{trampoline\+\_\+scheduler.\+hpp}
+\hypertarget{trampoline__scheduler_8hpp_source}{}\label{trampoline__scheduler_8hpp_source}\index{include/unifex/trampoline\_scheduler.hpp@{include/unifex/trampoline\_scheduler.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/get\_stop\_token.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/stop\_token\_concepts.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <cstddef>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\_trampoline\ \{}
+\DoxyCodeLine{00031\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__trampoline_1_1scheduler}{scheduler}}\ \{}
+\DoxyCodeLine{00032\ \ \ std::size\_t\ maxRecursionDepth\_;}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00035\ \ \ \mbox{\hyperlink{classunifex_1_1__trampoline_1_1scheduler}{scheduler}}()\ noexcept\ :\ maxRecursionDepth\_(16)\ \{\}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__trampoline_1_1scheduler}{scheduler}}(std::size\_t\ depth)\ noexcept}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ :\ maxRecursionDepth\_(depth)\ \{\}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00041\ \ \ \textcolor{keyword}{struct\ }operation\_base\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{using\ }execute\_fn\ =\ void(operation\_base*)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{explicit}\ operation\_base(execute\_fn*\ execute,\ std::size\_t\ maxDepth)\ noexcept}
+\DoxyCodeLine{00045\ \ \ \ \ :\ execute\_(execute)}
+\DoxyCodeLine{00046\ \ \ \ \ ,\ maxRecursionDepth\_(maxDepth)}
+\DoxyCodeLine{00047\ \ \ \ \ \{\}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{void}\ execute()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ execute\_(\textcolor{keyword}{this});}
+\DoxyCodeLine{00051\ \ \ \ \ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \textcolor{keyword}{auto}*\ currentState\ =\ trampoline\_state::current\_;}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (currentState\ ==\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ trampoline\_state\ state;}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ execute();}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ state.drain();}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (currentState-\/>recursionDepth\_\ <\ maxRecursionDepth\_)\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ ++currentState-\/>recursionDepth\_;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ execute();}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Exceeded\ recursion\ limit.}}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ next\_\ =\ std::exchange(}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ currentState-\/>head\_,}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}operation\_base*\textcolor{keyword}{>}(\textcolor{keyword}{this}));}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00068\ \ \ \ \ \}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ operation\_base*\ next\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00071\ \ \ \ \ execute\_fn*\ execute\_;}
+\DoxyCodeLine{00072\ \ \ \ \ std::size\_t\ maxRecursionDepth\_;}
+\DoxyCodeLine{00073\ \ \ \};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \textcolor{keyword}{struct\ }trampoline\_state\ \{}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{thread\_local}\ trampoline\_state*\ current\_;}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ trampoline\_state()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ current\_\ =\ \textcolor{keyword}{this};}
+\DoxyCodeLine{00080\ \ \ \ \ \}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \string~trampoline\_state()\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ current\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00084\ \ \ \ \ \}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{void}\ drain()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ std::size\_t\ recursionDepth\_\ =\ 1;}
+\DoxyCodeLine{00089\ \ \ \ \ operation\_base*\ head\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00090\ \ \ \};}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \textcolor{keyword}{class\ }schedule\_sender;}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00095\ \ \ \textcolor{keyword}{struct\ }\_op\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__trampoline_1_1scheduler_1_1__op_1_1type}{type}}\ final\ :\ operation\_base\ \{}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ schedule\_sender;}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__trampoline_1_1scheduler_1_1__op_1_1type}{type}}(Receiver2\&\&\ receiver,\ std::size\_t\ maxDepth)}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ :\ operation\_base(\&type::execute\_impl,\ maxDepth)}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ ,\ receiver\_((Receiver2\ \&\&)\ receiver)\ \{\}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ execute\_impl(operation\_base*\ p)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ self\ =\ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1__trampoline_1_1scheduler_1_1__op_1_1type}{type}}*\textcolor{keyword}{>}(p);}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_stop\_never\_possible\_v<stop\_token\_type\_t<Receiver\&>>)\ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ unifex::set\_value(\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(self.receiver\_));}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (get\_stop\_token(self.receiver\_).stop\_requested())\ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ unifex::set\_done(\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(self.receiver\_));}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ unifex::set\_value(\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(self.receiver\_));}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ }
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \textcolor{keyword}{using\ }operation\_base::start;}
+\DoxyCodeLine{00121\ \ \ \ \ \};}
+\DoxyCodeLine{00122\ \ \ \};}
+\DoxyCodeLine{00123\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00124\ \ \ \textcolor{keyword}{using\ }operation\ =\ \textcolor{keyword}{typename}\ \_op<remove\_cvref\_t<Receiver>>::type;}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \textcolor{keyword}{class\ }schedule\_sender\ \{}
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{explicit}\ schedule\_sender(std::size\_t\ maxDepth)\ noexcept}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ :\ maxRecursionDepth\_(maxDepth)}
+\DoxyCodeLine{00130\ \ \ \ \ \{\}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<>;}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00143\ \ \ \ \ operation<Receiver>\ connect(Receiver\&\&\ receiver)\ \textcolor{keyword}{const}\&\ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ operation<Receiver>\{(Receiver\ \&\&)\ receiver,\ maxRecursionDepth\_\};}
+\DoxyCodeLine{00145\ \ \ \ \ \}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00148\ \ \ \ \ std::size\_t\ maxRecursionDepth\_;}
+\DoxyCodeLine{00149\ \ \ \};}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00152\ \ \ schedule\_sender\ schedule()\ const\ noexcept\ \{}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keywordflow}{return}\ schedule\_sender\{maxRecursionDepth\_\};}
+\DoxyCodeLine{00154\ \ \ \}}
+\DoxyCodeLine{00155\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator==(scheduler,\ scheduler)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00157\ \ \ \}}
+\DoxyCodeLine{00158\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator!=(scheduler,\ scheduler)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00160\ \ \ \}}
+\DoxyCodeLine{00161\ \};}
+\DoxyCodeLine{00162\ \}\ \textcolor{comment}{//\ namespace\ \_trampoline}}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \textcolor{keyword}{using\ }trampoline\_scheduler\ =\ \_trampoline::scheduler;}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

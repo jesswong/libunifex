@@ -1,0 +1,40 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Predecessor, Func, Func\+Policy \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__find__if_1_1__sender_1_1type}{}\label{structunifex_1_1__find__if_1_1__sender_1_1type}\index{\_sender$<$ Predecessor, Func, FuncPolicy $>$::type@{\_sender$<$ Predecessor, Func, FuncPolicy $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__sender_1_1type_a4596b26345dab119fb02715db2df89b2}\label{structunifex_1_1__find__if_1_1__sender_1_1type_a4596b26345dab119fb02715db2df89b2} 
+{\footnotesize template$<$typename Begin\+It , typename End\+It , typename... Args$>$ }\\using {\bfseries result} = \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ Begin\+It, Args... $>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__sender_1_1type_a5e1a133c148d1c145f548c2c1b1a1210}\label{structunifex_1_1__find__if_1_1__sender_1_1type_a5e1a133c148d1c145f548c2c1b1a1210} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = type\+\_\+list\+\_\+nested\+\_\+apply\+\_\+t$<$ sender\+\_\+value\+\_\+types\+\_\+t$<$ Predecessor, concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t, \mbox{\hyperlink{structunifex_1_1type__list}{result}} $>$, Variant, Tuple $>$
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__sender_1_1type_a9c3db02794396cf070a5c1dd3d7b16d5}\label{structunifex_1_1__find__if_1_1__sender_1_1type_a9c3db02794396cf070a5c1dd3d7b16d5} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ Predecessor, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__sender_1_1type_af7cb0384e648d9047fb0b094036c0bf2}\label{structunifex_1_1__find__if_1_1__sender_1_1type_af7cb0384e648d9047fb0b094036c0bf2} 
+{\footnotesize template$<$typename Receiver $>$ }\\using {\bfseries receiver\+\_\+type} = receiver\+\_\+t$<$ Predecessor, Receiver, Func, Func\+Policy $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__sender_1_1type_a9453680efd59c536d423f44666781798}\label{structunifex_1_1__find__if_1_1__sender_1_1type_a9453680efd59c536d423f44666781798} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Predecessor {\bfseries pred\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__sender_1_1type_a6cdb51372da6e6ecd5b4b6efbc400a6e}\label{structunifex_1_1__find__if_1_1__sender_1_1type_a6cdb51372da6e6ecd5b4b6efbc400a6e} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Func {\bfseries func\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__sender_1_1type_a379dd3025fcd255631e7c067c1c5c83f}\label{structunifex_1_1__find__if_1_1__sender_1_1type_a379dd3025fcd255631e7c067c1c5c83f} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Func\+Policy {\bfseries func\+Policy\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__find__if_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = true
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/find\+\_\+if.\+hpp\end{DoxyCompactItemize}

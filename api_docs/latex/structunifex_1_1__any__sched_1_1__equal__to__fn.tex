@@ -1,0 +1,42 @@
+\doxysection{\+\_\+equal\+\_\+to\+\_\+fn Struct Reference}
+\hypertarget{structunifex_1_1__any__sched_1_1__equal__to__fn}{}\label{structunifex_1_1__any__sched_1_1__equal__to__fn}\index{\_equal\_to\_fn@{\_equal\_to\_fn}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__any__sched_1_1__equal__to__fn_ad8688137980e5cacfeda0e9d523e691e}\label{structunifex_1_1__any__sched_1_1__equal__to__fn_ad8688137980e5cacfeda0e9d523e691e} 
+{\bfseries template} (typename T, typename U)() bool operator()(const T \&t
+\item 
+\Hypertarget{structunifex_1_1__any__sched_1_1__equal__to__fn_a0c3df9f8734fdf2e5088ad7fcc7345a0}\label{structunifex_1_1__any__sched_1_1__equal__to__fn_a0c3df9f8734fdf2e5088ad7fcc7345a0} 
+{\bfseries template} (typename T, typename U)(AND equality\+\_\+comparable$<$ T $>$) bool operator()(const T \&t
+\item 
+\Hypertarget{structunifex_1_1__any__sched_1_1__equal__to__fn_afa6f106c7090304ab6a5525e44c746c6}\label{structunifex_1_1__any__sched_1_1__equal__to__fn_afa6f106c7090304ab6a5525e44c746c6} 
+return {\bfseries type\+\_\+id} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+const U \&u const \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__equal__to__fn_ac3f1c5556295850f16018abcb7438904}{noexcept}}
+\item 
+\Hypertarget{structunifex_1_1__any__sched_1_1__equal__to__fn_a3bd970ff6814211e59ca9c31498f4f99}\label{structunifex_1_1__any__sched_1_1__equal__to__fn_a3bd970ff6814211e59ca9c31498f4f99} 
+return tag\+\_\+invoke \texorpdfstring{$\ast$}{*} {\bfseries this}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__any__sched_1_1__equal__to__fn_ac3f1c5556295850f16018abcb7438904}\label{structunifex_1_1__any__sched_1_1__equal__to__fn_ac3f1c5556295850f16018abcb7438904} 
+\index{\_equal\_to\_fn@{\_equal\_to\_fn}!noexcept@{noexcept}}
+\index{noexcept@{noexcept}!\_equal\_to\_fn@{\_equal\_to\_fn}}
+\doxysubsubsection{\texorpdfstring{noexcept}{noexcept}}
+{\footnotesize\ttfamily const U \&u const noexcept}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static\_assert}(is\_nothrow\_tag\_invocable\_v<\_equal\_to\_fn,\ const\ T\&,\ const\ U\&>)}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/\mbox{\hyperlink{any__scheduler_8hpp}{any\+\_\+scheduler.\+hpp}}\end{DoxyCompactItemize}

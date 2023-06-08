@@ -1,0 +1,112 @@
+\doxysection{inline\+\_\+scheduler.\+hpp}
+\hypertarget{inline__scheduler_8hpp_source}{}\label{inline__scheduler_8hpp_source}\index{include/unifex/inline\_scheduler.hpp@{include/unifex/inline\_scheduler.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/blocking.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/get\_stop\_token.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/stop\_token\_concepts.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/get\_stop\_token.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/scheduler\_concepts.hpp>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00031\ \textcolor{keyword}{namespace\ }\_inline\_sched\ \{}
+\DoxyCodeLine{00032\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00033\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__inline__sched_1_1__op}{\_op}}\ \{}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__inline__sched_1_1__op_1_1type}{type}};}
+\DoxyCodeLine{00035\ \ \ \};}
+\DoxyCodeLine{00036\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00037\ \ \ \textcolor{keyword}{using\ }operation\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__inline__sched_1_1__op}{\_op<remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00040\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__inline__sched_1_1__op}{\_op}}<Receiver>::\mbox{\hyperlink{structunifex_1_1__inline__sched_1_1__op_1_1type}{type}}\ final\ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{using\ }stop\_token\_type\ =\ stop\_token\_type\_t<Receiver\&>;}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Receiver2)}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ constructible\_from<Receiver,\ Receiver2>)}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__inline__sched_1_1__op_1_1type}{type}}(Receiver2\&\&\ r)\ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<Receiver,\ Receiver2>)}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ :\ receiver\_((Receiver2\ \&\&)\ r)\ \{\}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ UNIFEX\_TRY\ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (is\_stop\_never\_possible\_v<stop\_token\_type>)\ \{}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ unifex::set\_value((Receiver\ \&\&)\ receiver\_);}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (get\_stop\_token(receiver\_).stop\_requested())\ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ unifex::set\_done((Receiver\ \&\&)\ receiver\_);}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ unifex::set\_value((Receiver\ \&\&)\ receiver\_);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \}\ UNIFEX\_CATCH\ (...)\ \{}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ unifex::set\_error((Receiver\ \&\&)\ receiver\_,\ std::current\_exception());}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00064\ \ \ \ \ \}}
+\DoxyCodeLine{00065\ \ \ \};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__inline__sched_1_1scheduler}{scheduler}}\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__inline__sched_1_1scheduler_1_1schedule__task}{schedule\_task}}\ \{}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<std::exception\_ptr>;}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ tag\_invoke(}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ tag\_t<blocking>,}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__inline__sched_1_1scheduler_1_1schedule__task}{schedule\_task}}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::always\_inline;}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ operation<Receiver>\ connect(Receiver\&\&\ receiver)\ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ operation<Receiver>\{(Receiver\ \&\&)\ receiver\};}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00089\ \ \ \ \ \};}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__inline__sched_1_1scheduler_1_1schedule__task}{schedule\_task}}\ schedule()\ const\ noexcept\ \{}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{\};}
+\DoxyCodeLine{00093\ \ \ \ \ \}}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator==(scheduler,\ scheduler)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00096\ \ \ \ \ \}}
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator!=(scheduler,\ scheduler)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00099\ \ \ \ \ \}}
+\DoxyCodeLine{00100\ \ \ \};}
+\DoxyCodeLine{00101\ \}\ \textcolor{comment}{//\ namespace\ \_inline\_sched}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{keyword}{using\ }inline\_scheduler\ =\ \_inline\_sched::scheduler;}
+\DoxyCodeLine{00104\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

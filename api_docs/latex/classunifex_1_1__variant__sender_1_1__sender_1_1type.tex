@@ -1,0 +1,34 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Senders \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__variant__sender_1_1__sender_1_1type}{}\label{classunifex_1_1__variant__sender_1_1__sender_1_1type}\index{\_sender$<$ Senders $>$::type@{\_sender$<$ Senders $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__variant__sender_1_1__sender_1_1type_aeca9c08019c6b161c2b9bc0404ec5864}\label{classunifex_1_1__variant__sender_1_1__sender_1_1type_aeca9c08019c6b161c2b9bc0404ec5864} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+value\+\_\+types\+\_\+t$<$ Senders, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}, Tuple $>$... $>$\+::template apply$<$ Variant $>$
+\item 
+\Hypertarget{classunifex_1_1__variant__sender_1_1__sender_1_1type_a76e868bf5d1fc4acc2145a9b1ec23ad1}\label{classunifex_1_1__variant__sender_1_1__sender_1_1type_a76e868bf5d1fc4acc2145a9b1ec23ad1} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ Senders, Variant $>$... $>$
+\item 
+\Hypertarget{classunifex_1_1__variant__sender_1_1__sender_1_1type_ae2105e7daef80ce5fd4b530a4475c7bc}\label{classunifex_1_1__variant__sender_1_1__sender_1_1type_ae2105e7daef80ce5fd4b530a4475c7bc} 
+{\footnotesize template$<$typename Base , typename Matchee $>$ }\\using {\bfseries match\+\_\+reference\+\_\+t} = std\+::conditional\+\_\+t$<$ std\+::is\+\_\+lvalue\+\_\+reference\+\_\+v$<$ Base $>$, std\+::add\+\_\+lvalue\+\_\+reference\+\_\+t$<$ Matchee $>$, Matchee $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__variant__sender_1_1__sender_1_1type_a175f5350284cc9a2e0466f610fba8024}\label{classunifex_1_1__variant__sender_1_1__sender_1_1type_a175f5350284cc9a2e0466f610fba8024} 
+{\footnotesize template$<$typename Concrete\+Sender $>$ }\\{\bfseries type} (Concrete\+Sender \&\&concrete\+Sender) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ std\+::variant$<$ Senders... $>$, decltype(concrete\+Sender)$>$)
+\item 
+\Hypertarget{classunifex_1_1__variant__sender_1_1__sender_1_1type_a9ab917a728c785d050d3eb7fe59c9be9}\label{classunifex_1_1__variant__sender_1_1__sender_1_1type_a9ab917a728c785d050d3eb7fe59c9be9} 
+{\bfseries template} (typename This, typename Receiver)(AND std
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__variant__sender_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__variant__sender_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = std\+::disjunction\+\_\+v$<$std\+::bool\+\_\+constant$<$\mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$Senders$>$\+::sends\+\_\+done$>$...$>$
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/variant\+\_\+sender.\+hpp\end{DoxyCompactItemize}

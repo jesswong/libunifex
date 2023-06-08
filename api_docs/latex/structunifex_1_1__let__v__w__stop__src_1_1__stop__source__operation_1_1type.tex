@@ -1,0 +1,46 @@
+\doxysection{\+\_\+stop\+\_\+source\+\_\+operation\texorpdfstring{$<$}{<} Inner\+Op, Receiver \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type}{}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type}\index{\_stop\_source\_operation$<$ InnerOp, Receiver $>$::type@{\_stop\_source\_operation$<$ InnerOp, Receiver $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a8eea86547766ba83c5f45f56a4f34d8a}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a8eea86547766ba83c5f45f56a4f34d8a} 
+using {\bfseries stop\+\_\+token\+\_\+type} = stop\+\_\+token\+\_\+type\+\_\+t$<$ Receiver $>$
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_ad61309dd2e628abcbbc1f83d8a6107dc}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_ad61309dd2e628abcbbc1f83d8a6107dc} 
+using {\bfseries stop\+\_\+source\+\_\+type} = \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__source}{fused\+\_\+stop\+\_\+source}}$<$ stop\+\_\+token\+\_\+type $>$
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a575d517df39de08c9c924391511a5caa}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a575d517df39de08c9c924391511a5caa} 
+using {\bfseries receiver\+\_\+t} = stop\+\_\+source\+\_\+receiver$<$ operation$<$ Successor\+Factory, Receiver $>$, remove\+\_\+cvref\+\_\+t$<$ Receiver $>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_aa7e0b60bab7cbea0fed06510388f94e4}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_aa7e0b60bab7cbea0fed06510388f94e4} 
+using {\bfseries inner\+\_\+sender\+\_\+t} = std\+::invoke\+\_\+result\+\_\+t$<$ Successor\+Factory \&\&, \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__source}{stop\+\_\+source\+\_\+type}} \& $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a25f3223727adcae72aca81a9c52fd598}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a25f3223727adcae72aca81a9c52fd598} 
+{\footnotesize template$<$typename Successor\+Factory2 , typename Receiver2 $>$ }\\{\bfseries type} (Successor\+Factory2 \&\&func, Receiver2 \&\&r) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Successor\+Factory, Successor\+Factory2 $>$ \&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Receiver, Receiver2 $>$ \&\&noexcept(connect\+\_\+inner\+\_\+op(func,(Receiver2 \&\&) r)))
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_af49c603a002db3c46b470d2fcfd96046}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_af49c603a002db3c46b470d2fcfd96046} 
+void {\bfseries start} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a1f1a22197b8409792bae131251f24e4b}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a1f1a22197b8409792bae131251f24e4b} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__source}{stop\+\_\+source\+\_\+type}} {\bfseries stop\+Source\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a65f13de7d2bd24cc8ccab9e6b23a607c}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a65f13de7d2bd24cc8ccab9e6b23a607c} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Successor\+Factory {\bfseries func\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a3549ab0b2e3146c05b43f1d48c83b1cb}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_a3549ab0b2e3146c05b43f1d48c83b1cb} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS stop\+\_\+token\+\_\+type {\bfseries receiver\+Token\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_aeeb6915fddc6176488b1450f97bfd814}\label{structunifex_1_1__let__v__w__stop__src_1_1__stop__source__operation_1_1type_aeeb6915fddc6176488b1450f97bfd814} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS connect\+\_\+result\+\_\+t$<$ callable\+\_\+result\+\_\+t$<$ Successor\+Factory, \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__source}{stop\+\_\+source\+\_\+type}} \& $>$, receiver\+\_\+t $>$ {\bfseries inner\+Op\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/let\+\_\+value\+\_\+with\+\_\+stop\+\_\+source.\+hpp\end{DoxyCompactItemize}

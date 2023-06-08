@@ -1,0 +1,46 @@
+\doxysection{sender\+\_\+for\texorpdfstring{$<$}{<} C, Sender, Context \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structunifex_1_1__sf_1_1sender__for}{}\label{structunifex_1_1__sf_1_1sender__for}\index{sender\_for$<$ C, Sender, Context $>$@{sender\_for$<$ C, Sender, Context $>$}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__sf_1_1sender__for_ad4cad79ae5c5fed8325c97694d15157a}\label{structunifex_1_1__sf_1_1sender__for_ad4cad79ae5c5fed8325c97694d15157a} 
+{\bfseries sender\+\_\+for} (Sender snd, Context ctx) noexcept(std\+::is\+\_\+nothrow\+\_\+move\+\_\+constructible\+\_\+v$<$ Sender $>$ \&\&std\+::is\+\_\+nothrow\+\_\+move\+\_\+constructible\+\_\+v$<$ Context $>$)
+\item 
+\Hypertarget{structunifex_1_1__sf_1_1sender__for_afcc5a94efc6af904ffae27ac939fd5ce}\label{structunifex_1_1__sf_1_1sender__for_afcc5a94efc6af904ffae27ac939fd5ce} 
+{\bfseries template} (typename CPO, typename Self, typename... Args)(AND(!callable$<$ const Context \&
+\item 
+\Hypertarget{structunifex_1_1__sf_1_1sender__for_acce109eec6310c29dbb615614e21e4e7}\label{structunifex_1_1__sf_1_1sender__for_acce109eec6310c29dbb615614e21e4e7} 
+{\bfseries template} (typename CPO)() UNIFEX\+\_\+\+ALWAYS\+\_\+\+INLINE friend decltype(auto) tag\+\_\+invoke(CPO cpo
+\item 
+\Hypertarget{structunifex_1_1__sf_1_1sender__for_a9abc1e3494a22cbeb5b4ce1035e8ad81}\label{structunifex_1_1__sf_1_1sender__for_a9abc1e3494a22cbeb5b4ce1035e8ad81} 
+const Sender \& {\bfseries base} () const \&noexcept
+\item 
+\Hypertarget{structunifex_1_1__sf_1_1sender__for_a696113766a19362471f302c627872daa}\label{structunifex_1_1__sf_1_1sender__for_a696113766a19362471f302c627872daa} 
+Sender \&\& {\bfseries base} () \&\&noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+const \mbox{\hyperlink{structunifex_1_1__sf_1_1sender__for}{sender\+\_\+for}} \&self \mbox{\hyperlink{structunifex_1_1__sf_1_1sender__for_a236a33c6f0c66ebf5d76625c3f264729}{noexcept}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__sf_1_1sender__for_a236a33c6f0c66ebf5d76625c3f264729}\label{structunifex_1_1__sf_1_1sender__for_a236a33c6f0c66ebf5d76625c3f264729} 
+\index{sender\_for$<$ C, Sender, Context $>$@{sender\_for$<$ C, Sender, Context $>$}!noexcept@{noexcept}}
+\index{noexcept@{noexcept}!sender\_for$<$ C, Sender, Context $>$@{sender\_for$<$ C, Sender, Context $>$}}
+\doxysubsubsection{\texorpdfstring{noexcept}{noexcept}}
+{\footnotesize\ttfamily template$<$const auto \& C, typename Sender , typename Context $>$ \\
+const \mbox{\hyperlink{structunifex_1_1__sf_1_1sender__for}{sender\+\_\+for}}\& self noexcept}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ self.ctx\_(cpo)}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/sender\+\_\+for.\+hpp\end{DoxyCompactItemize}

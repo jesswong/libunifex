@@ -1,0 +1,46 @@
+\doxysection{\+\_\+next\+\_\+receiver\texorpdfstring{$<$}{<} Stream\+Sender, State, Reducer\+Func, Receiver \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type}{}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type}\index{\_next\_receiver$<$ StreamSender, State, ReducerFunc, Receiver $>$::type@{\_next\_receiver$<$ StreamSender, State, ReducerFunc, Receiver $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a13ac7b83cc44823b7e93775aebc4f3a2}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a13ac7b83cc44823b7e93775aebc4f3a2} 
+using {\bfseries error\+\_\+cleanup\+\_\+receiver\+\_\+t} = error\+\_\+cleanup\+\_\+receiver$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a5ed783cd99be30e497895dc51cf8de12}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a5ed783cd99be30e497895dc51cf8de12} 
+using {\bfseries done\+\_\+cleanup\+\_\+receiver\+\_\+t} = done\+\_\+cleanup\+\_\+receiver$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_adb01116ed7c1c011741f0ae91164b44f}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_adb01116ed7c1c011741f0ae91164b44f} 
+using {\bfseries next\+\_\+receiver\+\_\+t} = next\+\_\+receiver$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a5e4f8252fd29650499e3002e59b5d80b}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a5e4f8252fd29650499e3002e59b5d80b} 
+{\bfseries template} (typename CPO)() friend auto tag\+\_\+invoke(CPO cpo
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a0464b0e5e68c63776a5f971f86fbc077}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a0464b0e5e68c63776a5f971f86fbc077} 
+const \mbox{\hyperlink{structunifex_1_1__reduce_1_1__next__receiver_1_1type}{type}} \&r {\bfseries noexcept} (is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ CPO, const Receiver \& $>$) -\/$>$ callable\+\_\+result\+\_\+t$<$ CPO, const Receiver \& $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a8b0e2c3d54ad759b7e1582c83aec983d}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a8b0e2c3d54ad759b7e1582c83aec983d} 
+{\footnotesize template$<$typename... Values$>$ }\\void {\bfseries set\+\_\+value} (Values... values) \&\&noexcept
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a28bf33284c674c8444d59a2fa87f418b}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a28bf33284c674c8444d59a2fa87f418b} 
+void {\bfseries set\+\_\+done} () \&\&noexcept
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a8ac7dce70a1917a73ecc2472205eac57}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a8ac7dce70a1917a73ecc2472205eac57} 
+void {\bfseries set\+\_\+error} (std\+::exception\+\_\+ptr ex) \&\&noexcept
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a6233ccbeccae7f433bdc4e7186d81caa}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_a6233ccbeccae7f433bdc4e7186d81caa} 
+{\footnotesize template$<$typename Error $>$ }\\void {\bfseries set\+\_\+error} (Error \&\&e) \&\&noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__next__receiver_1_1type_af1b5c53742c40fbe27205e1b9d952aa7}\label{structunifex_1_1__reduce_1_1__next__receiver_1_1type_af1b5c53742c40fbe27205e1b9d952aa7} 
+operation$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$ \& {\bfseries op\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/reduce\+\_\+stream.\+hpp\end{DoxyCompactItemize}

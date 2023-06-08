@@ -1,0 +1,348 @@
+\doxysection{let\+\_\+value\+\_\+with\+\_\+stop\+\_\+token.\+hpp}
+\hypertarget{let__value__with__stop__token_8hpp_source}{}\label{let__value__with__stop__token_8hpp_source}\index{include/unifex/let\_value\_with\_stop\_token.hpp@{include/unifex/let\_value\_with\_stop\_token.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/execution\_policy.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/fused\_stop\_source.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/inplace\_stop\_token.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/just.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/let\_value.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <unifex/type\_list.hpp>}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{namespace\ }\_let\_v\_w\_stop\_tok\ \{}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Operation,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00035\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__receiver}{\_stop\_token\_receiver}}\ \{}
+\DoxyCodeLine{00036\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__receiver_1_1type}{type}};}
+\DoxyCodeLine{00037\ \};}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory,\ \textcolor{keyword}{typename}\ Receiver,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00040\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation}{\_stop\_token\_operation}}\ \{}
+\DoxyCodeLine{00041\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{type}};}
+\DoxyCodeLine{00042\ \};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00045\ \textcolor{keyword}{using\ }operation\ =}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{\_stop\_token\_operation<SuccessorFactory,\ Receiver,\ void>::type}};}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Operation,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00049\ \textcolor{keyword}{using\ }stop\_token\_receiver\ =}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__receiver_1_1type}{\_stop\_token\_receiver<Operation,\ Receiver>::type}};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Operation,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00053\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__receiver}{\_stop\_token\_receiver}}<Operation,\ Receiver>::\mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__receiver_1_1type}{type}}\ \{}
+\DoxyCodeLine{00054\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00055\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00056\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__receiver_1_1type}{type}}(}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ Operation*\ op,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ stop\_token,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ Receiver2\&\&}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ r)\ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<Receiver,\ Receiver2>)}
+\DoxyCodeLine{00061\ \ \ \ \ :\ op\_(op)}
+\DoxyCodeLine{00062\ \ \ \ \ ,\ stop\_token\_(stop\_token)}
+\DoxyCodeLine{00063\ \ \ \ \ ,\ receiver\_\{\textcolor{keyword}{static\_cast<}Receiver2\&\&\textcolor{keyword}{>}(r)\}\ \{\}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}...\ Values)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver\_of<Receiver,\ Values...>)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ set\_value(Values\&\&...\ values)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_receiver\_of\_v<Receiver,\ Values...>)\ \{}
+\DoxyCodeLine{00069\ \ \ \ \ cleanup();}
+\DoxyCodeLine{00070\ \ \ \ \ unifex::set\_value(std::move(receiver\_),\ (Values\ \&\&)\ values...);}
+\DoxyCodeLine{00071\ \ \ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Error)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver,\ Error>)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ set\_error(Error\&\&\ error)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00076\ \ \ \ \ cleanup();}
+\DoxyCodeLine{00077\ \ \ \ \ unifex::set\_error(std::move(receiver\_),\ (Error\ \&\&)\ error);}
+\DoxyCodeLine{00078\ \ \ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \textcolor{keywordtype}{void}\ set\_done()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ cleanup();}
+\DoxyCodeLine{00082\ \ \ \ \ unifex::set\_done(std::move(receiver\_));}
+\DoxyCodeLine{00083\ \ \ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}}
+\DoxyCodeLine{00086\ \ \ tag\_invoke(tag\_t<get\_stop\_token>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__receiver_1_1type}{type}}\&\ r)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordflow}{return}\ r.stop\_token\_;}
+\DoxyCodeLine{00088\ \ \ \}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ Self)\ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ is\_receiver\_query\_cpo\_v<CPO>\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ AND\ same\_as<Self,\ type>)\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(CPO\ cpo,\ \textcolor{keyword}{const}\ Self\&\ self)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_callable\_v<CPO,\ const\ Receiver\&>)}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ -\/>\ callable\_result\_t<CPO,\ const\ Receiver\&>\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordflow}{return}\ cpo(self.receiver\_);}
+\DoxyCodeLine{00097\ \ \ \}}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ VisitFunc>}
+\DoxyCodeLine{00100\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ tag\_invoke(}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ tag\_t<visit\_continuations>,}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__receiver_1_1type}{type}}\&\ r,}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ VisitFunc\&\&}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ func)\ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<VisitFunc\&,\ const\ Receiver\&>)\ \{}
+\DoxyCodeLine{00105\ \ \ \ \ func(r.receiver\_);}
+\DoxyCodeLine{00106\ \ \ \}}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00109\ \ \ Operation*\ op\_;}
+\DoxyCodeLine{00110\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ stop\_token\_;}
+\DoxyCodeLine{00111\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \textcolor{keywordtype}{void}\ cleanup()\ \textcolor{keyword}{noexcept}\ \{\ op\_-\/>cleanup();\ \}}
+\DoxyCodeLine{00114\ \};}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory>}
+\DoxyCodeLine{00117\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender}{\_stop\_token\_sender}}\ \{}
+\DoxyCodeLine{00118\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type}{type}};}
+\DoxyCodeLine{00119\ \};}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory>}
+\DoxyCodeLine{00122\ \textcolor{keyword}{using\ }stop\_token\_sender\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type}{\_stop\_token\_sender<SuccessorFactory>::type}};}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory>}
+\DoxyCodeLine{00125\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type}{\_stop\_token\_sender<SuccessorFactory>::type}}\ \{}
+\DoxyCodeLine{00126\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ !std::is\_reference\_v<SuccessorFactory>,}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}SuccessorFactory\ should\ be\ a\ value,\ not\ a\ reference"{}});}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00131\ \ \ \textcolor{keyword}{using\ }inner\_sender\_t\ =}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ std::invoke\_result\_t<SuccessorFactory\&,\ inplace\_stop\_token>;}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00139\ \ \ \textcolor{keyword}{using\ }value\_types\ =\ sender\_value\_types\_t<inner\_sender\_t,\ Variant,\ Tuple>;}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00142\ \ \ \textcolor{keyword}{using\ }error\_types\ =\ sender\_error\_types\_t<inner\_sender\_t,\ Variant>;}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\_traits<inner\_sender\_t>::sends\_done}};}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory2>}
+\DoxyCodeLine{00147\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type}{type}}(SuccessorFactory2\&\&\ func)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<SuccessorFactory,\ SuccessorFactory2\&\&>)}
+\DoxyCodeLine{00149\ \ \ \ \ :\ func\_((SuccessorFactory2\ \&\&)\ func)\ \{\}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Self,\ \textcolor{keyword}{typename}\ Receiver)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ same\_as<remove\_cvref\_t<Self>,\ \mbox{\hyperlink{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type}{type}}>\ AND\ receiver<Receiver>)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ tag\_t<unifex::connect>,}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ Self\&\&\ self,}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ Receiver\&\&\ r)\ \textcolor{keyword}{noexcept}(std::}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_constructible\_v<}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ operation<}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ SuccessorFactory,}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ unifex::remove\_cvref\_t<Receiver>>,}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ member\_t<Self,\ SuccessorFactory>,}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Receiver>)}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ -\/>\ operation<SuccessorFactory,\ unifex::remove\_cvref\_t<Receiver>>\ \{}
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keywordflow}{return}\ operation<SuccessorFactory,\ unifex::remove\_cvref\_t<Receiver>>(}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Self\&\&\textcolor{keyword}{>}(self).func\_,\ \textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(r));}
+\DoxyCodeLine{00166\ \ \ \}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00169\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ SuccessorFactory\ func\_;}
+\DoxyCodeLine{00170\ \};}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00173\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation}{\_stop\_token\_operation}}<}
+\DoxyCodeLine{00174\ \ \ \ \ SuccessorFactory,}
+\DoxyCodeLine{00175\ \ \ \ \ Receiver,}
+\DoxyCodeLine{00176\ \ \ \ \ std::enable\_if\_t<}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ std::is\_same\_v<stop\_token\_type\_t<Receiver>,\ inplace\_stop\_token>\ ||}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ is\_stop\_never\_possible\_v<stop\_token\_type\_t<Receiver>>>>\ \{}
+\DoxyCodeLine{00179\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ !std::is\_reference\_v<SuccessorFactory>,}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}SuccessorFactory\ should\ be\ a\ value,\ not\ a\ reference"{}});}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ !std::is\_reference\_v<Receiver>,}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Receiver\ should\ be\ a\ value,\ not\ a\ reference"{}});}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \ \ \textcolor{keyword}{struct\ }type\ \{}
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keyword}{using\ }inner\_sender\_t\ =}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ std::invoke\_result\_t<SuccessorFactory\&,\ inplace\_stop\_token>;}
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keyword}{using\ }receiver\_t\ =}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ stop\_token\_receiver<operation<SuccessorFactory,\ Receiver>,\ Receiver>;}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ successor\_is\_nothrow\ =}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ std::is\_nothrow\_invocable\_v<SuccessorFactory\&,\ inplace\_stop\_token>;}
+\DoxyCodeLine{00195\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00196\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ inner\_receiver\_nothrow\_constructible\ =}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ receiver\_t,}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ type*,}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}},}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ Receiver2>;}
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ nothrow\_connectable\ =}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ is\_nothrow\_connectable\_v<inner\_sender\_t,\ receiver\_t>;}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keyword}{auto}\ connect\_inner\_op(}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ SuccessorFactory\&\ func,}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ st,}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we\ need\ to\ take\ r\ by\ reference\ to\ avoid\ problems\ at\ the\ call\ site}}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ related\ to\ unsequenced\ function\ argument\ evaluation}}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ Receiver2\&\&\ r)\ \textcolor{keyword}{noexcept}(successor\_is\_nothrow\&\&}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ inner\_receiver\_nothrow\_constructible<}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Receiver2>\&\&\ nothrow\_connectable)\ \{}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::connect(}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ func(st),\ receiver\_t\{\textcolor{keyword}{this},\ st,\ \textcolor{keyword}{static\_cast<}Receiver2\&\&\textcolor{keyword}{>}(r)\});}
+\DoxyCodeLine{00217\ \ \ \ \ \}}
+\DoxyCodeLine{00218\ }
+\DoxyCodeLine{00219\ \ \ \ \ SuccessorFactory\ func\_;}
+\DoxyCodeLine{00220\ \ \ \ \ connect\_result\_t<inner\_sender\_t,\ receiver\_t>\ innerOp\_;}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00223\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00224\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ get\_token(Receiver2\&\ r)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_same\_v<}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ stop\_token\_type\_t<Receiver2>,}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}>)\ \{}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ get\_stop\_token(r);}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\{\};}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00232\ \ \ \ \ \}}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory2,\ \textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00235\ \ \ \ \ \textcolor{keyword}{explicit}\ type(SuccessorFactory2\&\&\ func,\ Receiver2\&\&\ r)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<SuccessorFactory,\ SuccessorFactory2>\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \&\&\ std::is\_nothrow\_constructible\_v<Receiver,\ Receiver2>\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&\&\ \textcolor{keyword}{noexcept}(connect\_inner\_op(}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ func\_,\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\{\},\ \textcolor{keyword}{static\_cast<}Receiver2\&\&\textcolor{keyword}{>}(r))))}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ :\ func\_((SuccessorFactory2\ \&\&)\ func)}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ ,\ innerOp\_(connect\_inner\_op(}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ func\_,\ get\_token(r),\ \textcolor{keyword}{static\_cast<}Receiver2\&\&\textcolor{keyword}{>}(r)))\ \{\}}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \ \ \ \ type(type\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \ \ \string~type()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \ \ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept}\ \{\ unifex::start(innerOp\_);\ \}}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keywordtype}{void}\ cleanup()\ \textcolor{keyword}{noexcept}\ \{\}}
+\DoxyCodeLine{00251\ \ \ \};}
+\DoxyCodeLine{00252\ \};}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory,\ \textcolor{keyword}{typename}\ Receiver,\ \textcolor{keyword}{typename}\ AlwaysVo\textcolor{keywordtype}{id}>}
+\DoxyCodeLine{00255\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation}{\_stop\_token\_operation}}<SuccessorFactory,\ Receiver,\ AlwaysVoid>::\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{type}}\ \{}
+\DoxyCodeLine{00256\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ !std::is\_reference\_v<SuccessorFactory>,}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}SuccessorFactory\ should\ be\ a\ value,\ not\ a\ reference"{}});}
+\DoxyCodeLine{00259\ }
+\DoxyCodeLine{00260\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ !std::is\_reference\_v<Receiver>,}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Receiver\ should\ be\ a\ value,\ not\ a\ reference"{}});}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \ \ \textcolor{keyword}{using\ }inner\_sender\_t\ =}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ std::invoke\_result\_t<SuccessorFactory\&,\ inplace\_stop\_token>;}
+\DoxyCodeLine{00266\ \ \ \textcolor{keyword}{using\ }receiver\_t\ =}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ stop\_token\_receiver<operation<SuccessorFactory,\ Receiver>,\ Receiver>;}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ successor\_is\_nothrow\ =}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ std::is\_nothrow\_invocable\_v<SuccessorFactory\&,\ inplace\_stop\_token>;}
+\DoxyCodeLine{00271\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00272\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ inner\_receiver\_nothrow\_constructible\ =}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ receiver\_t,}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{type}}*,}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}},}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ Receiver2>;}
+\DoxyCodeLine{00278\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ nothrow\_connectable\ =}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ unifex::is\_nothrow\_connectable\_v<inner\_sender\_t,\ receiver\_t>;}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00282\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00283\ \ \ \textcolor{keyword}{auto}\ connect\_inner\_op(}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ SuccessorFactory\&\ func,}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ st,}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ Receiver2\&\&\ r)\ \textcolor{keyword}{noexcept}(successor\_is\_nothrow\&\&}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ inner\_receiver\_nothrow\_constructible<}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Receiver2>\&\&\ nothrow\_connectable)\ \{}
+\DoxyCodeLine{00289\ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::connect(}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ func(st),\ receiver\_t\{\textcolor{keyword}{this},\ st,\ \textcolor{keyword}{static\_cast<}Receiver2\&\&\textcolor{keyword}{>}(r)\});}
+\DoxyCodeLine{00291\ \ \ \}}
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \ \ SuccessorFactory\ func\_;}
+\DoxyCodeLine{00294\ \ \ \textcolor{keyword}{using\ }stop\_token\_type\ =\ stop\_token\_type\_t<Receiver>;}
+\DoxyCodeLine{00295\ \ \ stop\_token\_type\ receiverToken\_;}
+\DoxyCodeLine{00296\ \ \ \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__source}{fused\_stop\_source<stop\_token\_type>}}\ stopSource\_;}
+\DoxyCodeLine{00297\ \ \ connect\_result\_t<inner\_sender\_t,\ receiver\_t>\ innerOp\_;}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00300\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory2,\ \textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00301\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{type}}(SuccessorFactory2\&\&\ func,\ Receiver2\&\&\ r)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<SuccessorFactory,\ SuccessorFactory2>\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \&\&\ std::is\_nothrow\_constructible\_v<Receiver,\ Receiver2>\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&\&\ \textcolor{keyword}{noexcept}(connect\_inner\_op(}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ func\_,\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\{\},\ \textcolor{keyword}{static\_cast<}Receiver2\&\&\textcolor{keyword}{>}(r))))}
+\DoxyCodeLine{00306\ \ \ \ \ :\ func\_((SuccessorFactory2\ \&\&)\ func)}
+\DoxyCodeLine{00307\ \ \ \ \ ,\ receiverToken\_(get\_stop\_token(r))}
+\DoxyCodeLine{00308\ \ \ \ \ ,\ innerOp\_(connect\_inner\_op(}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ func\_,\ stopSource\_.get\_token(),\ \textcolor{keyword}{static\_cast<}Receiver2\&\&\textcolor{keyword}{>}(r)))\ \{\}}
+\DoxyCodeLine{00310\ }
+\DoxyCodeLine{00311\ \ \ \mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{type}}(\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{type}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00312\ }
+\DoxyCodeLine{00313\ \ \ \mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{\string~type}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00314\ }
+\DoxyCodeLine{00315\ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00316\ \ \ \ \ stopSource\_.register\_callbacks(receiverToken\_);}
+\DoxyCodeLine{00317\ \ \ \ \ unifex::start(innerOp\_);}
+\DoxyCodeLine{00318\ \ \ \}}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00320\ \ \ \textcolor{keywordtype}{void}\ cleanup()\ \textcolor{keyword}{noexcept}\ \{\ stopSource\_.deregister\_callbacks();\ \}}
+\DoxyCodeLine{00321\ \};}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00323\ \textcolor{keyword}{namespace\ }\_cpo\ \{}
+\DoxyCodeLine{00324\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__cpo_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00325\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SuccessorFactory>}
+\DoxyCodeLine{00326\ \ \ \textcolor{keyword}{auto}\ operator()(SuccessorFactory\&\&\ factory)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ stop\_token\_sender<std::decay\_t<SuccessorFactory>>,}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ SuccessorFactory>)}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ \ \ -\/>\ stop\_token\_sender<std::decay\_t<SuccessorFactory>>\ \{}
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{keywordflow}{return}\ stop\_token\_sender<std::decay\_t<SuccessorFactory>>\{}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}SuccessorFactory\&\&\textcolor{keyword}{>}(factory)\};}
+\DoxyCodeLine{00333\ \ \ \}}
+\DoxyCodeLine{00334\ \};}
+\DoxyCodeLine{00335\ \}\ \ \textcolor{comment}{//\ namespace\ \_cpo}}
+\DoxyCodeLine{00336\ \}\ \ \textcolor{comment}{//\ namespace\ \_let\_v\_w\_stop\_tok}}
+\DoxyCodeLine{00337\ }
+\DoxyCodeLine{00338\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__cpo_1_1__fn}{\_let\_v\_w\_stop\_tok::\_cpo::\_fn}}\ let\_value\_with\_stop\_token\{\};}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00340\ \}\ \ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00342\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

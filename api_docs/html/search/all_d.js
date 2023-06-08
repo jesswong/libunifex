@@ -1,0 +1,16 @@
+var searchData=
+[
+  ['receiver_0',['receiver',['../structunifex_1_1__null_1_1receiver.html',1,'unifex::_null']]],
+  ['receiver_5fwrapper_1',['receiver_wrapper',['../structunifex_1_1__stop__immediately_1_1__stream_1_1type_1_1cleanup__sender_1_1__op_1_1type_1_1receiver__wrapper.html',1,'_stream&lt; SourceStream, Values &gt;::type::cleanup_sender::_op&lt; Receiver &gt;::type::receiver_wrapper'],['../structunifex_1_1__take__until_1_1__stream_1_1type_1_1next__sender_1_1__op_1_1type_1_1receiver__wrapper.html',1,'_stream&lt; SourceStream, TriggerStream &gt;::type::next_sender::_op&lt; Receiver &gt;::type::receiver_wrapper']]],
+  ['remove_5fcvref_2',['remove_cvref',['../structunifex_1_1remove__cvref.html',1,'unifex']]],
+  ['remove_5fcvref_3c_20t_20_26_20_3e_3',['remove_cvref&lt; T &amp; &gt;',['../structunifex_1_1remove__cvref_3_01_t_01_6_01_4.html',1,'unifex']]],
+  ['remove_5fcvref_3c_20t_20_26_26_20_3e_4',['remove_cvref&lt; T &amp;&amp; &gt;',['../structunifex_1_1remove__cvref_3_01_t_01_6_6_01_4.html',1,'unifex']]],
+  ['remove_5fcvref_3c_20t_20const_20_26_20_3e_5',['remove_cvref&lt; T const &amp; &gt;',['../structunifex_1_1remove__cvref_3_01_t_01const_01_6_01_4.html',1,'unifex']]],
+  ['remove_5fcvref_3c_20t_20const_20_26_26_20_3e_6',['remove_cvref&lt; T const &amp;&amp; &gt;',['../structunifex_1_1remove__cvref_3_01_t_01const_01_6_6_01_4.html',1,'unifex']]],
+  ['remove_5fcvref_3c_20t_20const_20_3e_7',['remove_cvref&lt; T const &gt;',['../structunifex_1_1remove__cvref_3_01_t_01const_01_4.html',1,'unifex']]],
+  ['repeat_5feffect_5fcpo_8',['repeat_effect_cpo',['../structunifex_1_1repeat__effect__cpo.html',1,'unifex']]],
+  ['repeat_5feffect_5funtil_5fcpo_9',['repeat_effect_until_cpo',['../structunifex_1_1repeat__effect__until__cpo.html',1,'unifex']]],
+  ['result_5foverload_10',['result_overload',['../structunifex_1_1__bulk__tfx_1_1result__overload.html',1,'result_overload&lt; Result, typename &gt;'],['../structunifex_1_1__then_1_1detail_1_1result__overload.html',1,'result_overload&lt; Result, typename &gt;'],['../structunifex_1_1__upon__done_1_1detail_1_1result__overload.html',1,'result_overload&lt; Result, typename &gt;'],['../structunifex_1_1__upon__error_1_1detail_1_1result__overload.html',1,'result_overload&lt; Result, typename &gt;']]],
+  ['result_5foverload_3c_20result_2c_20std_3a_3aenable_5fif_5ft_3c_20std_3a_3ais_5fvoid_5fv_3c_20result_20_3e_20_3e_20_3e_11',['result_overload&lt; Result, std::enable_if_t&lt; std::is_void_v&lt; Result &gt; &gt; &gt;',['../structunifex_1_1__bulk__tfx_1_1result__overload_3_01_result_00_01std_1_1enable__if__t_3_01std_1_453bb91d43eaaa476425728f94910c14.html',1,'result_overload&lt; Result, std::enable_if_t&lt; std::is_void_v&lt; Result &gt; &gt; &gt;'],['../structunifex_1_1__then_1_1detail_1_1result__overload_3_01_result_00_01std_1_1enable__if__t_3_01s7d58876b834754d0289cd2baa93a97d4.html',1,'result_overload&lt; Result, std::enable_if_t&lt; std::is_void_v&lt; Result &gt; &gt; &gt;']]],
+  ['result_5foverload_3c_20void_20_3e_12',['result_overload&lt; void &gt;',['../structunifex_1_1__upon__done_1_1detail_1_1result__overload_3_01void_01_4.html',1,'result_overload&lt; void &gt;'],['../structunifex_1_1__upon__error_1_1detail_1_1result__overload_3_01void_01_4.html',1,'result_overload&lt; void &gt;']]]
+];

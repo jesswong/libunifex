@@ -1,0 +1,119 @@
+\doxysection{swap.\+hpp}
+\hypertarget{swap_8hpp_source}{}\label{swap_8hpp_source}\index{include/unifex/swap.hpp@{include/unifex/swap.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/detail/concept\_macros.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00027\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{bool}\ \textcolor{keyword}{const}\ is\_swappable\_with\_v;}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00030\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{bool}\ \textcolor{keyword}{const}\ is\_nothrow\_swappable\_with\_v;}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{namespace\ }\_swap\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{struct\ }nope;}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{comment}{//\ Intentionally\ create\ an\ ambiguity\ with\ std::swap,\ which\ is}}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{comment}{//\ (possibly)\ unconstrained.}}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00038\ \ \ \ \ nope*\ swap(T\ \&,\ T\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ std::\textcolor{keywordtype}{size\_t}\ N>}
+\DoxyCodeLine{00041\ \ \ \ \ nope*\ swap(T\ (\&)[N],\ T\ (\&)[N])\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#ifdef\ CPP\_WORKAROUND\_MSVC\_895622}}
+\DoxyCodeLine{00044\ \ \ \ \ nope\ swap();}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keyword}{decltype}(swap(std::declval<T>(),\ std::declval<U>()))\ try\_adl\_swap\_(\textcolor{keywordtype}{int});}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00051\ \ \ \ \ nope*\ try\_adl\_swap\_(\textcolor{keywordtype}{long});}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U\ =\ T>}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_adl\_swappable\_v\ =}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ !UNIFEX\_IS\_SAME(\textcolor{keyword}{decltype}(\_swap::try\_adl\_swap\_<T,\ U>(42)),\ nope*);}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__swap_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Dispatch\ to\ user-\/defined\ swap\ found\ via\ ADL:}}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ UNIFEX\_TEMPLATE(\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U)}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ is\_adl\_swappable\_v<T,\ U>)}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{void}\ \textcolor{keyword}{operator}()(T\ \&\&t,\ U\ \&\&u)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(swap((T\ \&\&)\ t,\ (U\ \&\&)\ u)))\ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ swap((T\ \&\&)\ t,\ (U\ \&\&)\ u);}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ For\ intrinsically\ swappable\ (i.e.,\ movable)\ types\ for\ which}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ a\ swap\ overload\ cannot\ be\ found\ via\ ADL,\ swap\ by\ moving.}}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ UNIFEX\_TEMPLATE(\textcolor{keyword}{typename}\ T)}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!is\_adl\_swappable\_v<T\ \&>))}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(T\ \&a,\ T\ \&b)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(a\ =\ T(\textcolor{keyword}{static\_cast<}T\&\&\textcolor{keyword}{>}(b))))\ -\/>}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{decltype}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}\textcolor{keyword}{>}(a\ =\ T(\textcolor{keyword}{static\_cast<}T\&\&\textcolor{keyword}{>}(b))))\ \{}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ T\ tmp\ =\ \textcolor{keyword}{static\_cast<}T\ \&\&\textcolor{keyword}{>}(a);}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ a\ =\ \textcolor{keyword}{static\_cast<}T\ \&\&\textcolor{keyword}{>}(b);}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ b\ =\ \textcolor{keyword}{static\_cast<}T\ \&\&\textcolor{keyword}{>}(tmp);}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ For\ arrays\ of\ intrinsically\ swappable\ (i.e.,\ movable)\ types}}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ for\ which\ a\ swap\ overload\ cannot\ be\ found\ via\ ADL,\ swap\ array}}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ elements\ by\ moving.}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ UNIFEX\_TEMPLATE(\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U,\ std::size\_t\ N)}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!is\_adl\_swappable\_v<T\ (\&)[N],\ U\ (\&)[N]>)\ \&\&}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_swappable\_with\_v<T\ \&,\ U\ \&>)}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{void}\ operator()(T\ (\&t)[N],\ U\ (\&u)[N])\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_swappable\_with\_v<T\ \&,\ U\ \&>)\ \{}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(std::size\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (*\textcolor{keyword}{this})(t[i],\ u[i]);}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00089\ \ \ \ \ \};}
+\DoxyCodeLine{00090\ \}\ \textcolor{comment}{//\ namespace\ \_swap}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{keyword}{namespace\ }\_swap\_cpo\ \{}
+\DoxyCodeLine{00093\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__swap_1_1__fn}{\_swap::\_fn}}\ swap\ \{\};}
+\DoxyCodeLine{00094\ \}\ \textcolor{comment}{//\ namespace\ \_swap\_cpo}}
+\DoxyCodeLine{00095\ \textcolor{keyword}{using\ }\_swap\_cpo::swap;}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename},\ \textcolor{keyword}{typename},\ \textcolor{keyword}{typename}>}
+\DoxyCodeLine{00098\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_swappable\_with\_v\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00101\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_swappable\_with\_v<}
+\DoxyCodeLine{00102\ \ \ \ \ T,\ U,\ \textcolor{keyword}{decltype}(swap(UNIFEX\_DECLVAL(T\&\&),\ UNIFEX\_DECLVAL(U\&\&)))>\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename},\ \textcolor{keyword}{typename},\ \textcolor{keyword}{typename}>}
+\DoxyCodeLine{00105\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_nothrow\_swappable\_with\_v\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00108\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_nothrow\_swappable\_with\_v<}
+\DoxyCodeLine{00109\ \ \ \ \ T,\ U,\ \textcolor{keyword}{decltype}(swap(UNIFEX\_DECLVAL(T\&\&),\ UNIFEX\_DECLVAL(U\&\&)))>\ =\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{noexcept}(swap(UNIFEX\_DECLVAL(T\&\&),\ UNIFEX\_DECLVAL(U\&\&)));}
+\DoxyCodeLine{00111\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

@@ -1,0 +1,12 @@
+var searchData=
+[
+  ['base_0',['base',['../structunifex_1_1__any__unique_1_1__concrete__impl_1_1base.html',1,'unifex::_any_unique::_concrete_impl']]],
+  ['base_5fcpo_1',['base_cpo',['../structunifex_1_1__overload_1_1base__cpo.html',1,'unifex::_overload']]],
+  ['base_5fcpo_3c_20cpo_2c_20std_3a_3avoid_5ft_3c_20typename_20cpo_3a_3abase_5fcpo_5ft_20_3e_20_3e_2',['base_cpo&lt; CPO, std::void_t&lt; typename CPO::base_cpo_t &gt; &gt;',['../structunifex_1_1__overload_1_1base__cpo_3_01_c_p_o_00_01std_1_1void__t_3_01typename_01_c_p_o_1_1base__cpo__t_01_4_01_4.html',1,'unifex::_overload']]],
+  ['bind_5ffront_3',['bind_front',['../structunifex_1_1meta__quote1_1_1bind__front.html',1,'meta_quote1&lt; T &gt;::bind_front&lt;... &gt;'],['../structunifex_1_1meta__quote1___1_1bind__front.html',1,'meta_quote1_&lt; T &gt;::bind_front&lt;... &gt;'],['../structunifex_1_1meta__quote2_1_1bind__front.html',1,'meta_quote2&lt; T &gt;::bind_front&lt;... &gt;'],['../structunifex_1_1meta__quote3_1_1bind__front.html',1,'meta_quote3&lt; T &gt;::bind_front&lt;... &gt;'],['../structunifex_1_1meta__quote_1_1bind__front.html',1,'meta_quote&lt; T &gt;::bind_front&lt; As &gt;']]],
+  ['bind_5ffront_3c_20a_2c_20bs_2e_2e_2e_20_3e_4',['bind_front&lt; A, Bs... &gt;',['../structunifex_1_1meta__quote1___1_1bind__front_3_01_a_00_01_bs_8_8_8_01_4.html',1,'unifex::meta_quote1_']]],
+  ['bind_5ffront_3c_20a0_20_3e_5',['bind_front&lt; A0 &gt;',['../structunifex_1_1meta__quote1_1_1bind__front_3_01_a0_01_4.html',1,'meta_quote1&lt; T &gt;::bind_front&lt; A0 &gt;'],['../structunifex_1_1meta__quote2_1_1bind__front_3_01_a0_01_4.html',1,'meta_quote2&lt; T &gt;::bind_front&lt; A0 &gt;'],['../structunifex_1_1meta__quote3_1_1bind__front_3_01_a0_01_4.html',1,'meta_quote3&lt; T &gt;::bind_front&lt; A0 &gt;']]],
+  ['bind_5ffront_3c_20a0_2c_20a1_20_3e_6',['bind_front&lt; A0, A1 &gt;',['../structunifex_1_1meta__quote2_1_1bind__front_3_01_a0_00_01_a1_01_4.html',1,'meta_quote2&lt; T &gt;::bind_front&lt; A0, A1 &gt;'],['../structunifex_1_1meta__quote3_1_1bind__front_3_01_a0_00_01_a1_01_4.html',1,'meta_quote3&lt; T &gt;::bind_front&lt; A0, A1 &gt;']]],
+  ['bind_5ffront_3c_20a0_2c_20a1_2c_20a2_20_3e_7',['bind_front&lt; A0, A1, A2 &gt;',['../structunifex_1_1meta__quote3_1_1bind__front_3_01_a0_00_01_a1_00_01_a2_01_4.html',1,'unifex::meta_quote3']]],
+  ['blocking_5fkind_8',['blocking_kind',['../structunifex_1_1__block_1_1blocking__kind.html',1,'unifex::_block']]]
+];

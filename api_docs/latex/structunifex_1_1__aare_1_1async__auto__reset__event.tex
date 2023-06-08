@@ -1,0 +1,74 @@
+\doxysection{async\+\_\+auto\+\_\+reset\+\_\+event Struct Reference}
+\hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event}{}\label{structunifex_1_1__aare_1_1async__auto__reset__event}\index{async\_auto\_reset\_event@{async\_auto\_reset\_event}}
+
+
+{\ttfamily \#include $<$async\+\_\+auto\+\_\+reset\+\_\+event.\+hpp$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{stream\+\_\+view}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a2ade90a7512392e8b3b4a0fc997358b1}{async\+\_\+auto\+\_\+reset\+\_\+event}} () noexcept
+\item 
+\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a6fe48e0cadf113d282a7ee242fed9df6}{async\+\_\+auto\+\_\+reset\+\_\+event}} (bool start\+Ready) noexcept
+\item 
+void \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a39ff4adf4d7625431d2c3d5d65e1ef96}{set}} () noexcept
+\item 
+void \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a359a2c7da831d63ea1fdb982ca5d39a7}{set\+\_\+done}} () noexcept
+\item 
+\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{stream\+\_\+view}} \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_ab561a248004e712d97374152974df46e}{stream}} () noexcept
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A {\itshape Stream} backed by an auto-\/reset event. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event_a2ade90a7512392e8b3b4a0fc997358b1}\label{structunifex_1_1__aare_1_1async__auto__reset__event_a2ade90a7512392e8b3b4a0fc997358b1} 
+\index{async\_auto\_reset\_event@{async\_auto\_reset\_event}!async\_auto\_reset\_event@{async\_auto\_reset\_event}}
+\index{async\_auto\_reset\_event@{async\_auto\_reset\_event}!async\_auto\_reset\_event@{async\_auto\_reset\_event}}
+\doxysubsubsection{\texorpdfstring{async\_auto\_reset\_event()}{async\_auto\_reset\_event()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\+\_\+auto\+\_\+reset\+\_\+event}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+Initializes an \doxylink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\+\_\+auto\+\_\+reset\+\_\+event} in the unset state. \Hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event_a6fe48e0cadf113d282a7ee242fed9df6}\label{structunifex_1_1__aare_1_1async__auto__reset__event_a6fe48e0cadf113d282a7ee242fed9df6} 
+\index{async\_auto\_reset\_event@{async\_auto\_reset\_event}!async\_auto\_reset\_event@{async\_auto\_reset\_event}}
+\index{async\_auto\_reset\_event@{async\_auto\_reset\_event}!async\_auto\_reset\_event@{async\_auto\_reset\_event}}
+\doxysubsubsection{\texorpdfstring{async\_auto\_reset\_event()}{async\_auto\_reset\_event()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\+\_\+auto\+\_\+reset\+\_\+event}} (\begin{DoxyParamCaption}\item[{bool}]{start\+Ready }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}, {\ttfamily [noexcept]}}
+
+Initializes an \doxylink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\+\_\+auto\+\_\+reset\+\_\+event}.
+
+If start\+Ready is true, the event is initialized in the set state; otherwise it\textquotesingle{}s initialized in the unset state. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event_a39ff4adf4d7625431d2c3d5d65e1ef96}\label{structunifex_1_1__aare_1_1async__auto__reset__event_a39ff4adf4d7625431d2c3d5d65e1ef96} 
+\index{async\_auto\_reset\_event@{async\_auto\_reset\_event}!set@{set}}
+\index{set@{set}!async\_auto\_reset\_event@{async\_auto\_reset\_event}}
+\doxysubsubsection{\texorpdfstring{set()}{set()}}
+{\footnotesize\ttfamily void set (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+Puts the event in the set state if it\textquotesingle{}s not in the done state.
+
+Signals any waiting {\itshape Senders} if the event was unset. \Hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event_a359a2c7da831d63ea1fdb982ca5d39a7}\label{structunifex_1_1__aare_1_1async__auto__reset__event_a359a2c7da831d63ea1fdb982ca5d39a7} 
+\index{async\_auto\_reset\_event@{async\_auto\_reset\_event}!set\_done@{set\_done}}
+\index{set\_done@{set\_done}!async\_auto\_reset\_event@{async\_auto\_reset\_event}}
+\doxysubsubsection{\texorpdfstring{set\_done()}{set\_done()}}
+{\footnotesize\ttfamily void set\+\_\+done (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+Puts the event in the done state.
+
+Signals any waiting {\itshape Senders} if the event was unset. \Hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event_ab561a248004e712d97374152974df46e}\label{structunifex_1_1__aare_1_1async__auto__reset__event_ab561a248004e712d97374152974df46e} 
+\index{async\_auto\_reset\_event@{async\_auto\_reset\_event}!stream@{stream}}
+\index{stream@{stream}!async\_auto\_reset\_event@{async\_auto\_reset\_event}}
+\doxysubsubsection{\texorpdfstring{stream()}{stream()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{async\+\_\+auto\+\_\+reset\+\_\+event\+::stream\+\_\+view}} stream (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+Retrieves a {\itshape Stream}-\/shaped view of the event. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/async\+\_\+auto\+\_\+reset\+\_\+event.\+hpp\end{DoxyCompactItemize}

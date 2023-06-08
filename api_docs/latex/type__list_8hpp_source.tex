@@ -1,0 +1,156 @@
+\doxysection{type\+\_\+list.\+hpp}
+\hypertarget{type__list_8hpp_source}{}\label{type__list_8hpp_source}\index{include/unifex/type\_list.hpp@{include/unifex/type\_list.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ \ \ \textcolor{comment}{//\ A\ template\ metaprogramming\ data-\/structure\ used\ to\ represent\ an}}
+\DoxyCodeLine{00027\ \ \ \textcolor{comment}{//\ ordered\ list\ of\ types.}}
+\DoxyCodeLine{00028\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00029\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{comment}{//\ Invoke\ the\ template\ metafunction\ with\ the\ type-\/list's\ elements}}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{comment}{//\ as\ arguments.}}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }F>}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{using\ }apply\ =\ F<Ts...>;}
+\DoxyCodeLine{00034\ \ \ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \textcolor{comment}{//\ apply\_to\_type\_list<F,\ type\_list<Ts...>>}}
+\DoxyCodeLine{00037\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00038\ \ \ \textcolor{comment}{//\ Shortcut\ to\ \`{}typename\ type\_list<Ts...>::template\ apply<F>`.}}
+\DoxyCodeLine{00039\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }F,\ \textcolor{keyword}{typename}\ List>}
+\DoxyCodeLine{00040\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1apply__to__type__list}{apply\_to\_type\_list}};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }F,\ \textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00043\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1apply__to__type__list}{apply\_to\_type\_list}}<F,\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Ts...>>\ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ F<Ts...>;}
+\DoxyCodeLine{00045\ \ \ \};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }F,\ \textcolor{keyword}{typename}\ List>}
+\DoxyCodeLine{00048\ \ \ \textcolor{keyword}{using\ }apply\_to\_type\_list\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1apply__to__type__list}{apply\_to\_type\_list<F,\ List>::type}};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \textcolor{comment}{//\ map\_type\_list<type\_list<Ts...>,\ F>}}
+\DoxyCodeLine{00051\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00052\ \ \ \textcolor{comment}{//\ Builds\ type\_list<F<Ts>...>.}}
+\DoxyCodeLine{00053\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00054\ \ \ \textcolor{comment}{//\ Result\ is\ produced\ via\ nested\ ::type.}}
+\DoxyCodeLine{00055\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ List,\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>\ \textcolor{keyword}{class\ }F>}
+\DoxyCodeLine{00056\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1map__type__list}{map\_type\_list}};}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts,\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>\ \textcolor{keyword}{class\ }F>}
+\DoxyCodeLine{00059\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1map__type__list}{map\_type\_list}}<\mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Ts...>,\ F>\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1type__list}{type}}\ =\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list<F<Ts>}}...>;}
+\DoxyCodeLine{00061\ \ \ \};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ List,\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>\ \textcolor{keyword}{class\ }F>}
+\DoxyCodeLine{00064\ \ \ \textcolor{keyword}{using\ }map\_type\_list\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1map__type__list}{map\_type\_list<List,\ F>::type}};}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \textcolor{comment}{//\ concat\_type\_lists<Lists...>}}
+\DoxyCodeLine{00067\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00068\ \ \ \textcolor{comment}{//\ Concatenates\ a\ variadic\ pack\ of\ type\_list<Ts...>\ into\ a\ single}}
+\DoxyCodeLine{00069\ \ \ \textcolor{comment}{//\ type\_list\ that\ contains\ the\ concatenation\ of\ the\ elements\ of\ the}}
+\DoxyCodeLine{00070\ \ \ \textcolor{comment}{//\ input\ type\_lists.}}
+\DoxyCodeLine{00071\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00072\ \ \ \textcolor{comment}{//\ Result\ is\ produced\ via\ nested\ ::type.}}
+\DoxyCodeLine{00073\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Lists>}
+\DoxyCodeLine{00074\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1concat__type__lists}{concat\_type\_lists}};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00077\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1concat__type__lists}{concat\_type\_lists}}<>\ \{}
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1type__list}{type}}\ =\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list<>}};}
+\DoxyCodeLine{00079\ \ \ \};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ List>}
+\DoxyCodeLine{00082\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1concat__type__lists}{concat\_type\_lists}}<List>\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ List;}
+\DoxyCodeLine{00084\ \ \ \};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts,\ \textcolor{keyword}{typename}...\ Us>}
+\DoxyCodeLine{00087\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1concat__type__lists}{concat\_type\_lists}}<\mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Ts...>,\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Us...>>\ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1type__list}{type}}\ =\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Ts...,\ Us...>;}
+\DoxyCodeLine{00089\ \ \ \};}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts,\ \textcolor{keyword}{typename}...\ Us,\ \textcolor{keyword}{typename}...\ Vs,\ \textcolor{keyword}{typename}...\ OtherLists>}
+\DoxyCodeLine{00092\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1concat__type__lists}{concat\_type\_lists}}<\mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Ts...>,\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Us...>,\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Vs...>,\ OtherLists...>}
+\DoxyCodeLine{00093\ \ \ \ \ :\ \mbox{\hyperlink{structunifex_1_1concat__type__lists}{concat\_type\_lists}}<type\_list<Ts...,\ Us...,\ Vs...>,\ OtherLists...>\ \{\};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ UniqueLists>}
+\DoxyCodeLine{00096\ \ \ \textcolor{keyword}{using\ }concat\_type\_lists\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1concat__type__lists}{concat\_type\_lists}}<UniqueLists...>::type;}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \textcolor{comment}{//\ concat\_type\_lists\_unique<UniqueLists...>}}
+\DoxyCodeLine{00099\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00100\ \ \ \textcolor{comment}{//\ Result\ is\ produced\ via\ '::type'\ which\ will\ contain\ a\ type\_list<Ts...>\ that}}
+\DoxyCodeLine{00101\ \ \ \textcolor{comment}{//\ contains\ the\ unique\ elements\ from\ the\ input\ type\_list\ types.}}
+\DoxyCodeLine{00102\ \ \ \textcolor{comment}{//\ Assumes\ that\ the\ input\ lists\ already}}
+\DoxyCodeLine{00103\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ UniqueLists>}
+\DoxyCodeLine{00104\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1concat__type__lists__unique}{concat\_type\_lists\_unique}};}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00107\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1concat__type__lists__unique}{concat\_type\_lists\_unique}}<>\ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1type__list}{type}}\ =\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list<>}};}
+\DoxyCodeLine{00109\ \ \ \};}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ UniqueList>}
+\DoxyCodeLine{00112\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1concat__type__lists__unique}{concat\_type\_lists\_unique}}<UniqueList>\ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ UniqueList;}
+\DoxyCodeLine{00114\ \ \ \};}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts,\ \textcolor{keyword}{typename}...\ Us,\ \textcolor{keyword}{typename}...\ OtherLists>}
+\DoxyCodeLine{00117\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1concat__type__lists__unique}{concat\_type\_lists\_unique}}<\mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Ts...>,\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<Us...>,\ OtherLists...>}
+\DoxyCodeLine{00118\ \ \ \ \ :\ \mbox{\hyperlink{structunifex_1_1concat__type__lists__unique}{concat\_type\_lists\_unique}}<}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ typename\ concat\_type\_lists<}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ type\_list<Ts...>,}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ conditional\_t<}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_one\_of\_v<Us,\ Ts...>,}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ type\_list<>,}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ type\_list<Us>>...>::type,}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ OtherLists...>\ \{\};}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ UniqueLists>}
+\DoxyCodeLine{00128\ \ \ \textcolor{keyword}{using\ }concat\_type\_lists\_unique\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1concat__type__lists__unique}{concat\_type\_lists\_unique}}<UniqueLists...>::type;}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \ \ \textcolor{keyword}{namespace\ }detail}
+\DoxyCodeLine{00131\ \ \ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Outer,}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Inner>}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1detail_1_1type__list__nested__apply__impl}{type\_list\_nested\_apply\_impl}}\ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Lists>}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \textcolor{keyword}{using\ }apply\ =\ Outer<typename\ Lists::template\ apply<Inner>...>;}
+\DoxyCodeLine{00138\ \ \ \ \ \};}
+\DoxyCodeLine{00139\ \ \ \}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{typename}\ ListOfLists,}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Outer,}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Inner>}
+\DoxyCodeLine{00145\ \ \ \textcolor{keyword}{using\ }type\_list\_nested\_apply\_t\ =\ \textcolor{keyword}{typename}\ ListOfLists::template\ apply<}
+\DoxyCodeLine{00146\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1detail_1_1type__list__nested__apply__impl}{detail::type\_list\_nested\_apply\_impl<Outer,\ Inner>::template}}\ apply>;}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

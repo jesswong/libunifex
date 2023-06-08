@@ -1,0 +1,59 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Predecessor, Successor \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__via_1_1__sender_1_1type}{}\label{structunifex_1_1__via_1_1__sender_1_1type}\index{\_sender$<$ Predecessor, Successor $>$::type@{\_sender$<$ Predecessor, Successor $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__via_1_1__sender_1_1type_ac07ba566d8701ee3a05cb3f53448a8e3}\label{structunifex_1_1__via_1_1__sender_1_1type_ac07ba566d8701ee3a05cb3f53448a8e3} 
+using {\bfseries sender} = \mbox{\hyperlink{structunifex_1_1__via_1_1__sender_1_1type}{type}}
+\item 
+\Hypertarget{structunifex_1_1__via_1_1__sender_1_1type_a81c6e92dac25e05e21d6aaa6f6769abd}\label{structunifex_1_1__via_1_1__sender_1_1type_a81c6e92dac25e05e21d6aaa6f6769abd} 
+{\footnotesize template$<$typename... Ts$>$ }\\using {\bfseries overload\+\_\+list} = \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::decay\+\_\+t$<$ Ts $>$... $>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__via_1_1__sender_1_1type_a72cb1f2776ff5f01521a0710f45a65b6}\label{structunifex_1_1__via_1_1__sender_1_1type_a72cb1f2776ff5f01521a0710f45a65b6} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = type\+\_\+list\+\_\+nested\+\_\+apply\+\_\+t$<$ sender\+\_\+value\+\_\+types\+\_\+t$<$ Predecessor, concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t, \mbox{\hyperlink{structunifex_1_1type__list}{overload\+\_\+list}} $>$, Variant, Tuple $>$
+\item 
+\Hypertarget{structunifex_1_1__via_1_1__sender_1_1type_a690ef64644c6d3301f302486cd6c70eb}\label{structunifex_1_1__via_1_1__sender_1_1type_a690ef64644c6d3301f302486cd6c70eb} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ Predecessor, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, sender\+\_\+error\+\_\+types\+\_\+t$<$ Successor, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__via_1_1__sender_1_1type_a92507313d6ddc4d3689fbfaa1117c4f9}\label{structunifex_1_1__via_1_1__sender_1_1type_a92507313d6ddc4d3689fbfaa1117c4f9} 
+{\footnotesize template$<$typename Receiver $>$ }\\auto {\bfseries connect} (Receiver \&\&receiver) \&\&
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__via_1_1__sender_1_1type_a9453680efd59c536d423f44666781798}\label{structunifex_1_1__via_1_1__sender_1_1type_a9453680efd59c536d423f44666781798} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Predecessor {\bfseries pred\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__via_1_1__sender_1_1type_a9728842b8317a33b281b7fc8599242af}\label{structunifex_1_1__via_1_1__sender_1_1type_a9728842b8317a33b281b7fc8599242af} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Successor {\bfseries succ\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr bool \mbox{\hyperlink{structunifex_1_1__via_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}{sends\+\_\+done}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__via_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__via_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+\index{\_sender$<$ Predecessor, Successor $>$::type@{\_sender$<$ Predecessor, Successor $>$::type}!sends\_done@{sends\_done}}
+\index{sends\_done@{sends\_done}!\_sender$<$ Predecessor, Successor $>$::type@{\_sender$<$ Predecessor, Successor $>$::type}}
+\doxysubsubsection{\texorpdfstring{sends\_done}{sends\_done}}
+{\footnotesize\ttfamily template$<$typename Predecessor , typename Successor $>$ \\
+constexpr bool sends\+\_\+done\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\ \ \ \ sender\_traits<Predecessor>::sends\_done\ ||}
+\DoxyCodeLine{\ \ \ \ sender\_traits<Successor>::sends\_done}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/via.\+hpp\end{DoxyCompactItemize}

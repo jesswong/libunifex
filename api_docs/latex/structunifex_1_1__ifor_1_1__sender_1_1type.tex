@@ -1,0 +1,46 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Predecessor, Policy, Range, Func \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type}{}\label{structunifex_1_1__ifor_1_1__sender_1_1type}\index{\_sender$<$ Predecessor, Policy, Range, Func $>$::type@{\_sender$<$ Predecessor, Policy, Range, Func $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type_ac07ba566d8701ee3a05cb3f53448a8e3}\label{structunifex_1_1__ifor_1_1__sender_1_1type_ac07ba566d8701ee3a05cb3f53448a8e3} 
+using {\bfseries sender} = \mbox{\hyperlink{structunifex_1_1__ifor_1_1__sender_1_1type}{type}}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type_a6f8ced521ccdf7f6e639985b246951c5}\label{structunifex_1_1__ifor_1_1__sender_1_1type_a6f8ced521ccdf7f6e639985b246951c5} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Predecessor, Variant, Tuple $>$
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type_a9c3db02794396cf070a5c1dd3d7b16d5}\label{structunifex_1_1__ifor_1_1__sender_1_1type_a9c3db02794396cf070a5c1dd3d7b16d5} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ Predecessor, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type_a92507313d6ddc4d3689fbfaa1117c4f9}\label{structunifex_1_1__ifor_1_1__sender_1_1type_a92507313d6ddc4d3689fbfaa1117c4f9} 
+{\footnotesize template$<$typename Receiver $>$ }\\auto {\bfseries connect} (Receiver \&\&receiver) \&\&
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type_a9453680efd59c536d423f44666781798}\label{structunifex_1_1__ifor_1_1__sender_1_1type_a9453680efd59c536d423f44666781798} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Predecessor {\bfseries pred\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type_a6931a1287d91e3eefad74758944efb80}\label{structunifex_1_1__ifor_1_1__sender_1_1type_a6931a1287d91e3eefad74758944efb80} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Policy {\bfseries policy\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type_af75c98fc75ce657e8240d0256189be6b}\label{structunifex_1_1__ifor_1_1__sender_1_1type_af75c98fc75ce657e8240d0256189be6b} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Range {\bfseries range\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type_a6cdb51372da6e6ecd5b4b6efbc400a6e}\label{structunifex_1_1__ifor_1_1__sender_1_1type_a6cdb51372da6e6ecd5b4b6efbc400a6e} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Func {\bfseries func\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__ifor_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$Predecessor$>$\+::sends\+\_\+done
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/indexed\+\_\+for.\+hpp\end{DoxyCompactItemize}

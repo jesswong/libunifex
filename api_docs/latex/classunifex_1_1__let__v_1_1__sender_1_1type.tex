@@ -1,0 +1,47 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Predecessor, Successor\+Factory \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__let__v_1_1__sender_1_1type}{}\label{classunifex_1_1__let__v_1_1__sender_1_1type}\index{\_sender$<$ Predecessor, SuccessorFactory $>$::type@{\_sender$<$ Predecessor, SuccessorFactory $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__v_1_1__sender_1_1type_a3fa71d2cf02c9a99297cba57231dd8c7}\label{classunifex_1_1__let__v_1_1__sender_1_1type_a3fa71d2cf02c9a99297cba57231dd8c7} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = successor\+\_\+types$<$ value\+\_\+types\+\_\+impl$<$ Variant, Tuple $>$\+::template apply $>$
+\item 
+\Hypertarget{classunifex_1_1__let__v_1_1__sender_1_1type_adb710868c1e6cc2a92ce6accca11862f}\label{classunifex_1_1__let__v_1_1__sender_1_1type_adb710868c1e6cc2a92ce6accca11862f} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = successor\+\_\+types$<$ error\+\_\+types\+\_\+impl$<$ Variant $>$\+::template apply $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__v_1_1__sender_1_1type_a36fd4d23a461e7732709478e1be5acfb}\label{classunifex_1_1__let__v_1_1__sender_1_1type_a36fd4d23a461e7732709478e1be5acfb} 
+{\footnotesize template$<$typename Predecessor2 , typename Successor\+Factory2 $>$ }\\{\bfseries type} (Predecessor2 \&\&pred, Successor\+Factory2 \&\&func) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Predecessor, Predecessor2 $>$ \&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Successor\+Factory, Successor\+Factory2 $>$)
+\item 
+\Hypertarget{classunifex_1_1__let__v_1_1__sender_1_1type_a66f0fef5b64891cd25c5ad6588513311}\label{classunifex_1_1__let__v_1_1__sender_1_1type_a66f0fef5b64891cd25c5ad6588513311} 
+{\bfseries template} (typename CPO, typename Sender, typename Receiver)(AND same\+\_\+as$<$ remove\+\_\+cvref\+\_\+t$<$ Sender $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr bool \mbox{\hyperlink{classunifex_1_1__let__v_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}{sends\+\_\+done}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classunifex_1_1__let__v_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__let__v_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+\index{\_sender$<$ Predecessor, SuccessorFactory $>$::type@{\_sender$<$ Predecessor, SuccessorFactory $>$::type}!sends\_done@{sends\_done}}
+\index{sends\_done@{sends\_done}!\_sender$<$ Predecessor, SuccessorFactory $>$::type@{\_sender$<$ Predecessor, SuccessorFactory $>$::type}}
+\doxysubsubsection{\texorpdfstring{sends\_done}{sends\_done}}
+{\footnotesize\ttfamily template$<$typename Predecessor , typename Successor\+Factory $>$ \\
+constexpr bool sends\+\_\+done\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\ \ \ \ sender\_traits<Predecessor>::sends\_done\ ||}
+\DoxyCodeLine{\ \ \ \ successor\_types<any\_sends\_done>::value}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/let\+\_\+value.\+hpp\end{DoxyCompactItemize}

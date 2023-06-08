@@ -1,0 +1,44 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Source\+Sender, Completion\+Sender \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__final_1_1__sender_1_1type}{}\label{classunifex_1_1__final_1_1__sender_1_1type}\index{\_sender$<$ SourceSender, CompletionSender $>$::type@{\_sender$<$ SourceSender, CompletionSender $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__final_1_1__sender_1_1type_ac20d5387e7f687d6cfdc67d307f746bd}\label{classunifex_1_1__final_1_1__sender_1_1type_ac20d5387e7f687d6cfdc67d307f746bd} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = typename \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$ Source\+Sender $>$\+::template value\+\_\+types$<$ Variant, \mbox{\hyperlink{structunifex_1_1decayed__tuple}{decayed\+\_\+tuple}}$<$ Tuple $>$\+::template apply $>$
+\item 
+\Hypertarget{classunifex_1_1__final_1_1__sender_1_1type_a30b212feac282b79848dc67445d54976}\label{classunifex_1_1__final_1_1__sender_1_1type_a30b212feac282b79848dc67445d54976} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ Source\+Sender, \mbox{\hyperlink{structunifex_1_1decayed__tuple}{decayed\+\_\+tuple}}$<$ \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$\+::template apply $>$, sender\+\_\+error\+\_\+types\+\_\+t$<$ Completion\+Sender, \mbox{\hyperlink{structunifex_1_1decayed__tuple}{decayed\+\_\+tuple}}$<$ \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$\+::template apply $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__final_1_1__sender_1_1type_a94cd92d391d07e067853b10d0bbd7b4f}\label{classunifex_1_1__final_1_1__sender_1_1type_a94cd92d391d07e067853b10d0bbd7b4f} 
+{\footnotesize template$<$typename Source\+Sender2 , typename Completion\+Sender2 $>$ }\\{\bfseries type} (Source\+Sender2 \&\&source, Completion\+Sender2 \&\&completion) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Source\+Sender, Source\+Sender2 $>$ \&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Completion\+Sender, Completion\+Sender2 $>$)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr bool \mbox{\hyperlink{classunifex_1_1__final_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}{sends\+\_\+done}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classunifex_1_1__final_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__final_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+\index{\_sender$<$ SourceSender, CompletionSender $>$::type@{\_sender$<$ SourceSender, CompletionSender $>$::type}!sends\_done@{sends\_done}}
+\index{sends\_done@{sends\_done}!\_sender$<$ SourceSender, CompletionSender $>$::type@{\_sender$<$ SourceSender, CompletionSender $>$::type}}
+\doxysubsubsection{\texorpdfstring{sends\_done}{sends\_done}}
+{\footnotesize\ttfamily template$<$typename Source\+Sender , typename Completion\+Sender $>$ \\
+constexpr bool sends\+\_\+done\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ sender\_traits<SourceSender>::sends\_done\ ||}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ sender\_traits<CompletionSender>::sends\_done}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/finally.\+hpp\end{DoxyCompactItemize}

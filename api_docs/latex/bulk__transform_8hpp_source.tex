@@ -1,0 +1,260 @@
+\doxysection{bulk\+\_\+transform.\+hpp}
+\hypertarget{bulk__transform_8hpp_source}{}\label{bulk__transform_8hpp_source}\index{include/unifex/bulk\_transform.hpp@{include/unifex/bulk\_transform.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/execution\_policy.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/get\_execution\_policy.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/type\_list.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{namespace\ }\_bulk\_tfx\ \{}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Policy,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00034\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__tfx__receiver}{\_tfx\_receiver}}\ \{}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__receiver_1_1type}{type}};}
+\DoxyCodeLine{00036\ \};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Policy,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00039\ \textcolor{keyword}{using\ }tfx\_receiver\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__receiver_1_1type}{\_tfx\_receiver<Func,\ Policy,\ Receiver>::type}};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Policy,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00042\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__tfx__receiver}{\_tfx\_receiver}}<Func,\ Policy,\ Receiver>::\mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__receiver_1_1type}{type}}\ \{}
+\DoxyCodeLine{00043\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ Func2,\ \textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__receiver_1_1type}{type}}(Func2\&\&\ f,\ Policy\ policy,\ Receiver2\&\&\ r)}
+\DoxyCodeLine{00046\ \ \ \ \ :\ receiver\_((Receiver2\&\&)r)}
+\DoxyCodeLine{00047\ \ \ \ \ ,\ func\_((Func2\&\&)f)}
+\DoxyCodeLine{00048\ \ \ \ \ ,\ policy\_(std::move(policy))}
+\DoxyCodeLine{00049\ \ \ \ \ \{\}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}...\ Values)}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ invocable<Func\&,\ Values...>\ AND}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_void\_v<std::invoke\_result\_t<Func\&,\ Values...>>)}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_next(Values\&\&...\ values)\ \&}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_invocable\_v<Func\&,\ Values...>\ \&\&}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_next\_receiver\_v<Receiver>)\ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ std::invoke(func\_,\ (Values\&\&)values...);}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ unifex::set\_next(receiver\_);}
+\DoxyCodeLine{00061\ \ \ \ \ \}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}...\ Values)}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ invocable<Func\&,\ Values...>\ AND}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ (!std::is\_void\_v<std::invoke\_result\_t<Func\&,\ Values...>>))}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_next(Values\&\&...\ values)\ \&}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_invocable\_v<Func\&,\ Values...>\ \&\&}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_next\_receiver\_v<Receiver,\ std::invoke\_result\_t<Func\&,\ Values...>>)\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ unifex::set\_next(receiver\_,\ std::invoke(func\_,\ (Values\&\&)values...));}
+\DoxyCodeLine{00072\ \ \ \ \ \}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}...\ Values)}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver\_of<Receiver,\ Values...>)}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_value(Values\&\&...\ values)\ \textcolor{keyword}{noexcept}(is\_nothrow\_receiver\_of\_v<Receiver,\ Values...>)\ \{}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ unifex::set\_value(std::move(receiver\_),\ (Values\&\&)values...);}
+\DoxyCodeLine{00078\ \ \ \ \ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Error)}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver,\ Error>)}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_error(Error\&\&\ error)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ unifex::set\_error(std::move(receiver\_),\ (Error\&\&)error);}
+\DoxyCodeLine{00084\ \ \ \ \ \}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_done()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ unifex::set\_done(std::move(receiver\_));}
+\DoxyCodeLine{00088\ \ \ \ \ \}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<get\_execution\_policy>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__receiver_1_1type}{type}}\&\ r)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }receiver\_policy\ =\ \textcolor{keyword}{decltype}(get\_execution\_policy(r.receiver\_));}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ allowUnsequenced\ =}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ is\_one\_of\_v<receiver\_policy,\ unsequenced\_policy,\ parallel\_unsequenced\_policy>\ \&\&}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ is\_one\_of\_v<Policy,\ unsequenced\_policy,\ parallel\_unsequenced\_policy>;}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ allowParallel\ =}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ is\_one\_of\_v<receiver\_policy,\ parallel\_policy,\ parallel\_unsequenced\_policy>\ \&\&}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ is\_one\_of\_v<Policy,\ parallel\_policy,\ parallel\_unsequenced\_policy>;}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (allowUnsequenced\ \&\&\ allowParallel)\ \{}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::par\_unseq;}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (allowUnsequenced)\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::unseq;}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (allowParallel)\ \{}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::par;}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::seq;}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00108\ \ \ \ \ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ Self)}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ is\_receiver\_query\_cpo\_v<CPO>\ AND}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ same\_as<Self,\ type>)}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(CPO\ cpo,\ \textcolor{keyword}{const}\ Self\&\ self)}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<CPO,\ const\ Receiver\&>)}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ -\/>\ callable\_result\_t<CPO,\ const\ Receiver\&>\ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cpo(self.receiver\_);}
+\DoxyCodeLine{00118\ \ \ \ \ \}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00121\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00122\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Func\ func\_;}
+\DoxyCodeLine{00123\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Policy\ policy\_;}
+\DoxyCodeLine{00124\ \};}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Policy>}
+\DoxyCodeLine{00127\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__tfx__sender}{\_tfx\_sender}}\ \{}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type}{type}};}
+\DoxyCodeLine{00129\ \};}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Policy>}
+\DoxyCodeLine{00132\ \textcolor{keyword}{using\ }tfx\_sender\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type}{\_tfx\_sender<Source,\ Func,\ Policy>::type}};}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Result,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00135\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1result__overload}{result\_overload}}\ \{}
+\DoxyCodeLine{00136\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1type__list}{type}}\ =\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list<Result>}};}
+\DoxyCodeLine{00137\ \};}
+\DoxyCodeLine{00138\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Result>}
+\DoxyCodeLine{00139\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1result__overload}{result\_overload<Result,\ std::enable\_if\_t<std::is\_void\_v<Result>}}>>\ \{}
+\DoxyCodeLine{00140\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1type__list}{type}}\ =\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list<>}};}
+\DoxyCodeLine{00141\ \};}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ Policy>}
+\DoxyCodeLine{00144\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__tfx__sender}{\_tfx\_sender}}<Source,\ Func,\ Policy>::\mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type}{type}}\ \{}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}...\ Values>}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1type__list}{result}}\ =\ \mbox{\hyperlink{structunifex_1_1type__list}{type\_list}}<}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1result__overload}{result\_overload}}<std::invoke\_result\_t<Func\&,\ Values...>>::type>;}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keyword}{template}<}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keyword}{using\ }next\_types\ =\ type\_list\_nested\_apply\_t<}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\_traits<Source>::template}}\ next\_types<concat\_type\_lists\_unique\_t,\ result>,}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ Variant,}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ Tuple>;}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{template}<\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ sender\_value\_types\_t<Source,\ Variant,\ Tuple>;}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{template}<\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ sender\_error\_types\_t<Source,\ Variant>;}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\_traits<Source>::sends\_done}};}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ Source2,\ \textcolor{keyword}{typename}\ Func2>}
+\DoxyCodeLine{00167\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type}{type}}(Source2\&\&\ source,\ Func2\&\&\ func,\ Policy\ policy)}
+\DoxyCodeLine{00168\ \ \ \ \ :\ source\_((Source2\&\&)source)}
+\DoxyCodeLine{00169\ \ \ \ \ ,\ func\_((Func2\&\&)func)}
+\DoxyCodeLine{00170\ \ \ \ \ ,\ policy\_(std::move(policy))}
+\DoxyCodeLine{00171\ \ \ \ \ \{\}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Self,\ \textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ same\_as<remove\_cvref\_t<Self>,\ \mbox{\hyperlink{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type}{type}}>\ AND}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ constructible\_from<Func,\ member\_t<Self,\ Func>>\ AND}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ receiver<Receiver>\ AND}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ sender\_to<member\_t<Self,\ Source>,\ tfx\_receiver<Func,\ Policy,\ remove\_cvref\_t<Receiver>>>)}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<unifex::connect>,\ Self\&\&\ self,\ Receiver\&\&\ r)}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<Source,\ member\_t<Self,\ Source>>\ \&\&}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<Func,\ member\_t<Self,\ Func>>\ \&\&}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<Policy,\ member\_t<Self,\ Policy>>\ \&\&}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<remove\_cvref\_t<Receiver>,\ Receiver>)\ \{}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::connect(}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Self\&\&\textcolor{keyword}{>}(self).source\_,}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ tfx\_receiver<Func,\ Policy,\ remove\_cvref\_t<Receiver>>\{}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Self\&\&\textcolor{keyword}{>}(self).func\_,}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Self\&\&\textcolor{keyword}{>}(self).policy\_,}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(r)\});}
+\DoxyCodeLine{00191\ \ \ \ \ \}}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00194\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Source\ source\_;}
+\DoxyCodeLine{00195\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Func\ func\_;}
+\DoxyCodeLine{00196\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Policy\ policy\_;}
+\DoxyCodeLine{00197\ \};}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00200\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ FuncPolicy\ =\ \textcolor{keyword}{decltype}(get\_execution\_policy(UNIFEX\_DECLVAL(Func\&))))}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ typed\_bulk\_sender<Source>)}
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(Source\&\&\ s,\ Func\&\&\ f)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<\_fn,\ Source,\ Func,\ FuncPolicy>)}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ -\/>\ callable\_result\_t<\_fn,\ Source,\ Func,\ FuncPolicy>\ \{}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ operator()((Source\&\&)s,\ (Func\&\&)f,\ get\_execution\_policy(f));}
+\DoxyCodeLine{00206\ \ \ \ \ \}}
+\DoxyCodeLine{00207\ }
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ FuncPolicy)}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ typed\_bulk\_sender<Source>\ AND}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ tag\_invocable<\_fn,\ Source,\ Func,\ FuncPolicy>)}
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keyword}{auto}\ operator()(Source\&\&\ s,\ Func\&\&\ f,\ FuncPolicy\ policy)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ Source,\ Func,\ FuncPolicy>)}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ -\/>\ tag\_invoke\_result\_t<\_fn,\ Source,\ Func,\ FuncPolicy>\ \{}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(\mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\_fn}}\{\},\ (Source\&\&)s,\ (Func\&\&)f,\ (FuncPolicy\&\&)policy);}
+\DoxyCodeLine{00216\ \ \ \ \ \}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Source,\ \textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ FuncPolicy)}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ typed\_bulk\_sender<Source>\ AND}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ (!tag\_invocable<\_fn,\ Source,\ Func,\ FuncPolicy>))}
+\DoxyCodeLine{00222\ \ \ \ \ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(Source\&\&\ s,\ Func\&\&\ f,\ FuncPolicy\ policy)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<remove\_cvref\_t<Source>,\ Source>\ \&\&}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<remove\_cvref\_t<Func>,\ Func>\ \&\&}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_move\_constructible\_v<FuncPolicy>)}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ -\/>\ tfx\_sender<remove\_cvref\_t<Source>,\ remove\_cvref\_t<Func>,\ FuncPolicy>\ \{}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tfx\_sender<remove\_cvref\_t<Source>,\ remove\_cvref\_t<Func>,\ FuncPolicy>\{}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ (Source\&\&)s,\ (Func\&\&)f,\ std::move(policy)}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00231\ \ \ \ \ \}}
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Func\&\&\ f)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ tag\_t<bind\_back>,\ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\_fn}},\ Func>)}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ -\/>\ bind\_back\_result\_t<\_fn,\ Func>\ \{}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ bind\_back(*\textcolor{keyword}{this},\ (Func\&\&)f);}
+\DoxyCodeLine{00238\ \ \ \ \ \}}
+\DoxyCodeLine{00239\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Func,\ \textcolor{keyword}{typename}\ FuncPolicy>}
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Func\&\&\ f,\ FuncPolicy\ policy)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ tag\_t<bind\_back>,\ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\_fn}},\ Func,\ FuncPolicy>)}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ -\/>\ bind\_back\_result\_t<\_fn,\ Func,\ FuncPolicy>\ \{}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ bind\_back(*\textcolor{keyword}{this},\ (Func\&\&)f,\ (FuncPolicy\&\&)policy);}
+\DoxyCodeLine{00245\ \ \ \ \ \}}
+\DoxyCodeLine{00246\ \};}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \}\ \textcolor{comment}{//\ namespace\ \_bulk\_transform}}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00250\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\_bulk\_tfx::\_fn}}\ bulk\_transform\{\};}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

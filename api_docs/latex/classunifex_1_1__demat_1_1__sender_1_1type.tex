@@ -1,0 +1,37 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Source \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__demat_1_1__sender_1_1type}{}\label{classunifex_1_1__demat_1_1__sender_1_1type}\index{\_sender$<$ Source $>$::type@{\_sender$<$ Source $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__demat_1_1__sender_1_1type_aff46cb5dd4b820cbf6bbd6b3f5f4f4cc}\label{classunifex_1_1__demat_1_1__sender_1_1type_aff46cb5dd4b820cbf6bbd6b3f5f4f4cc} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Source, \mbox{\hyperlink{structunifex_1_1__demat_1_1variant}{variant}}$<$ Variant $>$\+::template apply, \mbox{\hyperlink{structunifex_1_1__demat_1_1tuple}{tuple}}$<$ tag\+\_\+t$<$ set\+\_\+value $>$, Tuple $>$\+::template apply $>$
+\item 
+\Hypertarget{classunifex_1_1__demat_1_1__sender_1_1type_a92aecc99f7484294c29c06ca367e98b4}\label{classunifex_1_1__demat_1_1__sender_1_1type_a92aecc99f7484294c29c06ca367e98b4} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Source, \mbox{\hyperlink{structunifex_1_1__demat_1_1variant}{variant}}$<$ append\+\_\+error\+\_\+types$<$ Variant $>$\+::template apply $>$\+::template apply, \mbox{\hyperlink{structunifex_1_1__demat_1_1tuple}{tuple}}$<$ tag\+\_\+t$<$ set\+\_\+error $>$, single\+\_\+type\+\_\+t $>$\+::template apply $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__demat_1_1__sender_1_1type_ae883363ee326a1b16489dcb1f57e2ad0}\label{classunifex_1_1__demat_1_1__sender_1_1type_ae883363ee326a1b16489dcb1f57e2ad0} 
+{\footnotesize template$<$typename Source2 $>$ }\\{\bfseries type} (Source2 \&\&source) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Source, Source2 $>$)
+\item 
+\Hypertarget{classunifex_1_1__demat_1_1__sender_1_1type_af952fe62de8d36a428df799ad533525a}\label{classunifex_1_1__demat_1_1__sender_1_1type_af952fe62de8d36a428df799ad533525a} 
+{\bfseries template} (typename Self, typename Receiver)(AND sender\+\_\+to$<$ member\+\_\+t$<$ Self
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__demat_1_1__sender_1_1type_a176e1eca2d1e3d1c6a064340bc6a351e}\label{classunifex_1_1__demat_1_1__sender_1_1type_a176e1eca2d1e3d1c6a064340bc6a351e} 
+{\bfseries Source}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__demat_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__demat_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$Source$>$\+::sends\+\_\+done
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/dematerialize.\+hpp\end{DoxyCompactItemize}

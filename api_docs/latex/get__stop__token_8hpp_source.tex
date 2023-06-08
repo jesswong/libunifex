@@ -1,0 +1,118 @@
+\doxysection{get\+\_\+stop\+\_\+token.\+hpp}
+\hypertarget{get__stop__token_8hpp_source}{}\label{get__stop__token_8hpp_source}\index{include/unifex/get\_stop\_token.hpp@{include/unifex/get\_stop\_token.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/detail/unifex\_fwd.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/stop\_token\_concepts.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/inplace\_stop\_token.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/coroutine.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/unstoppable\_token.hpp>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <unifex/blocking.hpp>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\_get\_stop\_token\ \{}
+\DoxyCodeLine{00031\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__get__stop__token_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#if\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00033\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{class\ }\_awaitable\ \{}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ StopToken>}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\_awaiter\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ StopToken\ stoken\_;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ await\_ready()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ await\_suspend(coro::coroutine\_handle<>)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ StopToken\ await\_resume()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (StopToken\&\&)\ stoken\_;}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<unifex::blocking>,\ \textcolor{keyword}{const}\ \_awaiter\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::always\_inline;}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#if\ !defined(\_\_GNUC\_\_)\ ||\ defined(\_\_clang\_\_)}}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \textcolor{comment}{//\ gcc\ bug\ 79501\ -\/\ https://gcc.gnu.org/bugzilla/show\_bug.cgi?id=79501}}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \textcolor{comment}{//\ GCC\ currently\ does\ not\ permit\ member\ deduction\ guides\ unless\ they}}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \textcolor{comment}{//\ are\ at\ a\ namespace\ scope\ and\ fails\ with\ error:}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \textcolor{comment}{//\ \ \ \ deduction\ guide\ '...'\ must\ be\ declared\ at\ namespace\ scope}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \textcolor{comment}{//\ This\ deduction\ guide\ is\ probably\ not\ necessary,\ per\ P0091,\ and}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \textcolor{comment}{//\ compiles\ on\ GCC\ without\ it,\ but\ clang-\/12\ on\ macOS\ requires\ it.}}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \textcolor{comment}{//\ The\ above\ compile\ guard\ will\ ensure\ clang\ has\ the\ guide\ and\ GCC}}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \textcolor{comment}{//\ does\ not\ until\ 79501\ is\ solved.}}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ StopToken>}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \_awaiter(StopToken)\ -\/>\ \_awaiter<StopToken>;}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ !defined(\_\_GNUC\_\_)\ ||\ defined(\_\_clang\_\_)}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Tag,\ \textcolor{keyword}{typename}\ Promise)}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ same\_as<Tag,\ tag\_t<await\_transform>>)}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(Tag,\ Promise\&\ promise,\ \_awaitable)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \_awaiter\{\mbox{\hyperlink{structunifex_1_1__get__stop__token_1_1__fn}{\_fn}}\{\}(promise)\};}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00072\ \ \ \ \ \};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{comment}{//\ \`{}co\_await\ get\_stop\_token()`\ to\ fetch\ a\ coroutine's\ current\ stop\ token.}}
+\DoxyCodeLine{00076\ \ \ \ \ [[nodiscard]]\ \textcolor{keyword}{constexpr}\ \_awaitable\ operator()()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{\};}
+\DoxyCodeLine{00078\ \ \ \ \ \}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ T)}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_fn,\ const\ T\&>))}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(\textcolor{keyword}{const}\ T\&)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ -\/>\ \mbox{\hyperlink{structunifex_1_1unstoppable__token}{unstoppable\_token}}\ \{}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1unstoppable__token}{unstoppable\_token}}\{\};}
+\DoxyCodeLine{00086\ \ \ \ \ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ T)}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ const\ T\&>)}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(\textcolor{keyword}{const}\ T\&\ \textcolor{keywordtype}{object})\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ -\/>\ tag\_invoke\_result\_t<\_fn,\ const\ T\&>\ \{}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_tag\_invocable\_v<\_fn,\ const\ T\&>,}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}get\_stop\_token()\ customisations\ must\ be\ declared\ noexcept"{}});}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(\mbox{\hyperlink{structunifex_1_1__get__stop__token_1_1__fn}{\_fn}}\{\},\ object);}
+\DoxyCodeLine{00096\ \ \ \ \ \}}
+\DoxyCodeLine{00097\ \ \ \}\ get\_stop\_token\{\};}
+\DoxyCodeLine{00098\ \}\ \textcolor{comment}{//\ namespace\ \_get\_stop\_token}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{keyword}{using\ }\_get\_stop\_token::get\_stop\_token;}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00103\ \textcolor{keyword}{using\ }get\_stop\_token\_result\_t\ =}
+\DoxyCodeLine{00104\ \ \ \ \ callable\_result\_t<\textcolor{keyword}{decltype}(get\_stop\_token),\ T>;}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00107\ \textcolor{keyword}{using\ }stop\_token\_type\_t\ =}
+\DoxyCodeLine{00108\ \ \ \ \ remove\_cvref\_t<get\_stop\_token\_result\_t<Receiver>>;}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

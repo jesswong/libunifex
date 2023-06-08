@@ -1,0 +1,67 @@
+\doxysection{\+\_\+fn Struct Reference}
+\hypertarget{structunifex_1_1__via__stream__cpo_1_1__fn}{}\label{structunifex_1_1__via__stream__cpo_1_1__fn}\index{\_fn@{\_fn}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__via__stream__cpo_1_1__fn_a165f8d2576523e1c36b6a7ad406f4042}\label{structunifex_1_1__via__stream__cpo_1_1__fn_a165f8d2576523e1c36b6a7ad406f4042} 
+{\bfseries template} (typename Stream\+Sender, typename Scheduler)() auto operator()(Scheduler \&\&scheduler
+\item 
+\Hypertarget{structunifex_1_1__via__stream__cpo_1_1__fn_a0b235973b84271484d9252b2d8b4870e}\label{structunifex_1_1__via__stream__cpo_1_1__fn_a0b235973b84271484d9252b2d8b4870e} 
+{\bfseries template} (typename Stream\+Sender, typename Scheduler)() auto operator()(Stream\+Sender \&\&stream
+\item 
+\Hypertarget{structunifex_1_1__via__stream__cpo_1_1__fn_a7ed1abf18191d34d975633735c53edd9}\label{structunifex_1_1__via__stream__cpo_1_1__fn_a7ed1abf18191d34d975633735c53edd9} 
+{\bfseries template} (typename Scheduler)() const expr auto operator()(Scheduler \&\&scheduler) const noexcept(is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ tag\+\_\+t$<$ bind\+\_\+back $>$, \mbox{\hyperlink{structunifex_1_1__via__stream__cpo_1_1__fn}{\+\_\+fn}}, Scheduler $>$) -\/$>$ bind\+\_\+back\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__via__stream__cpo_1_1__fn}{\+\_\+fn}}, Scheduler $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Stream\+Sender \&\&stream \mbox{\hyperlink{structunifex_1_1__via__stream__cpo_1_1__fn_a7abd710f83d6b42effa377d68b92d99f}{const}}
+\item 
+Scheduler \&\&scheduler \mbox{\hyperlink{structunifex_1_1__via__stream__cpo_1_1__fn_aecbb5c2e871349faaa77a0339e69b3f1}{const}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__via__stream__cpo_1_1__fn_a7abd710f83d6b42effa377d68b92d99f}\label{structunifex_1_1__via__stream__cpo_1_1__fn_a7abd710f83d6b42effa377d68b92d99f} 
+\index{\_fn@{\_fn}!const@{const}}
+\index{const@{const}!\_fn@{\_fn}}
+\doxysubsubsection{\texorpdfstring{const}{const}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Stream\+Sender\&\& stream const}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keywordflow}{return}\ adapt\_stream(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ (StreamSender\ \&\&)\ stream,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ [s\ =\ (Scheduler\ \&\&)\ scheduler](\textcolor{keyword}{auto}\&\&\ sender)\ \textcolor{keyword}{mutable}\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ via(s,\ (\textcolor{keyword}{decltype}(sender))sender);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ [s\ =\ (Scheduler\ \&\&)\ scheduler](\textcolor{keyword}{auto}\&\&\ sender)\ \textcolor{keyword}{mutable}\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ typed\_via((\textcolor{keyword}{decltype}(sender))sender,\ s);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \})}
+
+\end{DoxyCode}
+\Hypertarget{structunifex_1_1__via__stream__cpo_1_1__fn_aecbb5c2e871349faaa77a0339e69b3f1}\label{structunifex_1_1__via__stream__cpo_1_1__fn_aecbb5c2e871349faaa77a0339e69b3f1} 
+\index{\_fn@{\_fn}!const@{const}}
+\index{const@{const}!\_fn@{\_fn}}
+\doxysubsubsection{\texorpdfstring{const}{const}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Scheduler\&\& scheduler const}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keywordflow}{return}\ adapt\_stream(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ (StreamSender\ \&\&)\ stream,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ [s\ =\ (Scheduler\ \&\&)\ scheduler](\textcolor{keyword}{auto}\&\&\ sender)\ \textcolor{keyword}{mutable}\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ via(s,\ (\textcolor{keyword}{decltype}(sender))sender);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ [s\ =\ (Scheduler\ \&\&)\ scheduler](\textcolor{keyword}{auto}\&\&\ sender)\ \textcolor{keyword}{mutable}\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ typed\_via((\textcolor{keyword}{decltype}(sender))sender,\ s);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \})}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/via\+\_\+stream.\+hpp\end{DoxyCompactItemize}

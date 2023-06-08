@@ -1,0 +1,46 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Source, Func \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__retry__when_1_1__sender_1_1type}{}\label{classunifex_1_1__retry__when_1_1__sender_1_1type}\index{\_sender$<$ Source, Func $>$::type@{\_sender$<$ Source, Func $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__retry__when_1_1__sender_1_1type_aaf38072451e4cd2b414a5e0ecc128666}\label{classunifex_1_1__retry__when_1_1__sender_1_1type_aaf38072451e4cd2b414a5e0ecc128666} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Source, Variant, Tuple $>$
+\item 
+\Hypertarget{classunifex_1_1__retry__when_1_1__sender_1_1type_ab13af66a02049ce0e4fcf13428ddc5f8}\label{classunifex_1_1__retry__when_1_1__sender_1_1type_ab13af66a02049ce0e4fcf13428ddc5f8} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename sender\+\_\+error\+\_\+types\+\_\+t$<$ Source, make\+\_\+error\+\_\+type\+\_\+list $>$\+::template apply$<$ Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__retry__when_1_1__sender_1_1type_a4dafab555bbbe8adb041f3bad7a3ebb6}\label{classunifex_1_1__retry__when_1_1__sender_1_1type_a4dafab555bbbe8adb041f3bad7a3ebb6} 
+{\footnotesize template$<$typename Source2 , typename Func2 $>$ }\\{\bfseries type} (Source2 \&\&source, Func2 \&\&func) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Source, Source2 $>$ \&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Func, Func2 $>$)
+\item 
+\Hypertarget{classunifex_1_1__retry__when_1_1__sender_1_1type_af9c61eaeed93891f43f09fa029222ffe}\label{classunifex_1_1__retry__when_1_1__sender_1_1type_af9c61eaeed93891f43f09fa029222ffe} 
+{\bfseries template} (typename Self, typename Receiver)(AND receiver$<$ Receiver $>$ AND const ructible\+\_\+from$<$ Source
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr bool \mbox{\hyperlink{classunifex_1_1__retry__when_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}{sends\+\_\+done}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classunifex_1_1__retry__when_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__retry__when_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+\index{\_sender$<$ Source, Func $>$::type@{\_sender$<$ Source, Func $>$::type}!sends\_done@{sends\_done}}
+\index{sends\_done@{sends\_done}!\_sender$<$ Source, Func $>$::type@{\_sender$<$ Source, Func $>$::type}}
+\doxysubsubsection{\texorpdfstring{sends\_done}{sends\_done}}
+{\footnotesize\ttfamily template$<$typename Source , typename Func $>$ \\
+constexpr bool sends\+\_\+done\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\ \ \ \ sender\_error\_types\_t<Source,\ sends\_done\_impl>::value}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/retry\+\_\+when.\+hpp\end{DoxyCompactItemize}

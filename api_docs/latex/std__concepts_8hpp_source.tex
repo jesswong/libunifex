@@ -1,0 +1,316 @@
+\doxysection{std\+\_\+concepts.\+hpp}
+\hypertarget{std__concepts_8hpp_source}{}\label{std__concepts_8hpp_source}\index{include/unifex/std\_concepts.hpp@{include/unifex/std\_concepts.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/detail/concept\_macros.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/swap.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A,\ \textcolor{keyword}{typename}\ B>}
+\DoxyCodeLine{00030\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00031\ \ \ \ \ same\_as\ =}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ UNIFEX\_IS\_SAME(A,\ B)\ \&\&}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ UNIFEX\_IS\_SAME(B,\ A);}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \textcolor{comment}{//\ GCC\ doesn't\ like\ that\ we're\ ignoring\ the\ result\ of\ the\ static\ cast}}
+\DoxyCodeLine{00036\ \ \ UNIFEX\_DIAGNOSTIC\_PUSH}
+\DoxyCodeLine{00037\ \ \ UNIFEX\_DIAGNOSTIC\_IGNORE\_UNUSED\_RESULT}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ From,\ \textcolor{keyword}{typename}\ To>}
+\DoxyCodeLine{00040\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00041\ \ \ \ \ \_explicitly\_convertible\_to,}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \textcolor{keyword}{requires}(From(*from)())\ \textcolor{comment}{//}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ (}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}To\textcolor{keyword}{>}(from())}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ UNIFEX\_DIAGNOSTIC\_POP}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ From,\ \textcolor{keyword}{typename}\ To>}
+\DoxyCodeLine{00050\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00051\ \ \ \ \ convertible\_to\ =}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ std::is\_convertible\_v<std::add\_rvalue\_reference\_t<From>,\ To>\ \&\&}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_explicitly\_convertible\_to,\ From,\ To);}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00056\ \ \ \textcolor{keyword}{namespace\ }detail\ \{}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{using\ }\_cref\_t\ =\ std::remove\_reference\_t<T>\ \textcolor{keyword}{const}\ \&;}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00061\ \ \ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \_boolean\_testable\_impl,}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(T\ \&\&\ t)}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ (}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(convertible\_to<\textcolor{keyword}{decltype}(!\ (T\ \&\&)\ t),\ \textcolor{keywordtype}{bool}>)}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00068\ \ \ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \_boolean\_testable\ =}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ UNIFEX\_FRAGMENT(\_boolean\_testable\_impl,\ T)\ \&\&}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ convertible\_to<T,\ bool>;}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ UNIFEX\_DIAGNOSTIC\_PUSH}
+\DoxyCodeLine{00074\ \ \ \ \ UNIFEX\_DIAGNOSTIC\_IGNORE\_FLOAT\_EQUAL}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00077\ \ \ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \_weakly\_equality\_comparable\_with,}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(\_cref\_t<T>\ t,\ \_cref\_t<U>\ u)\ \textcolor{comment}{//}}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ (}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(\_boolean\_testable<\textcolor{keyword}{decltype}(t\ ==\ u)>),}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(\_boolean\_testable<\textcolor{keyword}{decltype}(t\ !=\ u)>),}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(\_boolean\_testable<\textcolor{keyword}{decltype}(u\ ==\ t)>),}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(\_boolean\_testable<\textcolor{keyword}{decltype}(u\ !=\ t)>)}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00087\ \ \ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ weakly\_equality\_comparable\_with\_\ =}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ UNIFEX\_FRAGMENT(detail::\_weakly\_equality\_comparable\_with,\ T,\ U);}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ UNIFEX\_DIAGNOSTIC\_POP}
+\DoxyCodeLine{00092\ \ \ \}\ \textcolor{comment}{//\ namespace\ detail}}
+\DoxyCodeLine{00094\ \textcolor{comment}{}}
+\DoxyCodeLine{00095\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00096\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00097\ \ \ \ \ \_derived\_from,}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \textcolor{keyword}{requires}()(0)\ \&\&}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ convertible\_to<T\ const\ volatile\ *,\ U\ const\ volatile\ *>);}
+\DoxyCodeLine{00100\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00101\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00102\ \ \ \ \ derived\_from\ =}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ UNIFEX\_IS\_BASE\_OF(U,\ T)\ \&\&}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_derived\_from,\ T,\ U);}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00107\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00108\ \ \ \ \ \_assignable\_from,}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \textcolor{keyword}{requires}(T\ t,\ U\ \&\&\ u)\ \textcolor{comment}{//}}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ (}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ t\ =\ (U\ \&\&)\ u,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(same\_as<T,\ \textcolor{keyword}{decltype}(t\ =\ (U\ \&\&)\ u)>)}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00114\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00115\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00116\ \ \ \ \ assignable\_from\ =}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ std::is\_lvalue\_reference\_v<T>\ \&\&}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_assignable\_from,\ T,\ U);}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00121\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00122\ \ \ \ \ \_swappable,}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \textcolor{keyword}{requires}(T\ \&\ t,\ T\ \&\ u)\ \textcolor{comment}{//}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ (}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ unifex::swap(t,\ u)}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00128\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00129\ \ \ \ \ swappable\ =}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_swappable,\ T);}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00133\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00134\ \ \ \ \ \_swappable\_with,}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \textcolor{keyword}{requires}(T\ \&\&\ t,\ U\ \&\&\ u)\ \textcolor{comment}{//}}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ (}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ unifex::swap((T\ \&\&)\ t,\ (T\ \&\&)\ t),}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ unifex::swap((U\ \&\&)\ u,\ (U\ \&\&)\ u),}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ unifex::swap((U\ \&\&)\ u,\ (T\ \&\&)\ t),}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ unifex::swap((T\ \&\&)\ t,\ (U\ \&\&)\ u)}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00142\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00143\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00144\ \ \ \ \ swappable\_with\ =}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \textcolor{comment}{//common\_reference\_with<detail::\_cref\_t<T>,\ detail::\_cref\_t<U>>\ \&\&}}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_swappable\_with,\ T,\ U);}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00149\ \ \ \textcolor{comment}{//\ Comparison\ concepts}}
+\DoxyCodeLine{00151\ \textcolor{comment}{}}
+\DoxyCodeLine{00152\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00153\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00154\ \ \ \ \ equality\_comparable\ =}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ detail::weakly\_equality\_comparable\_with\_<T,\ T>;}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \ \textcolor{comment}{//\ template\ <typename\ T,\ typename\ U>}}
+\DoxyCodeLine{00158\ \ \ \textcolor{comment}{//\ UNIFEX\_CONCEPT\_FRAGMENT(}}
+\DoxyCodeLine{00159\ \ \ \textcolor{comment}{//\ \ \ \_equality\_comparable\_with,}}
+\DoxyCodeLine{00160\ \ \ \textcolor{comment}{//\ \ \ \ \ requires()(0)\ \&\&}}
+\DoxyCodeLine{00161\ \ \ \textcolor{comment}{//\ \ \ \ \ equality\_comparable<}}
+\DoxyCodeLine{00162\ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ common\_reference\_t<detail::\_cref\_t<T>,\ detail::\_cref\_t<U>>>);}}
+\DoxyCodeLine{00163\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00164\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00165\ \ \ \ \ equality\_comparable\_with\ =}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ equality\_comparable<T>\ \&\&}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ equality\_comparable<U>\ \&\&}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ detail::weakly\_equality\_comparable\_with\_<T,\ U>;\textcolor{comment}{//\ \&\&}}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \textcolor{comment}{//common\_reference\_with<detail::\_cref\_t<T>,\ detail::\_cref\_t<U>>\ \&\&}}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \textcolor{comment}{//UNIFEX\_FRAGMENT(unifex::\_equality\_comparable\_with,\ T,\ U);}}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00173\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00174\ \ \ \ \ \_totally\_ordered,}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_cref\_t<T>\ t,\ detail::\_cref\_t<T>\ u)\ \textcolor{comment}{//}}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ (}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(t\ <\ u)>),}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(t\ >\ u)>),}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(u\ <=\ t)>),}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(u\ >=\ t)>)}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00182\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00183\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00184\ \ \ \ \ totally\_ordered\ =}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ equality\_comparable<T>\ \&\&}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_totally\_ordered,\ T);}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00189\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00190\ \ \ \ \ \_totally\_ordered\_with,}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_cref\_t<T>\ t,\ detail::\_cref\_t<U>\ u)\ \textcolor{comment}{//}}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ (}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(t\ <\ u)>),}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(t\ >\ u)>),}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(t\ <=\ u)>),}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(t\ >=\ u)>),}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(u\ <\ t)>),}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(u\ >\ t)>),}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(u\ <=\ t)>),}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \textcolor{keyword}{requires}(detail::\_boolean\_testable<\textcolor{keyword}{decltype}(u\ >=\ t)>)}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \textcolor{comment}{//\&\&\ totally\_ordered<}}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \textcolor{comment}{//\ \ \ common\_reference\_t<detail::\_cref\_t<T>,\ detail::\_cref\_t<U>>>}}
+\DoxyCodeLine{00204\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00205\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00206\ \ \ \ \ totally\_ordered\_with\ =}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ totally\_ordered<T>\ \&\&}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ totally\_ordered<U>\ \&\&}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ equality\_comparable\_with<T,\ U>\ \&\&}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \textcolor{comment}{//common\_reference\_with<detail::\_cref\_t<T>,\ detail::\_cref\_t<U>>\ \&\&}}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_totally\_ordered\_with,\ T,\ U);}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00214\ \ \ \textcolor{comment}{//\ Object\ concepts}}
+\DoxyCodeLine{00216\ \textcolor{comment}{}}
+\DoxyCodeLine{00217\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00218\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00219\ \ \ \ \ destructible\ =}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ std::is\_nothrow\_destructible\_v<T>;}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00223\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00224\ \ \ \ \ constructible\_from\ =}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ destructible<T>\ \&\&}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ UNIFEX\_IS\_CONSTRUCTIBLE(T,\ Args...);}
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00228\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00229\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00230\ \ \ \ \ default\_constructible\ =}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ constructible\_from<T>;}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00233\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00234\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00235\ \ \ \ \ move\_constructible\ =}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ constructible\_from<T,\ T>\ \&\&}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ convertible\_to<T,\ T>;}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00239\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00240\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00241\ \ \ \ \ \_copy\_constructible,}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \textcolor{keyword}{requires}()(0)\ \&\&}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ constructible\_from<T,\ T\ \&>\ \&\&}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ constructible\_from<T,\ T\ const\ \&>\ \&\&}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ constructible\_from<T,\ T\ const>\ \&\&}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ convertible\_to<T\ \&,\ T>\ \&\&}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ convertible\_to<T\ const\ \&,\ T>\ \&\&}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ convertible\_to<T\ const,\ T>);}
+\DoxyCodeLine{00249\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00250\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00251\ \ \ \ \ copy\_constructible\ =}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ move\_constructible<T>\ \&\&}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_copy\_constructible,\ T);}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00255\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00256\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00257\ \ \ \ \ \_move\_assignable,}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \textcolor{keyword}{requires}()(0)\ \&\&}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ assignable\_from<T\ \&,\ T>);}
+\DoxyCodeLine{00260\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00261\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00262\ \ \ \ \ movable\ =}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ std::is\_object\_v<T>\ \&\&}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ move\_constructible<T>\ \&\&}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_move\_assignable,\ T)\ \&\&}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ swappable<T>;}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00269\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(}
+\DoxyCodeLine{00270\ \ \ \ \ \_copy\_assignable,}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \textcolor{keyword}{requires}()(0)\ \&\&}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ assignable\_from<T\ \&,\ T\ const\ \&>);}
+\DoxyCodeLine{00273\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00274\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00275\ \ \ \ \ copyable\ =}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ copy\_constructible<T>\ \&\&}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ movable<T>\ \&\&}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_copy\_assignable,\ T);}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00280\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00281\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00282\ \ \ \ \ semiregular\ =}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ copyable<T>\ \&\&}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ default\_constructible<T>;}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \textcolor{comment}{//\ Axiom:\ copies\ are\ independent.\ See\ Fundamentals\ of\ Generic\ Programming}}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \textcolor{comment}{//\ http://www.stepanovpapers.com/DeSt98.pdf}}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00289\ \ \ UNIFEX\_CONCEPT}
+\DoxyCodeLine{00290\ \ \ \ \ regular\ =}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ semiregular<T>\ \&\&}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ equality\_comparable<T>;}
+\DoxyCodeLine{00293\ }
+\DoxyCodeLine{00294\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Fn,\ \textcolor{keyword}{typename}...\ As>}
+\DoxyCodeLine{00295\ \ \ UNIFEX\_CONCEPT\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00296\ \ \ \ \ invocable\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ std::is\_invocable\_v<Fn,\ As...>;}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \textcolor{preprocessor}{\#if\ UNIFEX\_CXX\_CONCEPTS}}
+\DoxyCodeLine{00300\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Fn,\ \textcolor{keyword}{typename}...\ As>}
+\DoxyCodeLine{00301\ \ \ \textcolor{keyword}{concept\ }\textcolor{comment}{//}}
+\DoxyCodeLine{00302\ \ \ \ \ callable\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \textcolor{keyword}{requires}\ (Fn\&\&\ fn,\ As\&\&...\ as)\ \{}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ ((Fn\&\&)\ fn)((As\&\&)\ as...);}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00306\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00307\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Fn,\ \textcolor{keyword}{typename}...\ As>}
+\DoxyCodeLine{00308\ \ \ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00309\ \ \ \ \ callable\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \textcolor{keyword}{sizeof}(\textcolor{keyword}{decltype}(\_is\_callable::\_try\_call(\textcolor{keyword}{static\_cast<}Fn(*)(As...)\textcolor{keyword}{>}(\textcolor{keyword}{nullptr}))))\ ==}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \textcolor{keyword}{sizeof}(\_is\_callable::yes\_type);}
+\DoxyCodeLine{00312\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

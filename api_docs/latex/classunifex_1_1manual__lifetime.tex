@@ -1,0 +1,31 @@
+\doxysection{manual\+\_\+lifetime\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classunifex_1_1manual__lifetime}{}\label{classunifex_1_1manual__lifetime}\index{manual\_lifetime$<$ T $>$@{manual\_lifetime$<$ T $>$}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime_ac33fb631b6745808673e9e668d2e3546}\label{classunifex_1_1manual__lifetime_ac33fb631b6745808673e9e668d2e3546} 
+{\footnotesize template$<$typename... Args$>$ }\\T \& {\bfseries construct} (Args \&\&... args) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ T, Args... $>$)
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime_a328f956dbdcede41adc48dad7e5839ca}\label{classunifex_1_1manual__lifetime_a328f956dbdcede41adc48dad7e5839ca} 
+{\footnotesize template$<$typename Func $>$ }\\T \& {\bfseries construct\+\_\+with} (Func \&\&func) noexcept(is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ Func $>$)
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime_a0e873d938f3f934cb93b8f7ee577e687}\label{classunifex_1_1manual__lifetime_a0e873d938f3f934cb93b8f7ee577e687} 
+void {\bfseries destruct} () noexcept
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime_aa015c7a883d55ded17f19506fb92aa39}\label{classunifex_1_1manual__lifetime_aa015c7a883d55ded17f19506fb92aa39} 
+T \& {\bfseries get} () \&noexcept
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime_ae8258b81195cd5683370418d7a5dd905}\label{classunifex_1_1manual__lifetime_ae8258b81195cd5683370418d7a5dd905} 
+T \&\& {\bfseries get} () \&\&noexcept
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime_ab317e757bf0fed4a6c3666e0513e2e69}\label{classunifex_1_1manual__lifetime_ab317e757bf0fed4a6c3666e0513e2e69} 
+const T \& {\bfseries get} () const \&noexcept
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime_a801e247e9bebb519efbe2f5bd83356b3}\label{classunifex_1_1manual__lifetime_a801e247e9bebb519efbe2f5bd83356b3} 
+const T \&\& {\bfseries get} () const \&\&noexcept
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/manual\+\_\+lifetime.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,43 @@
+\doxysection{operation\+\_\+state\texorpdfstring{$<$}{<} Upstream\+Sender, Downstream\+Receiver \texorpdfstring{$>$}{>}\+::detached\+\_\+state Struct Reference}
+\hypertarget{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state}{}\label{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state}\index{operation\_state$<$ UpstreamSender, DownstreamReceiver $>$::detached\_state@{operation\_state$<$ UpstreamSender, DownstreamReceiver $>$::detached\_state}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_ac3ab0e0391ac9b8350571fca83868af7}\label{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_ac3ab0e0391ac9b8350571fca83868af7} 
+using {\bfseries parent\+\_\+op\+\_\+t} = typename \mbox{\hyperlink{structunifex_1_1__detach__on__cancel_1_1operation__state}{operation\+\_\+state}}$<$ Upstream\+Sender, Downstream\+Receiver $>$\+::type
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a4006c00c73b5e111740317a7a5ef104a}\label{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a4006c00c73b5e111740317a7a5ef104a} 
+{\bfseries detached\+\_\+state} (parent\+\_\+op\+\_\+t \&op, Upstream\+Sender \&\&s) noexcept(is\+\_\+nothrow\+\_\+connectable\+\_\+v$<$ Upstream\+Sender, \mbox{\hyperlink{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1__receiver}{\+\_\+receiver}} $>$)
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_ad3bd1cfefa835cf4159315a36b274a79}\label{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_ad3bd1cfefa835cf4159315a36b274a79} 
+void {\bfseries request\+\_\+stop} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a496d55d4b2f461945baf98498e62d5c2}\label{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a496d55d4b2f461945baf98498e62d5c2} 
+parent\+\_\+op\+\_\+t \texorpdfstring{$\ast$}{*} {\bfseries try\+\_\+get\+\_\+op} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a27437e8b7b314d285dc95e120eebf6ff}\label{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a27437e8b7b314d285dc95e120eebf6ff} 
+std\+::atomic\+\_\+uintptr\+\_\+t {\bfseries parent\+Op\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a932fc7abca76035d1cd8c3c6984a1630}\label{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a932fc7abca76035d1cd8c3c6984a1630} 
+\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\+\_\+stop\+\_\+source}} {\bfseries stop\+Source\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_ad89fefecfb40a23cabf60772a0ed22e3}\label{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_ad89fefecfb40a23cabf60772a0ed22e3} 
+connect\+\_\+result\+\_\+t$<$ Upstream\+Sender, \mbox{\hyperlink{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1__receiver}{\+\_\+receiver}} $>$ {\bfseries child\+Op\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a90244317fe27a64bbd4895141464c9d9}\label{structunifex_1_1__detach__on__cancel_1_1operation__state_1_1detached__state_a90244317fe27a64bbd4895141464c9d9} 
+static constexpr std\+::uintptr\+\_\+t {\bfseries mask} = \texorpdfstring{$\sim$}{\string~}std\+::uintptr\+\_\+t\{3u\}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/detach\+\_\+on\+\_\+cancel.\+hpp\end{DoxyCompactItemize}

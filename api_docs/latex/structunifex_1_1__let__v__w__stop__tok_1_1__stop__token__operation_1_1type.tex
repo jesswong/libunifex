@@ -1,0 +1,87 @@
+\doxysection{\+\_\+stop\+\_\+token\+\_\+operation\texorpdfstring{$<$}{<} Successor\+Factory, Receiver, typename \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}\index{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type@{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_af00b27dbefa664cc04cec1dcaebd4106}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_af00b27dbefa664cc04cec1dcaebd4106} 
+using {\bfseries inner\+\_\+sender\+\_\+t} = std\+::invoke\+\_\+result\+\_\+t$<$ Successor\+Factory \&, \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\+\_\+stop\+\_\+token}} $>$
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a750a7c3491e7ede4f86b5e3db8be60f4}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a750a7c3491e7ede4f86b5e3db8be60f4} 
+using {\bfseries receiver\+\_\+t} = stop\+\_\+token\+\_\+receiver$<$ operation$<$ Successor\+Factory, Receiver $>$, Receiver $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_ac18323de559ce08c953b9444360a18e7}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_ac18323de559ce08c953b9444360a18e7} 
+{\footnotesize template$<$typename Successor\+Factory2 , typename Receiver2 $>$ }\\{\bfseries type} (Successor\+Factory2 \&\&func, Receiver2 \&\&r) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Successor\+Factory, Successor\+Factory2 $>$//\&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Receiver, Receiver2 $>$//\&\&noexcept(connect\+\_\+inner\+\_\+op(func\+\_\+, \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\+\_\+stop\+\_\+token}}\{\}, static\+\_\+cast$<$ Receiver2 \&\& $>$(r))))
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_aaae8622d1ca58d9960aad31655e548f3}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_aaae8622d1ca58d9960aad31655e548f3} 
+{\bfseries type} (\mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type}{type}} \&\&)=delete
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_af49c603a002db3c46b470d2fcfd96046}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_af49c603a002db3c46b470d2fcfd96046} 
+void {\bfseries start} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a17beda47a4e0d9df6d4d678acf8480bf}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a17beda47a4e0d9df6d4d678acf8480bf} 
+void {\bfseries cleanup} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr bool \mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a0dd5953deadd89ee775c466e0938c1e2}{successor\+\_\+is\+\_\+nothrow}}
+\item 
+{\footnotesize template$<$typename Receiver2 $>$ }\\static constexpr bool \mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a5bf0cf2253bb9132fc6fd8f1da376200}{inner\+\_\+receiver\+\_\+nothrow\+\_\+constructible}}
+\item 
+static constexpr bool \mbox{\hyperlink{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a66ce6041abd89089bcdab93d967c01d5}{nothrow\+\_\+connectable}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a5bf0cf2253bb9132fc6fd8f1da376200}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a5bf0cf2253bb9132fc6fd8f1da376200} 
+\index{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type@{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type}!inner\_receiver\_nothrow\_constructible@{inner\_receiver\_nothrow\_constructible}}
+\index{inner\_receiver\_nothrow\_constructible@{inner\_receiver\_nothrow\_constructible}!\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type@{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type}}
+\doxysubsubsection{\texorpdfstring{inner\_receiver\_nothrow\_constructible}{inner\_receiver\_nothrow\_constructible}}
+{\footnotesize\ttfamily template$<$typename Successor\+Factory , typename Receiver , typename  = void$>$ \\
+template$<$typename Receiver2 $>$ \\
+constexpr bool inner\+\_\+receiver\+\_\+nothrow\+\_\+constructible\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\ \ \ \ \ \ std::is\_nothrow\_constructible\_v<}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ receiver\_t,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ type*,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ inplace\_stop\_token,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ Receiver2>}
+
+\end{DoxyCode}
+\Hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a66ce6041abd89089bcdab93d967c01d5}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a66ce6041abd89089bcdab93d967c01d5} 
+\index{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type@{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type}!nothrow\_connectable@{nothrow\_connectable}}
+\index{nothrow\_connectable@{nothrow\_connectable}!\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type@{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type}}
+\doxysubsubsection{\texorpdfstring{nothrow\_connectable}{nothrow\_connectable}}
+{\footnotesize\ttfamily template$<$typename Successor\+Factory , typename Receiver , typename  = void$>$ \\
+constexpr bool nothrow\+\_\+connectable\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\ \ \ \ \ \ unifex::is\_nothrow\_connectable\_v<inner\_sender\_t,\ receiver\_t>}
+
+\end{DoxyCode}
+\Hypertarget{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a0dd5953deadd89ee775c466e0938c1e2}\label{structunifex_1_1__let__v__w__stop__tok_1_1__stop__token__operation_1_1type_a0dd5953deadd89ee775c466e0938c1e2} 
+\index{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type@{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type}!successor\_is\_nothrow@{successor\_is\_nothrow}}
+\index{successor\_is\_nothrow@{successor\_is\_nothrow}!\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type@{\_stop\_token\_operation$<$ SuccessorFactory, Receiver, typename $>$::type}}
+\doxysubsubsection{\texorpdfstring{successor\_is\_nothrow}{successor\_is\_nothrow}}
+{\footnotesize\ttfamily template$<$typename Successor\+Factory , typename Receiver , typename  = void$>$ \\
+constexpr bool successor\+\_\+is\+\_\+nothrow\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\ \ \ \ \ \ std::is\_nothrow\_invocable\_v<SuccessorFactory\&,\ inplace\_stop\_token>}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/let\+\_\+value\+\_\+with\+\_\+stop\+\_\+token.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,28 @@
+\doxysection{manual\+\_\+lifetime\+\_\+union\texorpdfstring{$<$}{<} Ts \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classunifex_1_1manual__lifetime__union}{}\label{classunifex_1_1manual__lifetime__union}\index{manual\_lifetime\_union$<$ Ts $>$@{manual\_lifetime\_union$<$ Ts $>$}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime__union_af1431709724ad94a9000183707936cd8}\label{classunifex_1_1manual__lifetime__union_af1431709724ad94a9000183707936cd8} 
+{\footnotesize template$<$typename T , typename... Args$>$ }\\T \& {\bfseries construct} (Args \&\&... args) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ T, Args... $>$)
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime__union_ab8eebff4beed4ecd285f06bec11a4b4d}\label{classunifex_1_1manual__lifetime__union_ab8eebff4beed4ecd285f06bec11a4b4d} 
+{\footnotesize template$<$typename T , typename Func $>$ }\\T \& {\bfseries construct\+\_\+with} (Func \&\&func) noexcept(is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ Func $>$)
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime__union_a2cef889ae83d191ec98069f257ae31a9}\label{classunifex_1_1manual__lifetime__union_a2cef889ae83d191ec98069f257ae31a9} 
+{\footnotesize template$<$typename T $>$ }\\void {\bfseries destruct} () noexcept
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime__union_a2093c9cdb52067958dbdfaf29177b226}\label{classunifex_1_1manual__lifetime__union_a2093c9cdb52067958dbdfaf29177b226} 
+{\footnotesize template$<$typename T $>$ }\\decltype(auto) {\bfseries get} () \&noexcept
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime__union_a3db5a173f1bc7b7fd49da15959c462d4}\label{classunifex_1_1manual__lifetime__union_a3db5a173f1bc7b7fd49da15959c462d4} 
+{\footnotesize template$<$typename T $>$ }\\decltype(auto) {\bfseries get} () const \&noexcept
+\item 
+\Hypertarget{classunifex_1_1manual__lifetime__union_a29dc5e57ca7435fd7a8d9825e79813af}\label{classunifex_1_1manual__lifetime__union_a29dc5e57ca7435fd7a8d9825e79813af} 
+{\footnotesize template$<$typename T $>$ }\\decltype(auto) {\bfseries get} () \&\&noexcept
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/manual\+\_\+lifetime\+\_\+union.\+hpp\end{DoxyCompactItemize}

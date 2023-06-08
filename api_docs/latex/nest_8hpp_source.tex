@@ -1,0 +1,102 @@
+\doxysection{nest.\+hpp}
+\hypertarget{nest_8hpp_source}{}\label{nest_8hpp_source}\index{include/unifex/nest.hpp@{include/unifex/nest.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/bind\_back.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{namespace\ }\_nest\_cpo\ \{}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn}{\_nest\_fn}}\ final\ \{}
+\DoxyCodeLine{00030\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00031\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00032\ \ \ \textcolor{keyword}{using\ }nest\_member\_result\_t\ =}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \textcolor{keyword}{decltype}(UNIFEX\_DECLVAL(Scope\&).nest(UNIFEX\_DECLVAL(Sender)));}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00036\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_nest\_member\_nothrow\_v\ =}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(UNIFEX\_DECLVAL(Scope\&).nest(UNIFEX\_DECLVAL(Sender)));}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn_1_1deref}{deref}};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00042\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Scope)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ typed\_sender<Sender>\ AND\ tag\_invocable<\_nest\_fn,\ Sender,\ Scope\&>}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ AND\ typed\_sender<tag\_invoke\_result\_t<\_nest\_fn,\ Sender,\ Scope\&>>)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \textcolor{keyword}{auto}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ operator()(Sender\&\&\ sender,\ Scope\&\ scope)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_nest\_fn,\ Sender,\ Scope\&>)}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ -\/>\ tag\_invoke\_result\_t<\_nest\_fn,\ Sender,\ Scope\&>\ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(\mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn}{\_nest\_fn}}\{\},\ \textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ scope);}
+\DoxyCodeLine{00050\ \ \ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Scope)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ typed\_sender<Sender>\ AND(}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ !tag\_invocable<\_nest\_fn,\ Sender,\ Scope\&>)}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ AND\ typed\_sender<nest\_member\_result\_t<Scope,\ Sender>>)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \textcolor{keyword}{auto}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \textcolor{keyword}{operator}()(Sender\&\&\ sender,\ Scope\&\ scope)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nest\_member\_nothrow\_v<Scope,\ Sender>)}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ -\/>\ nest\_member\_result\_t<Scope,\ Sender>\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordflow}{return}\ scope.nest(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender));}
+\DoxyCodeLine{00061\ \ \ \}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope>}
+\DoxyCodeLine{00064\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Scope\&\ scope)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<tag\_t<bind\_back>,\ \mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn_1_1deref}{deref}},\ Scope*>)}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ -\/>\ bind\_back\_result\_t<deref,\ Scope*>;}
+\DoxyCodeLine{00067\ \}\ nest\{\};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn_1_1deref}{\_nest\_fn::deref}}\ final\ \{}
+\DoxyCodeLine{00070\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Scope>}
+\DoxyCodeLine{00071\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Sender\&\&\ sender,\ Scope*\ scope)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(\mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn}{\_nest\_fn}}\{\}(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ *scope)))}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ -\/>\ \textcolor{keyword}{decltype}(\mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn}{\_nest\_fn}}\{\}(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ *scope))\ \{}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn}{\_nest\_fn}}\{\}(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ *scope);}
+\DoxyCodeLine{00075\ \ \ \}}
+\DoxyCodeLine{00076\ \};}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope>}
+\DoxyCodeLine{00079\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \_nest\_fn::operator()(Scope\&\ scope)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<tag\_t<bind\_back>,\ \mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn_1_1deref}{deref}},\ Scope*>)}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ -\/>\ bind\_back\_result\_t<deref,\ Scope*>\ \{}
+\DoxyCodeLine{00082\ \ \ \textcolor{comment}{//\ bind\_back\ will\ try\ to\ store\ a\ copy\ of\ any\ lvalue\ references\ it's\ passed,}}
+\DoxyCodeLine{00083\ \ \ \textcolor{comment}{//\ which\ doesn't\ work\ for\ us\ here\ so\ we\ have\ to\ pass\ a\ scope\ pointer\ instead}}
+\DoxyCodeLine{00084\ \ \ \textcolor{comment}{//\ of\ a\ scope\ reference.\ \ we\ don't,\ in\ general,\ want\ to\ expose\ a}}
+\DoxyCodeLine{00085\ \ \ \textcolor{comment}{//\ \`{}nest(Sender\&\&,\ Scope*)`\ function\ so\ we\ use\ \`{}\_nest\_fn::deref`\ to\ do\ the}}
+\DoxyCodeLine{00086\ \ \ \textcolor{comment}{//\ indirection\ for\ us\ in\ this\ scenario.}}
+\DoxyCodeLine{00087\ \ \ \textcolor{keywordflow}{return}\ bind\_back(\mbox{\hyperlink{structunifex_1_1__nest__cpo_1_1__nest__fn_1_1deref}{deref}}\{\},\ \&scope);}
+\DoxyCodeLine{00088\ \}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \}\ \ \textcolor{comment}{//\ namespace\ \_nest\_cpo}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{keyword}{using\ }\_nest\_cpo::nest;}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \}\ \ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

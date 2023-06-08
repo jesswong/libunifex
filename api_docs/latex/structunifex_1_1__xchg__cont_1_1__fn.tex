@@ -1,0 +1,33 @@
+\doxysection{\+\_\+fn Struct Reference}
+\hypertarget{structunifex_1_1__xchg__cont_1_1__fn}{}\label{structunifex_1_1__xchg__cont_1_1__fn}\index{\_fn@{\_fn}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__xchg__cont_1_1__fn_ac6ebdc109922c330b90f68efe8810665}\label{structunifex_1_1__xchg__cont_1_1__fn_ac6ebdc109922c330b90f68efe8810665} 
+{\bfseries template} (typename Parent\+Promise, typename Child\+Promise)() UNIFEX\+\_\+\+ALWAYS\+\_\+\+INLINE \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\+\_\+handle}}$<$$>$ operator()(Parent\+Promise \&parent
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\+\_\+handle}}$<$ Child\+Promise $>$ action const \mbox{\hyperlink{structunifex_1_1__xchg__cont_1_1__fn_afa0daa753ff3cc901b82fecd546b252d}{noexcept}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__xchg__cont_1_1__fn_afa0daa753ff3cc901b82fecd546b252d}\label{structunifex_1_1__xchg__cont_1_1__fn_afa0daa753ff3cc901b82fecd546b252d} 
+\index{\_fn@{\_fn}!noexcept@{noexcept}}
+\index{noexcept@{noexcept}!\_fn@{\_fn}}
+\doxysubsubsection{\texorpdfstring{noexcept}{noexcept}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\+\_\+handle}}$<$Child\+Promise$>$ action const noexcept}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(*\textcolor{keyword}{this},\ parent,\ (continuation\_handle<ChildPromise>\&\&)\ action)}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/at\+\_\+coroutine\+\_\+exit.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,31 @@
+\doxysection{\+\_\+sndr\texorpdfstring{$<$}{<} Source, Done \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__let__d_1_1__sndr_1_1type}{}\label{classunifex_1_1__let__d_1_1__sndr_1_1type}\index{\_sndr$<$ Source, Done $>$::type@{\_sndr$<$ Source, Done $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__d_1_1__sndr_1_1type_adacc1d658c0b796026d6762f3581f9ce}\label{classunifex_1_1__let__d_1_1__sndr_1_1type_adacc1d658c0b796026d6762f3581f9ce} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+value\+\_\+types\+\_\+t$<$ Source, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}, Tuple $>$, sender\+\_\+value\+\_\+types\+\_\+t$<$ final\+\_\+sender\+\_\+t, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}, Tuple $>$ $>$\+::template apply$<$ Variant $>$
+\item 
+\Hypertarget{classunifex_1_1__let__d_1_1__sndr_1_1type_a1d7c4b3df3bdb4dfd08b776f0c78b768}\label{classunifex_1_1__let__d_1_1__sndr_1_1type_a1d7c4b3df3bdb4dfd08b776f0c78b768} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ Source, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, sender\+\_\+error\+\_\+types\+\_\+t$<$ final\+\_\+sender\+\_\+t, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__d_1_1__sndr_1_1type_a57cbe504abd5bb6db64049cd01a3bbbd}\label{classunifex_1_1__let__d_1_1__sndr_1_1type_a57cbe504abd5bb6db64049cd01a3bbbd} 
+{\footnotesize template$<$typename Source2 , typename Done2 $>$ }\\{\bfseries type} (Source2 \&\&source, Done2 \&\&done) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Source, Source2 $>$ \&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Done, Done2 $>$)
+\item 
+\Hypertarget{classunifex_1_1__let__d_1_1__sndr_1_1type_a4a640d134d29032a7515df184c9b4b5b}\label{classunifex_1_1__let__d_1_1__sndr_1_1type_a4a640d134d29032a7515df184c9b4b5b} 
+{\bfseries template} (typename Sender, typename Receiver, typename Source\+Receiver=receiver\+\_\+type$<$ member\+\_\+t$<$ Sender, Source $>$, Done, Receiver $>$, typename Final\+Receiver=final\+\_\+receiver\+\_\+type$<$ member\+\_\+t$<$ Sender, Source $>$, Done, Receiver $>$)(AND const ructible\+\_\+from$<$ Done
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__d_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__let__d_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$final\+\_\+sender\+\_\+t$>$\+::sends\+\_\+done
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/let\+\_\+done.\+hpp\end{DoxyCompactItemize}

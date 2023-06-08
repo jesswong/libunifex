@@ -1,0 +1,43 @@
+\doxysection{\+\_\+fn Struct Reference}
+\hypertarget{structunifex_1_1__bulk__tfx_1_1__fn}{}\label{structunifex_1_1__bulk__tfx_1_1__fn}\index{\_fn@{\_fn}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_adce2cb62105a3c27c0003d823be63e37}\label{structunifex_1_1__bulk__tfx_1_1__fn_adce2cb62105a3c27c0003d823be63e37} 
+{\bfseries template} (typename Source, typename Func, typename Func\+Policy=decltype(get\+\_\+execution\+\_\+policy(UNIFEX\+\_\+\+DECLVAL(Func \&))))() auto operator()(Source \&\&s
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_a4229bff53ba507cd06673253207bb075}\label{structunifex_1_1__bulk__tfx_1_1__fn_a4229bff53ba507cd06673253207bb075} 
+Func \&\&f const {\bfseries noexcept} (is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}, Source, Func, Func\+Policy $>$) -\/$>$ callable\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}, Source, Func, Func\+Policy $>$
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_aa2c4d8bbf888b9fdcadd1efa2e79c518}\label{structunifex_1_1__bulk__tfx_1_1__fn_aa2c4d8bbf888b9fdcadd1efa2e79c518} 
+{\bfseries template} (typename Source, typename Func, typename Func\+Policy)(AND tag\+\_\+invocable$<$ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_a0f92e415446b6cba66e240511a5cc019}\label{structunifex_1_1__bulk__tfx_1_1__fn_a0f92e415446b6cba66e240511a5cc019} 
+Func\+Policy auto {\bfseries operator()} (Source \&\&s, Func \&\&f, Func\+Policy policy) const noexcept(is\+\_\+nothrow\+\_\+tag\+\_\+invocable\+\_\+v$<$ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}, Source, Func, Func\+Policy $>$) -\/$>$ tag\+\_\+invoke\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}, Source, Func, Func\+Policy $>$
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_ad0ee96a0cce11e80392cb9e475a1df67}\label{structunifex_1_1__bulk__tfx_1_1__fn_ad0ee96a0cce11e80392cb9e475a1df67} 
+{\bfseries template} (typename Source, typename Func, typename Func\+Policy)(AND(!tag\+\_\+invocable$<$ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_ae10591749c57815ddcea14aef3bdf004}\label{structunifex_1_1__bulk__tfx_1_1__fn_ae10591749c57815ddcea14aef3bdf004} 
+Func\+Policy auto {\bfseries operator()} (Source \&\&s, Func \&\&f, Func\+Policy policy) const noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ remove\+\_\+cvref\+\_\+t$<$ Source $>$, Source $>$ \&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ remove\+\_\+cvref\+\_\+t$<$ Func $>$, Func $>$ \&\&std\+::is\+\_\+nothrow\+\_\+move\+\_\+constructible\+\_\+v$<$ Func\+Policy $>$) -\/$>$ tfx\+\_\+sender$<$ remove\+\_\+cvref\+\_\+t$<$ Source $>$, remove\+\_\+cvref\+\_\+t$<$ Func $>$, Func\+Policy $>$
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_a2041134f0251ab2fbd150bc136421cf4}\label{structunifex_1_1__bulk__tfx_1_1__fn_a2041134f0251ab2fbd150bc136421cf4} 
+{\footnotesize template$<$typename Func $>$ }\\constexpr auto {\bfseries operator()} (Func \&\&f) const noexcept(is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ tag\+\_\+t$<$ bind\+\_\+back $>$, \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}, Func $>$) -\/$>$ bind\+\_\+back\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}, Func $>$
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_a9f3c25b9947ef10cba389ba37d47430f}\label{structunifex_1_1__bulk__tfx_1_1__fn_a9f3c25b9947ef10cba389ba37d47430f} 
+{\footnotesize template$<$typename Func , typename Func\+Policy $>$ }\\constexpr auto {\bfseries operator()} (Func \&\&f, Func\+Policy policy) const noexcept(is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ tag\+\_\+t$<$ bind\+\_\+back $>$, \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}, Func, Func\+Policy $>$) -\/$>$ bind\+\_\+back\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__bulk__tfx_1_1__fn}{\+\_\+fn}}, Func, Func\+Policy $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_a176e1eca2d1e3d1c6a064340bc6a351e}\label{structunifex_1_1__bulk__tfx_1_1__fn_a176e1eca2d1e3d1c6a064340bc6a351e} 
+{\bfseries Source}
+\item 
+\Hypertarget{structunifex_1_1__bulk__tfx_1_1__fn_abc804dd9d3293d4c066a9bd6fda0963e}\label{structunifex_1_1__bulk__tfx_1_1__fn_abc804dd9d3293d4c066a9bd6fda0963e} 
+{\bfseries Func}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/bulk\+\_\+transform.\+hpp\end{DoxyCompactItemize}

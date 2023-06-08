@@ -1,0 +1,85 @@
+\doxysection{include/unifex/any\+\_\+scheduler.hpp File Reference}
+\hypertarget{any__scheduler_8hpp}{}\label{any__scheduler_8hpp}\index{include/unifex/any\_scheduler.hpp@{include/unifex/any\_scheduler.hpp}}
+
+
+A documented file.  
+
+
+{\ttfamily \#include $<$unifex/any\+\_\+unique.\+hpp$>$}\newline
+{\ttfamily \#include $<$unifex/receiver\+\_\+concepts.\+hpp$>$}\newline
+{\ttfamily \#include $<$unifex/sender\+\_\+concepts.\+hpp$>$}\newline
+{\ttfamily \#include $<$unifex/scheduler\+\_\+concepts.\+hpp$>$}\newline
+{\ttfamily \#include $<$unifex/any\+\_\+sender\+\_\+of.\+hpp$>$}\newline
+{\ttfamily \#include $<$unifex/std\+\_\+concepts.\+hpp$>$}\newline
+{\ttfamily \#include $<$unifex/type\+\_\+index.\+hpp$>$}\newline
+{\ttfamily \#include $<$unifex/tag\+\_\+invoke.\+hpp$>$}\newline
+{\ttfamily \#include $<$unifex/detail/prologue.\+hpp$>$}\newline
+{\ttfamily \#include $<$unifex/detail/epilogue.\+hpp$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__copy__as__fn}{\+\_\+copy\+\_\+as\+\_\+fn$<$ Ret $>$}}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__get__type__index__fn}{\+\_\+get\+\_\+type\+\_\+index\+\_\+fn}}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__equal__to__fn}{\+\_\+equal\+\_\+to\+\_\+fn}}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__schedule__and__connect__fn}{\+\_\+schedule\+\_\+and\+\_\+connect\+\_\+fn$<$ CPOs $>$}}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__schedule__and__connect__fn_1_1type}{\+\_\+schedule\+\_\+and\+\_\+connect\+\_\+fn$<$ CPOs $>$\+::type}}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__with_1_1any__scheduler}{\+\_\+with$<$ CPOs $>$\+::any\+\_\+scheduler$<$ CPOs $>$}}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__with_1_1any__scheduler_1_1__sender}{\+\_\+with$<$ CPOs $>$\+::any\+\_\+scheduler$<$ CPOs $>$\+::\+\_\+sender}}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__with_1_1any__scheduler__ref}{\+\_\+with$<$ CPOs $>$\+::any\+\_\+scheduler\+\_\+ref$<$ CPOs $>$}}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__with_1_1any__scheduler__ref_1_1__sender}{\+\_\+with$<$ CPOs $>$\+::any\+\_\+scheduler\+\_\+ref$<$ CPOs $>$\+::\+\_\+sender}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespaceunifex}{unifex}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{any__scheduler_8hpp_a7ace39973c86cb66f9f4120346afb28a}\label{any__scheduler_8hpp_a7ace39973c86cb66f9f4120346afb28a} 
+{\footnotesize template$<$typename... CPOs$>$ }\\using {\bfseries \+\_\+void\+\_\+receiver\+\_\+ref} = \+\_\+any\+::\+\_\+receiver\+\_\+ref$<$ \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ CPOs... $>$ $>$
+\item 
+\Hypertarget{any__scheduler_8hpp_a4d6d52e59db8de9d8d517424e4d9d433}\label{any__scheduler_8hpp_a4d6d52e59db8de9d8d517424e4d9d433} 
+{\footnotesize template$<$typename... CPOs$>$ }\\using {\bfseries \+\_\+any\+\_\+void\+\_\+sender\+\_\+of} = typename \mbox{\hyperlink{structunifex_1_1__any_1_1__with}{\+\_\+any\+::\+\_\+with}}$<$ CPOs... $>$\+::template any\+\_\+sender\+\_\+of$<$$>$
+\item 
+\Hypertarget{any__scheduler_8hpp_a8bf0e1d2c895e4077a6dee952d2219f1}\label{any__scheduler_8hpp_a8bf0e1d2c895e4077a6dee952d2219f1} 
+{\footnotesize template$<$typename... CPOs$>$ }\\using {\bfseries any\+\_\+scheduler\+\_\+impl} = any\+\_\+unique\+\_\+t$<$ \+\_\+schedule\+\_\+and\+\_\+connect$<$ CPOs... $>$, \+\_\+copy\+\_\+as$<$ any\+\_\+scheduler$<$ CPOs... $>$ $>$, \+\_\+get\+\_\+type\+\_\+index, overload$<$ bool(const \mbox{\hyperlink{structunifex_1_1this__}{this\+\_\+}} \&, const any\+\_\+scheduler$<$ CPOs... $>$ \&) noexcept $>$(\+\_\+equal\+\_\+to)$>$
+\item 
+\Hypertarget{any__scheduler_8hpp_ad4c86cd66695b2367efc00d751fa8814}\label{any__scheduler_8hpp_ad4c86cd66695b2367efc00d751fa8814} 
+{\footnotesize template$<$typename... CPOs$>$ }\\using {\bfseries any\+\_\+scheduler\+\_\+ref\+\_\+impl} = any\+\_\+ref\+\_\+t$<$ \+\_\+schedule\+\_\+and\+\_\+connect$<$ CPOs... $>$, \+\_\+get\+\_\+type\+\_\+index, overload$<$ bool(const \mbox{\hyperlink{structunifex_1_1this__}{this\+\_\+}} \&, const any\+\_\+scheduler\+\_\+ref$<$ CPOs... $>$ \&) noexcept $>$(\+\_\+equal\+\_\+to)$>$
+\item 
+\Hypertarget{namespaceunifex_a8b382b1d7873fe0bb37866c025f51c3b}\label{namespaceunifex_a8b382b1d7873fe0bb37866c025f51c3b} 
+using {\bfseries any\+\_\+scheduler} = \+\_\+any\+\_\+sched\+::any\+\_\+scheduler$<$$>$
+\item 
+\Hypertarget{namespaceunifex_a3e3acc209fd1fa5b7c70c2fa8fdb13ad}\label{namespaceunifex_a3e3acc209fd1fa5b7c70c2fa8fdb13ad} 
+using {\bfseries any\+\_\+scheduler\+\_\+ref} = \+\_\+any\+\_\+sched\+::any\+\_\+scheduler\+\_\+ref$<$$>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{any__scheduler_8hpp_ab25399787a70b3aba3d9d2df6c80e80c}\label{any__scheduler_8hpp_ab25399787a70b3aba3d9d2df6c80e80c} 
+{\footnotesize template$<$typename Ret $>$ }\\constexpr \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__copy__as__fn}{\+\_\+copy\+\_\+as\+\_\+fn}}$<$ Ret $>$ {\bfseries \+\_\+copy\+\_\+as} \{\}
+\item 
+\Hypertarget{any__scheduler_8hpp_a77923d14f3c0b3eafb5dd8a6411d0b93}\label{any__scheduler_8hpp_a77923d14f3c0b3eafb5dd8a6411d0b93} 
+constexpr struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__get__type__index__fn}{unifex\+::\+\_\+any\+\_\+sched\+::\+\_\+get\+\_\+type\+\_\+index\+\_\+fn}} {\bfseries \+\_\+get\+\_\+type\+\_\+index}
+\item 
+\Hypertarget{any__scheduler_8hpp_afbab9570e790c3211928fac83f21f590}\label{any__scheduler_8hpp_afbab9570e790c3211928fac83f21f590} 
+constexpr struct \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__equal__to__fn}{unifex\+::\+\_\+any\+\_\+sched\+::\+\_\+equal\+\_\+to\+\_\+fn}} {\bfseries \+\_\+equal\+\_\+to}
+\item 
+\Hypertarget{any__scheduler_8hpp_ad3b89e11a4e8cc1b5716a53c181d8dbf}\label{any__scheduler_8hpp_ad3b89e11a4e8cc1b5716a53c181d8dbf} 
+{\footnotesize template$<$typename... CPOs$>$ }\\constexpr \mbox{\hyperlink{structunifex_1_1__any__sched_1_1__schedule__and__connect__fn}{\+\_\+schedule\+\_\+and\+\_\+connect\+\_\+fn}}$<$ CPOs... $>$\+::type {\bfseries \+\_\+schedule\+\_\+and\+\_\+connect} \{\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A documented file. 
+
+Details. 

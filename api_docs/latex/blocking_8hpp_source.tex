@@ -1,0 +1,132 @@
+\doxysection{blocking.\+hpp}
+\hypertarget{blocking_8hpp_source}{}\label{blocking_8hpp_source}\index{include/unifex/blocking.hpp@{include/unifex/blocking.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }\_block\ \{}
+\DoxyCodeLine{00026\ \textcolor{keyword}{enum\ class}\ \_enum\ \{}
+\DoxyCodeLine{00027\ \ \ \textcolor{comment}{//\ No\ guarantees\ about\ the\ timing\ and\ context\ on\ which\ the\ receiver\ will}}
+\DoxyCodeLine{00028\ \ \ \textcolor{comment}{//\ be\ called.}}
+\DoxyCodeLine{00029\ \ \ maybe\ =\ 0,}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \textcolor{comment}{//\ Always\ completes\ asynchronously.}}
+\DoxyCodeLine{00032\ \ \ \textcolor{comment}{//\ Guarantees\ that\ the\ receiver\ will\ not\ be\ called\ on\ the\ current\ thread}}
+\DoxyCodeLine{00033\ \ \ \textcolor{comment}{//\ before\ .start()\ returns.\ The\ receiver\ may\ be\ called\ on\ another\ thread}}
+\DoxyCodeLine{00034\ \ \ \textcolor{comment}{//\ before\ .start()\ returns,\ however,\ or\ may\ be\ called\ on\ the\ current\ thread}}
+\DoxyCodeLine{00035\ \ \ \textcolor{comment}{//\ some\ time\ after\ .start()\ returns.}}
+\DoxyCodeLine{00036\ \ \ never,}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \textcolor{comment}{//\ Guarantees\ that\ the\ receiver\ will\ be\ called\ strongly-\/happens-\/before}}
+\DoxyCodeLine{00039\ \ \ \textcolor{comment}{//\ .start()\ returns.\ Does\ not\ guarantee\ the\ call\ to\ the\ receiver\ happens}}
+\DoxyCodeLine{00040\ \ \ \textcolor{comment}{//\ on\ the\ same\ thread\ that\ called\ .start(),\ however.}}
+\DoxyCodeLine{00041\ \ \ always,}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \textcolor{comment}{//\ Caller\ guarantees\ that\ the\ receiver\ will\ be\ called\ inline\ on\ the}}
+\DoxyCodeLine{00044\ \ \ \textcolor{comment}{//\ current\ thread\ that\ called\ .start()\ before\ .start()\ returns.}}
+\DoxyCodeLine{00045\ \ \ always\_inline}
+\DoxyCodeLine{00046\ \};}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__block_1_1blocking__kind}{blocking\_kind}}\ \{}
+\DoxyCodeLine{00049\ \ \ \textcolor{keyword}{template}\ <\_enum\ Kind>}
+\DoxyCodeLine{00050\ \ \ \textcolor{keyword}{using\ }constant\ =\ std::integral\_constant<\_enum,\ Kind>;}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \mbox{\hyperlink{structunifex_1_1__block_1_1blocking__kind}{blocking\_kind}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__block_1_1blocking__kind}{blocking\_kind}}(\_enum\ kind)\ noexcept}
+\DoxyCodeLine{00055\ \ \ \ \ :\ value(kind)}
+\DoxyCodeLine{00056\ \ \ \{\}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{template}\ <\_enum\ Kind>}
+\DoxyCodeLine{00059\ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__block_1_1blocking__kind}{blocking\_kind}}(constant<Kind>)\ noexcept}
+\DoxyCodeLine{00060\ \ \ \ \ :\ value(Kind)}
+\DoxyCodeLine{00061\ \ \ \{\}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{operator}\ \_enum()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00065\ \ \ \}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \textcolor{keyword}{constexpr}\ \_enum\ operator()()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00069\ \ \ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator==(\mbox{\hyperlink{structunifex_1_1__block_1_1blocking__kind}{blocking\_kind}}\ a,\ \mbox{\hyperlink{structunifex_1_1__block_1_1blocking__kind}{blocking\_kind}}\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordflow}{return}\ a.value\ ==\ b.value;}
+\DoxyCodeLine{00073\ \ \ \}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator!=(\mbox{\hyperlink{structunifex_1_1__block_1_1blocking__kind}{blocking\_kind}}\ a,\ \mbox{\hyperlink{structunifex_1_1__block_1_1blocking__kind}{blocking\_kind}}\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordflow}{return}\ a.value\ !=\ b.value;}
+\DoxyCodeLine{00077\ \ \ \}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ constant<\_enum::maybe>\ maybe\ \{\};}
+\DoxyCodeLine{00080\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ constant<\_enum::never>\ never\ \{\};}
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ constant<\_enum::always>\ always\ \{\};}
+\DoxyCodeLine{00082\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ constant<\_enum::always\_inline>\ always\_inline\ \{\};}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \_enum\ value\{\};}
+\DoxyCodeLine{00085\ \};}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__block_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00088\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Sender)}
+\DoxyCodeLine{00089\ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ const\ Sender\&>)}
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(\textcolor{keyword}{const}\ Sender\&\ s)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ const\ Sender\&>)}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ -\/>\ tag\_invoke\_result\_t<\_fn,\ const\ Sender\&>\ \{}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(\mbox{\hyperlink{structunifex_1_1__block_1_1__fn}{\_fn}}\{\},\ s);}
+\DoxyCodeLine{00094\ \ \ \}}
+\DoxyCodeLine{00095\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Sender)}
+\DoxyCodeLine{00096\ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_fn,\ const\ Sender\&>))}
+\DoxyCodeLine{00097\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(\textcolor{keyword}{const}\ Sender\&)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::maybe;}
+\DoxyCodeLine{00099\ \ \ \}}
+\DoxyCodeLine{00100\ \};}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{keyword}{namespace\ }\_cfn\ \{}
+\DoxyCodeLine{00103\ \ \ \textcolor{keyword}{template}\ <\_enum\ Kind>}
+\DoxyCodeLine{00104\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \_kind(blocking\_kind::constant<Kind>\ kind)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keywordflow}{return}\ kind;}
+\DoxyCodeLine{00106\ \ \ \}}
+\DoxyCodeLine{00107\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \_kind(\mbox{\hyperlink{structunifex_1_1__block_1_1blocking__kind}{blocking\_kind}})\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::maybe;}
+\DoxyCodeLine{00109\ \ \ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00112\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ cblocking()\ noexcept\ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keyword}{using\ }blocking\_t\ =\ remove\_cvref\_t<\textcolor{keyword}{decltype}(\_fn\{\}(UNIFEX\_DECLVAL(T\&)))>;}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordflow}{return}\ \_cfn::\_kind(blocking\_t\{\});}
+\DoxyCodeLine{00115\ \ \ \}}
+\DoxyCodeLine{00116\ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \}\ \textcolor{comment}{//\ namespace\ \_block}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \_block::\_fn\ blocking\ \{\};}
+\DoxyCodeLine{00121\ \textcolor{keyword}{using\ }\_block::\_cfn::cblocking;}
+\DoxyCodeLine{00122\ \textcolor{keyword}{using\ }\_block::blocking\_kind;}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

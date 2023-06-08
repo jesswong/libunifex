@@ -1,0 +1,371 @@
+\doxysection{continuations.\+hpp}
+\hypertarget{continuations_8hpp_source}{}\label{continuations_8hpp_source}\index{include/unifex/continuations.hpp@{include/unifex/continuations.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/coroutine.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/std\_concepts.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/type\_index.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\_visit\_continuations\_cpo\ \{}
+\DoxyCodeLine{00031\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__visit__continuations__cpo_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#if\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Func)}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!same\_as<Promise,\ void>)\ AND\ callable<\_fn,\ Promise\&,\ Func>)}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ tag\_invoke(}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__visit__continuations__cpo_1_1__fn}{\_fn}}\ cpo,}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ coro::coroutine\_handle<Promise>\ h,}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ Func\&\&\ func)\ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<\_fn,\ Promise\&,\ Func>)\ \{}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ cpo(h.promise(),\ (Func\ \&\&)\ func);}
+\DoxyCodeLine{00040\ \ \ \ \ \}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Continuation,\ \textcolor{keyword}{typename}\ Func)}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ const\ Continuation\&,\ Func>)}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{void}\ operator()(\textcolor{keyword}{const}\ Continuation\&\ c,\ Func\&\&\ func)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__visit__continuations__cpo_1_1__fn}{\_fn}},}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Continuation\&,}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Func\&\&>)\ \{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ std::is\_void\_v<tag\_invoke\_result\_t<}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__visit__continuations__cpo_1_1__fn}{\_fn}},}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Continuation\&,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Func\&\&>>,}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}tag\_invoke()\ overload\ for\ visit\_continuations()\ must\ return\ void"{}});}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(\mbox{\hyperlink{structunifex_1_1__visit__continuations__cpo_1_1__fn}{\_fn}}\{\},\ c,\ (Func\ \&\&)\ func);}
+\DoxyCodeLine{00057\ \ \ \ \ \}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Continuation,\ \textcolor{keyword}{typename}\ Func)}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_fn,\ const\ Continuation\&,\ Func>))}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordtype}{void}\ \textcolor{keyword}{operator}()(\textcolor{keyword}{const}\ Continuation\&,\ Func\&\&)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{\}}
+\DoxyCodeLine{00062\ \ \ \}\ visit\_continuations\ \{\};}
+\DoxyCodeLine{00063\ \}\ \textcolor{comment}{//\ namespace\ \_visit\_continuations\_cpo}}
+\DoxyCodeLine{00064\ \textcolor{keyword}{using\ }\_visit\_continuations\_cpo::visit\_continuations;}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#if\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00067\ \textcolor{keyword}{namespace\ }\_ch\ \{}
+\DoxyCodeLine{00068\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00069\ \textcolor{keyword}{struct\ }continuation\_handle;}
+\DoxyCodeLine{00070\ \}\ \textcolor{comment}{//\ namespace\ \_ch}}
+\DoxyCodeLine{00071\ \textcolor{keyword}{using\ }\_ch::continuation\_handle;}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \textcolor{keyword}{namespace\ }\_ci\ \{}
+\DoxyCodeLine{00075\ \textcolor{keyword}{class\ }continuation\_info;}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__ci_1_1__continuation__info__vtable}{\_continuation\_info\_vtable}}\ \{}
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00079\ \ \ \textcolor{keyword}{using\ }callback\_t\ =\ void(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\&,\ \textcolor{keywordtype}{void}*);}
+\DoxyCodeLine{00080\ \ \ \textcolor{keyword}{using\ }visitor\_t\ =\ void(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*,\ callback\_t*,\ \textcolor{keywordtype}{void}*);}
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{using\ }type\_index\_getter\_t\ =\ type\_index()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ type\_index\_getter\_t*\ typeIndexGetter\_;}
+\DoxyCodeLine{00084\ \ \ visitor\_t*\ visit\_;}
+\DoxyCodeLine{00085\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00086\ \};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00089\ \textcolor{keyword}{inline}\ type\_index\ \_default\_type\_index\_getter()\ noexcept\ \{}
+\DoxyCodeLine{00090\ \ \ \textcolor{keywordflow}{return}\ type\_id<void>();}
+\DoxyCodeLine{00091\ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \_default\_visit(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*,\ \_continuation\_info\_vtable::callback\_t*,\ \textcolor{keywordtype}{void}*)\ \{}
+\DoxyCodeLine{00094\ \}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00097\ \textcolor{keywordtype}{void}\ \_invoke\_visitor(\textcolor{keyword}{const}\ continuation\_info\&\ info,\ \textcolor{keywordtype}{void}*\ data)\ \{}
+\DoxyCodeLine{00098\ \ \ std::invoke(*\textcolor{keyword}{static\_cast<}std::add\_pointer\_t<F>\textcolor{keyword}{>}(data),\ info);}
+\DoxyCodeLine{00099\ \}}
+\DoxyCodeLine{00100\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\ \{}
+\DoxyCodeLine{00103\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00104\ \ \ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Continuation>}
+\DoxyCodeLine{00107\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\ from\_continuation(\textcolor{keyword}{const}\ Continuation\&\ c)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\ from\_continuation(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\&\ c)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordflow}{return}\ c;}
+\DoxyCodeLine{00111\ \ \ \}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{preprocessor}{\#if\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00114\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise>}
+\DoxyCodeLine{00115\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\ from\_continuation(}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<Promise>}}\&\ c)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\{c.handle().address(),\ c.vtable\_\};}
+\DoxyCodeLine{00118\ \ \ \}}
+\DoxyCodeLine{00119\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ address()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keywordflow}{return}\ address\_;}
+\DoxyCodeLine{00123\ \ \ \}}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00126\ \ \ type\_index\ type()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keywordflow}{return}\ vtable\_-\/>typeIndexGetter\_();}
+\DoxyCodeLine{00128\ \ \ \}}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00131\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00132\ \ \ tag\_invoke(tag\_t<visit\_continuations>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\&\ c,\ F\&\&\ f)\ \{}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{comment}{//\ Any\ const\ that\ gets\ stripped\ by\ the\ const\_cast\ below\ gets\ reapplied\ by\ the}}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{comment}{//\ static\_cast\ in\ \_invoke\_visitor.}}
+\DoxyCodeLine{00135\ \ \ \ \ c.vtable\_-\/>visit\_(}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ c.address\_,}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \&\_invoke\_visitor<F>,}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(std::addressof(f))));}
+\DoxyCodeLine{00139\ \ \ \}}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00143\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00144\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}(}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ address,}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__ci_1_1__continuation__info__vtable}{\_continuation\_info\_vtable}}*\ vtable)\ noexcept}
+\DoxyCodeLine{00147\ \ \ \ \ :\ vtable\_(vtable),\ address\_(address)\ \{\}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__ci_1_1__continuation__info__vtable}{\_continuation\_info\_vtable}}\ default\_vtable\_\ \{}
+\DoxyCodeLine{00150\ \ \ \ \ \&\_default\_type\_index\_getter,}
+\DoxyCodeLine{00151\ \ \ \ \ \&\_default\_visit}
+\DoxyCodeLine{00152\ \ \ \};}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__ci_1_1__continuation__info__vtable}{\_continuation\_info\_vtable}}*\ vtable\_\{\&default\_vtable\_\};}
+\DoxyCodeLine{00155\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00156\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ address,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__ci_1_1__continuation__info__vtable}{\_continuation\_info\_vtable}}*)\ noexcept}
+\DoxyCodeLine{00157\ \ \ :\ address\_(address)\ \{\}}
+\DoxyCodeLine{00158\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ address\_\{\textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00161\ \};}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00164\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Continuation>}
+\DoxyCodeLine{00165\ type\_index\ \_type\_index\_getter\_for()\ noexcept\ \{}
+\DoxyCodeLine{00166\ \ \ \textcolor{keywordflow}{return}\ type\_id<Continuation>();}
+\DoxyCodeLine{00167\ \}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Continuation>}
+\DoxyCodeLine{00170\ \textcolor{keywordtype}{void}\ \_visit\_for(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ address,\ \_continuation\_info\_vtable::callback\_t*\ cb,\ \textcolor{keywordtype}{void}*\ data)\ \{}
+\DoxyCodeLine{00171\ \ \ visit\_continuations(}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ *\textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }Continuation*\textcolor{keyword}{>}(address),}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ [cb,\ data](\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ continuation)\ \{}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ cb(continuation\_info::from\_continuation(continuation),\ data);}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00176\ \}}
+\DoxyCodeLine{00177\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Continuation>}
+\DoxyCodeLine{00180\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \_continuation\_info\_vtable\ \_vtable\_for\ \{}
+\DoxyCodeLine{00181\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00182\ \ \ \&\_type\_index\_getter\_for<Continuation>,}
+\DoxyCodeLine{00183\ \ \ \&\_visit\_for<Continuation>}
+\DoxyCodeLine{00184\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00185\ \};}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Continuation>}
+\DoxyCodeLine{00188\ \textcolor{keyword}{inline}\ continuation\_info\ continuation\_info::from\_continuation(}
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keyword}{const}\ Continuation\&\ r)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00190\ \ \ \textcolor{keywordflow}{return}\ continuation\_info\{\textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(std::addressof(r)),}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&\_vtable\_for<Continuation>\};}
+\DoxyCodeLine{00192\ \}}
+\DoxyCodeLine{00193\ \}\ \textcolor{comment}{//\ namespace\ \_ci}}
+\DoxyCodeLine{00194\ \textcolor{keyword}{using\ }\_ci::continuation\_info;}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ \textcolor{preprocessor}{\#if\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00197\ \textcolor{keyword}{namespace\ }\_ch\ \{}
+\DoxyCodeLine{00198\ [[noreturn]]\ \textcolor{keyword}{inline}\ coro::coroutine\_handle<>\ \_default\_done\_callback(\textcolor{keywordtype}{void}*)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00199\ \ \ std::terminate();}
+\DoxyCodeLine{00200\ \}}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__ch_1_1__continuation__handle__vtable}{\_continuation\_handle\_vtable}}\ :\ \mbox{\hyperlink{structunifex_1_1__ci_1_1__continuation__info__vtable}{\_ci::\_continuation\_info\_vtable}}\ \{}
+\DoxyCodeLine{00203\ \ \ \textcolor{keyword}{using\ }done\_callback\_t\ =\ coro::coroutine\_handle<>(\textcolor{keywordtype}{void}*)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00204\ \ \ done\_callback\_t*\ doneCallback\_;}
+\DoxyCodeLine{00205\ \};}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00208\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<void>}}\ \{}
+\DoxyCodeLine{00209\ \ \ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ \textcolor{comment}{//\ Because\ of\ a\ detail\ in\ the\ concepts\ emulation\ macros,\ it\ is\ not\ possible\ to}}
+\DoxyCodeLine{00212\ \ \ \textcolor{comment}{//\ forward-\/declare\ a\ constrained\ function\ and\ provide\ its\ definition\ later.\ So}}
+\DoxyCodeLine{00213\ \ \ \textcolor{comment}{//\ below\ we\ define\ a\ constrained\ constructor\ that\ trivially\ dispatches\ to\ an}}
+\DoxyCodeLine{00214\ \ \ \textcolor{comment}{//\ unconstrained\ implementation\ defined\ elsewhere.}}
+\DoxyCodeLine{00215\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Promise)}
+\DoxyCodeLine{00216\ \ \ \ \ (\textcolor{keyword}{requires}\ (!same\_as<Promise,\ void>))}
+\DoxyCodeLine{00217\ \ \ \textcolor{comment}{/*implicit*/}\ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle}}(coro::coroutine\_handle<Promise>\ continuation)\ noexcept}
+\DoxyCodeLine{00218\ \ \ \ \ :\ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle}}(0,\ (coro::coroutine\_handle<Promise>\&\&)\ continuation)}
+\DoxyCodeLine{00219\ \ \ \{\}}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{operator}\ bool()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00222\ \ \ \ \ \textcolor{keywordflow}{return}\ handle\_\ !=\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00223\ \ \ \}}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ coro::coroutine\_handle<>\ handle()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00226\ \ \ \ \ \textcolor{keywordflow}{return}\ handle\_;}
+\DoxyCodeLine{00227\ \ \ \}}
+\DoxyCodeLine{00228\ }
+\DoxyCodeLine{00229\ \ \ \textcolor{keywordtype}{void}\ resume()\ \{}
+\DoxyCodeLine{00230\ \ \ \ \ handle\_.resume();}
+\DoxyCodeLine{00231\ \ \ \}}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00233\ \ \ coro::coroutine\_handle<>\ done()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00234\ \ \ \ \ \textcolor{keywordflow}{return}\ vtable\_-\/>doneCallback\_(handle\_.address());}
+\DoxyCodeLine{00235\ \ \ \}}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00237\ \ \ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\ info()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \textcolor{keywordflow}{return}\ continuation\_info::from\_continuation(*\textcolor{keyword}{this});}
+\DoxyCodeLine{00239\ \ \ \}}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00241\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00242\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00243\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00244\ \ \ tag\_invoke(tag\_t<visit\_continuations>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<>}}\&\ c,\ F\&\&\ f)\ \{}
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{comment}{//\ Any\ const\ that\ gets\ stripped\ by\ the\ const\_cast\ below\ gets\ reapplied\ by\ the}}
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{comment}{//\ static\_cast\ in\ \_invoke\_visitor.}}
+\DoxyCodeLine{00247\ \ \ \ \ c.vtable\_-\/>visit\_(}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ c.handle\_.address(),}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \&\_ci::\_invoke\_visitor<F>,}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(std::addressof(f))));}
+\DoxyCodeLine{00251\ \ \ \}}
+\DoxyCodeLine{00252\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00255\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}};}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__ch_1_1__continuation__handle__vtable}{\_continuation\_handle\_vtable}}\ default\_vtable\_\ \{}
+\DoxyCodeLine{00258\ \ \ \ \ \{}
+\DoxyCodeLine{00259\ \textcolor{preprocessor}{\ \ \ \ \#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \&\_ci::\_default\_type\_index\_getter,}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \&\_ci::\_default\_visit,}
+\DoxyCodeLine{00262\ \textcolor{preprocessor}{\ \ \ \ \#endif}}
+\DoxyCodeLine{00263\ \ \ \ \ \},}
+\DoxyCodeLine{00264\ \ \ \ \ \&\_default\_done\_callback}
+\DoxyCodeLine{00265\ \ \ \};}
+\DoxyCodeLine{00266\ }
+\DoxyCodeLine{00267\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise>}
+\DoxyCodeLine{00268\ \ \ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle}}(\textcolor{keywordtype}{int},\ coro::coroutine\_handle<Promise>\ continuation)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00269\ }
+\DoxyCodeLine{00270\ \ \ coro::coroutine\_handle<>\ handle\_\{\};}
+\DoxyCodeLine{00271\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__ch_1_1__continuation__handle__vtable}{\_continuation\_handle\_vtable}}*\ vtable\_\ \{\&default\_vtable\_\};}
+\DoxyCodeLine{00272\ \};}
+\DoxyCodeLine{00273\ }
+\DoxyCodeLine{00274\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00275\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise>}
+\DoxyCodeLine{00276\ \textcolor{keywordtype}{void}\ \_visit\_for(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ address,\ \_ci::\_continuation\_info\_vtable::callback\_t*\ cb,\ \textcolor{keywordtype}{void}*\ data)\ \{}
+\DoxyCodeLine{00277\ \ \ visit\_continuations(}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \textcolor{keyword}{const\_cast<}\textcolor{keyword}{const\ }Promise\&\textcolor{keyword}{>}(}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \ \ coro::coroutine\_handle<Promise>::from\_address(}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(address)).promise()),}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ [cb,\ data](\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ continuation)\ \{}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ cb(continuation\_info::from\_continuation(continuation),\ data);}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00284\ \}}
+\DoxyCodeLine{00285\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise>}
+\DoxyCodeLine{00288\ coro::coroutine\_handle<>\ \_done\_callback\_for(\textcolor{keywordtype}{void}*\ address)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00289\ \ \ \textcolor{keywordflow}{return}\ coro::coroutine\_handle<Promise>::from\_address(address).promise().unhandled\_done();}
+\DoxyCodeLine{00290\ \}}
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00292\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise>}
+\DoxyCodeLine{00293\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \_continuation\_handle\_vtable\ \_vtable\_for\ \{}
+\DoxyCodeLine{00294\ \ \ \{}
+\DoxyCodeLine{00295\ \textcolor{preprocessor}{\ \ \#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \&\_ci::\_type\_index\_getter\_for<Promise>,}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \&\_visit\_for<Promise>,}
+\DoxyCodeLine{00298\ \textcolor{preprocessor}{\ \ \#endif}}
+\DoxyCodeLine{00299\ \ \ \},}
+\DoxyCodeLine{00300\ \ \ \&\_done\_callback\_for<Promise>}
+\DoxyCodeLine{00301\ \};}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00303\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise>}
+\DoxyCodeLine{00304\ continuation\_handle<void>::continuation\_handle(\textcolor{keywordtype}{int},\ coro::coroutine\_handle<Promise>\ continuation)\ noexcept}
+\DoxyCodeLine{00305\ \ \ :\ handle\_((coro::coroutine\_handle<Promise>\&\&)\ continuation)}
+\DoxyCodeLine{00306\ \ \ ,\ vtable\_(\&\_vtable\_for<Promise>)}
+\DoxyCodeLine{00307\ \{\}}
+\DoxyCodeLine{00308\ }
+\DoxyCodeLine{00309\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise>}
+\DoxyCodeLine{00310\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle}}\ \{}
+\DoxyCodeLine{00311\ \ \ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00312\ }
+\DoxyCodeLine{00313\ \ \ \textcolor{comment}{/*implicit*/}\ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle}}(coro::coroutine\_handle<Promise>\ continuation)\ noexcept}
+\DoxyCodeLine{00314\ \ \ \ \ :\ self\_((coro::coroutine\_handle<Promise>\&\&)\ continuation)}
+\DoxyCodeLine{00315\ \ \ \{\}}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{operator}\ bool()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00318\ \ \ \ \ \textcolor{keywordflow}{return}\ !!self\_;}
+\DoxyCodeLine{00319\ \ \ \}}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00321\ \ \ \textcolor{comment}{/*implicit*/}\ \textcolor{keyword}{operator}\ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<>}}()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00322\ \ \ \ \ \textcolor{keywordflow}{return}\ self\_;}
+\DoxyCodeLine{00323\ \ \ \}}
+\DoxyCodeLine{00324\ }
+\DoxyCodeLine{00325\ \ \ coro::coroutine\_handle<Promise>\ handle()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00326\ \ \ \ \ \textcolor{keywordflow}{return}\ coro::coroutine\_handle<Promise>::from\_address(}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ self\_.handle().address());}
+\DoxyCodeLine{00328\ \ \ \}}
+\DoxyCodeLine{00329\ }
+\DoxyCodeLine{00330\ \ \ \textcolor{keywordtype}{void}\ resume()\ \{}
+\DoxyCodeLine{00331\ \ \ \ \ self\_.resume();}
+\DoxyCodeLine{00332\ \ \ \}}
+\DoxyCodeLine{00333\ }
+\DoxyCodeLine{00334\ \ \ Promise\&\ promise()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00335\ \ \ \ \ \textcolor{keywordflow}{return}\ handle().promise();}
+\DoxyCodeLine{00336\ \ \ \}}
+\DoxyCodeLine{00337\ }
+\DoxyCodeLine{00338\ \ \ coro::coroutine\_handle<>\ done()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00339\ \ \ \ \ \textcolor{keywordflow}{return}\ self\_.done();}
+\DoxyCodeLine{00340\ \ \ \}}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00342\ \ \ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\ info()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00343\ \ \ \ \ \textcolor{keywordflow}{return}\ self\_.info();}
+\DoxyCodeLine{00344\ \ \ \}}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00346\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00347\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00348\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00349\ \ \ tag\_invoke(tag\_t<visit\_continuations>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<Promise>}}\&\ c,\ F\&\&\ f)\ \{}
+\DoxyCodeLine{00350\ \ \ \ \ visit\_continuations(c.self\_,\ (F\&\&)\ f);}
+\DoxyCodeLine{00351\ \ \ \}}
+\DoxyCodeLine{00352\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00353\ }
+\DoxyCodeLine{00354\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00355\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}};}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00357\ \ \ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<>}}\ self\_;}
+\DoxyCodeLine{00358\ \};}
+\DoxyCodeLine{00359\ \}\ \textcolor{comment}{//\ namespace\ \_ch}}
+\DoxyCodeLine{00360\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{\_ch::continuation\_handle}};}
+\DoxyCodeLine{00361\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00363\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00365\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

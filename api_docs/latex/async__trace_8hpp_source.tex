@@ -1,0 +1,121 @@
+\doxysection{async\+\_\+trace.\+hpp}
+\hypertarget{async__trace_8hpp_source}{}\label{async__trace_8hpp_source}\index{include/unifex/async\_trace.hpp@{include/unifex/async\_trace.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/blocking.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/coroutine.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/type\_index.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/continuations.hpp>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{namespace\ }\_async\_trace\ \{}
+\DoxyCodeLine{00034\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__async__trace_1_1entry}{entry}}\ \{}
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__async__trace_1_1entry}{entry}}(}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ std::size\_t\ depth,}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ std::size\_t\ parentIndex,}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\&\ continuation)\ noexcept}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ :\ depth(depth)}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ ,\ parentIndex(parentIndex)}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ ,\ continuation(continuation)\ \{\}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ std::size\_t\ depth;}
+\DoxyCodeLine{00044\ \ \ \ \ std::size\_t\ parentIndex;}
+\DoxyCodeLine{00045\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\ continuation;}
+\DoxyCodeLine{00046\ \ \ \};}
+\DoxyCodeLine{00047\ \}\ \textcolor{comment}{//\ namespace\ \_async\_trace}}
+\DoxyCodeLine{00048\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__async__trace_1_1entry}{async\_trace\_entry}}\ =\ \mbox{\hyperlink{structunifex_1_1__async__trace_1_1entry}{\_async\_trace::entry}};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{keyword}{namespace\ }\_async\_trace\_cpo\ \{}
+\DoxyCodeLine{00051\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__async__trace__cpo_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Continuation>}
+\DoxyCodeLine{00053\ \ \ \ \ std::vector<async\_trace\_entry>\ operator()(\textcolor{keyword}{const}\ Continuation\&\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ std::vector<async\_trace\_entry>\ results;}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ results.emplace\_back(0,\ 0,\ continuation\_info::from\_continuation(c));}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \textcolor{comment}{//\ Breadth-\/first\ search\ of\ async\ call-\/stack\ graph.}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ i\ =\ 0;\ i\ <\ results.size();\ ++i)\ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ [depth,\ parentIndex,\ info]\ =\ results[i];}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ visit\_continuations(}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ info,\ [depth\ =\ depth,\ i,\ \&results](\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__ci_1_1continuation__info}{continuation\_info}}\&\ x)\ \{}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ results.emplace\_back(depth\ +\ 1,\ i,\ x);}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ results;}
+\DoxyCodeLine{00066\ \ \ \ \ \}}
+\DoxyCodeLine{00067\ \ \ \}\ async\_trace\ \{\};}
+\DoxyCodeLine{00068\ \}\ \textcolor{comment}{//\ namespace\ \_async\_trace\_cpo}}
+\DoxyCodeLine{00069\ \textcolor{keyword}{using\ }\_async\_trace\_cpo::async\_trace;}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{keyword}{namespace\ }\_async\_trace\ \{}
+\DoxyCodeLine{00072\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00073\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__async__trace_1_1__op}{\_op}}\ \{}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__async__trace_1_1__op_1_1type}{type}}\ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ Receiver\ receiver\_;}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ UNIFEX\_TRY\ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ trace\ =\ async\_trace(receiver\_);}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ unifex::set\_value(std::move(receiver\_),\ std::move(trace));}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \}\ UNIFEX\_CATCH\ (...)\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ unifex::set\_error(std::move(receiver\_),\ std::current\_exception());}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00085\ \ \ \ \ \};}
+\DoxyCodeLine{00086\ \ \ \};}
+\DoxyCodeLine{00087\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00088\ \ \ \textcolor{keyword}{using\ }operation\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__async__trace_1_1__op}{\_op<remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__async__trace_1_1sender}{sender}}\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<std::vector<entry>>>;}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<std::exception\_ptr>;}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00102\ \ \ \ \ operation<Receiver>\ connect(Receiver\&\&\ r)\ \textcolor{keyword}{const}\&\ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ operation<Receiver>\{(Receiver\ \&\&)\ r\};}
+\DoxyCodeLine{00104\ \ \ \ \ \}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<blocking>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__async__trace_1_1sender}{sender}}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::always\_inline;}
+\DoxyCodeLine{00108\ \ \ \ \ \}}
+\DoxyCodeLine{00109\ \ \ \};}
+\DoxyCodeLine{00110\ \}\ \textcolor{comment}{//\ namespace\ \_async\_trace}}
+\DoxyCodeLine{00111\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__async__trace_1_1sender}{async\_trace\_sender}}\ =\ \mbox{\hyperlink{structunifex_1_1__async__trace_1_1sender}{\_async\_trace::sender}};}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

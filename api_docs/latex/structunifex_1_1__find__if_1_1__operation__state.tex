@@ -1,0 +1,46 @@
+\doxysection{\+\_\+operation\+\_\+state\texorpdfstring{$<$}{<} Predecessor, Receiver, Func, Func\+Policy \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structunifex_1_1__find__if_1_1__operation__state}{}\label{structunifex_1_1__find__if_1_1__operation__state}\index{\_operation\_state$<$ Predecessor, Receiver, Func, FuncPolicy $>$@{\_operation\_state$<$ Predecessor, Receiver, Func, FuncPolicy $>$}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_a33364f1dc4326923fd791d736249ec39}\label{structunifex_1_1__find__if_1_1__operation__state_a33364f1dc4326923fd791d736249ec39} 
+using {\bfseries receiver\+\_\+type} = receiver\+\_\+t$<$ Predecessor, Receiver, Func, Func\+Policy $>$
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_a489c98ba705095176b948ff761c920d5}\label{structunifex_1_1__find__if_1_1__operation__state_a489c98ba705095176b948ff761c920d5} 
+{\footnotesize template$<$typename... Ts$>$ }\\using {\bfseries find\+\_\+if\+\_\+apply\+\_\+t} = connect\+\_\+result\+\_\+t$<$ callable\+\_\+result\+\_\+t$<$ typename receiver\+\_\+type\+::find\+\_\+if\+\_\+helper, std\+::decay\+\_\+t$<$ get\+\_\+scheduler\+\_\+result\+\_\+t$<$ const Receiver \& $>$ $>$ \&\&, Func\+Policy, Ts \&\&... $>$, typename receiver\+\_\+type\+::template unpack\+\_\+receiver$<$ Receiver $>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_ae64c85da716832e824a6ee8c02ca861e}\label{structunifex_1_1__find__if_1_1__operation__state_ae64c85da716832e824a6ee8c02ca861e} 
+using {\bfseries operation\+\_\+state\+\_\+t} = typename sender\+\_\+value\+\_\+types\+\_\+t$<$ Predecessor, \mbox{\hyperlink{structunifex_1_1single__overload}{single\+\_\+overload}}, find\+\_\+if\+\_\+apply\+\_\+t $>$\+::type
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_aaa4ec2c327a28872da80e3b575f1f052}\label{structunifex_1_1__find__if_1_1__operation__state_aaa4ec2c327a28872da80e3b575f1f052} 
+{\footnotesize template$<$typename Sender $>$ }\\{\bfseries \+\_\+operation\+\_\+state} (Sender \&\&s, Receiver \&\&r)
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_af49c603a002db3c46b470d2fcfd96046}\label{structunifex_1_1__find__if_1_1__operation__state_af49c603a002db3c46b470d2fcfd96046} 
+void {\bfseries start} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_a1bcc77fd405dbcf1dd9f45cb02b07369}\label{structunifex_1_1__find__if_1_1__operation__state_a1bcc77fd405dbcf1dd9f45cb02b07369} 
+void {\bfseries start\+Inner} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_a17beda47a4e0d9df6d4d678acf8480bf}\label{structunifex_1_1__find__if_1_1__operation__state_a17beda47a4e0d9df6d4d678acf8480bf} 
+void {\bfseries cleanup} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_a932a3294ae0d2a19e379496aa7c31a46}\label{structunifex_1_1__find__if_1_1__operation__state_a932a3294ae0d2a19e379496aa7c31a46} 
+connect\+\_\+result\+\_\+t$<$ Predecessor, receiver\+\_\+type $>$ {\bfseries pred\+Op\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_a85cf7f5abc9acb05c52cd1d57605ed03}\label{structunifex_1_1__find__if_1_1__operation__state_a85cf7f5abc9acb05c52cd1d57605ed03} 
+\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\+\_\+lifetime}}$<$ operation\+\_\+state\+\_\+t $>$ {\bfseries inner\+Op\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__find__if_1_1__operation__state_a5ad69cfc4163d7797bc0f0d7eadb95a7}\label{structunifex_1_1__find__if_1_1__operation__state_a5ad69cfc4163d7797bc0f0d7eadb95a7} 
+bool {\bfseries started\+\_\+} = false
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/find\+\_\+if.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,95 @@
+\doxysection{\+\_\+promise\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__task_1_1__promise_1_1type}{}\label{structunifex_1_1__task_1_1__promise_1_1type}\index{\_promise$<$ T $>$::type@{\_promise$<$ T $>$::type}}
+Inheritance diagram for \+\_\+promise\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+::type\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structunifex_1_1__task_1_1__promise_1_1type}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise_1_1type_a712fe00c49a4ab6f1feb0068cfb856a4}\label{structunifex_1_1__task_1_1__promise_1_1type_a712fe00c49a4ab6f1feb0068cfb856a4} 
+using {\bfseries result\+\_\+type} = T
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise_1_1type_aac8feda6ae73d13962f138ec48cf0b2e}\label{structunifex_1_1__task_1_1__promise_1_1type_aac8feda6ae73d13962f138ec48cf0b2e} 
+\mbox{\hyperlink{structunifex_1_1__task_1_1__task}{\+\_\+task}}$<$ T $>$\+::type {\bfseries get\+\_\+return\+\_\+object} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise_1_1type_aace05dfdc495d221f1ff63fcfe5c4500}\label{structunifex_1_1__task_1_1__promise_1_1type_aace05dfdc495d221f1ff63fcfe5c4500} 
+auto {\bfseries final\+\_\+suspend} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise_1_1type_aa59944875d60c275a53e862dfd626dd5}\label{structunifex_1_1__task_1_1__promise_1_1type_aa59944875d60c275a53e862dfd626dd5} 
+void {\bfseries unhandled\+\_\+exception} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise_1_1type_a5572330ab9677551bcea1907c087fc39}\label{structunifex_1_1__task_1_1__promise_1_1type_a5572330ab9677551bcea1907c087fc39} 
+{\footnotesize template$<$typename Value $>$ }\\decltype(auto) {\bfseries await\+\_\+transform} (Value \&\&value)
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise_1_1type_a7b027a3b9c90f27309c4f8de7891390f}\label{structunifex_1_1__task_1_1__promise_1_1type_a7b027a3b9c90f27309c4f8de7891390f} 
+{\footnotesize template$<$typename Awaitable $>$ }\\decltype(auto) {\bfseries transform\+\_\+awaitable\+\_\+} (Awaitable \&\&awaitable)
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise_1_1type_acb17fcc92ff8617d31288572bad5a5e7}\label{structunifex_1_1__task_1_1__promise_1_1type_acb17fcc92ff8617d31288572bad5a5e7} 
+{\footnotesize template$<$typename Sender $>$ }\\decltype(auto) {\bfseries transform\+\_\+sender\+\_\+} (Sender \&\&sndr)
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise_1_1type_abcded226ae36fcd642c868480c1c4de3}\label{structunifex_1_1__task_1_1__promise_1_1type_abcded226ae36fcd642c868480c1c4de3} 
+{\footnotesize template$<$typename Schedule\+Sender $>$ }\\decltype(auto) {\bfseries transform\+\_\+schedule\+\_\+sender\+\_\+} (Schedule\+Sender \&\&snd)
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise_1_1type_a3ebf5bc55d7b51f3e744e270abde887b}\label{structunifex_1_1__task_1_1__promise_1_1type_a3ebf5bc55d7b51f3e744e270abde887b} 
+decltype(auto) {\bfseries result} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{structunifex_1_1__task_1_1__promise__base}{\+\_\+promise\+\_\+base}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise__base_a443db27e621aeb691d0c11a1f1a84fa0}\label{structunifex_1_1__task_1_1__promise__base_a443db27e621aeb691d0c11a1f1a84fa0} 
+void {\bfseries transform\+\_\+schedule\+\_\+sender\+\_\+impl\+\_\+} (any\+\_\+scheduler new\+Sched)
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise__base_ad5cba7925ef82b1952186955dadc3b4a}\label{structunifex_1_1__task_1_1__promise__base_ad5cba7925ef82b1952186955dadc3b4a} 
+coro\+::suspend\+\_\+always {\bfseries initial\+\_\+suspend} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise__base_a7b7c74f0d118ce53545add0dba627a4c}\label{structunifex_1_1__task_1_1__promise__base_a7b7c74f0d118ce53545add0dba627a4c} 
+coro\+::coroutine\+\_\+handle {\bfseries unhandled\+\_\+done} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{structunifex_1_1__task_1_1__return__value__or__void_1_1type}{\+\_\+return\+\_\+value\+\_\+or\+\_\+void$<$ T $>$\+::type}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__return__value__or__void_1_1type_a7e42af20f5f2a9f30cce6094d230e7bd}\label{structunifex_1_1__task_1_1__return__value__or__void_1_1type_a7e42af20f5f2a9f30cce6094d230e7bd} 
+{\bfseries template} (typename Value=T)(AND const ructible\+\_\+from$<$ T
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__return__value__or__void_1_1type_a555101f2ea0d9918d7d0baebc0fe654f}\label{structunifex_1_1__task_1_1__return__value__or__void_1_1type_a555101f2ea0d9918d7d0baebc0fe654f} 
+Value void {\bfseries return\+\_\+value} (Value \&\&value) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ T, Value $>$)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{structunifex_1_1__task_1_1__promise__base}{\+\_\+promise\+\_\+base}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise__base_a2f1d3da4dc6b1750a03bfa77d77657b8}\label{structunifex_1_1__task_1_1__promise__base_a2f1d3da4dc6b1750a03bfa77d77657b8} 
+\mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\+\_\+handle}} {\bfseries continuation\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise__base_a4f3fc4d67b9d89ba511b5a847ecb499f}\label{structunifex_1_1__task_1_1__promise__base_a4f3fc4d67b9d89ba511b5a847ecb499f} 
+\mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\+\_\+stop\+\_\+token}} {\bfseries stoken\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise__base_a0d6657708fdb054451984d7e7f0d014c}\label{structunifex_1_1__task_1_1__promise__base_a0d6657708fdb054451984d7e7f0d014c} 
+any\+\_\+scheduler {\bfseries sched\+\_\+} \{\+\_\+default\+\_\+scheduler\}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise__base_ace94fd63c0c727e6f69c83e935092d79}\label{structunifex_1_1__task_1_1__promise__base_ace94fd63c0c727e6f69c83e935092d79} 
+bool {\bfseries rescheduled\+\_\+} = false
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{structunifex_1_1__task_1_1__return__value__or__void_1_1type}{\+\_\+return\+\_\+value\+\_\+or\+\_\+void$<$ T $>$\+::type}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__return__value__or__void_1_1type_a213ba92a6d5d6221aef4fdc6bd108d53}\label{structunifex_1_1__task_1_1__return__value__or__void_1_1type_a213ba92a6d5d6221aef4fdc6bd108d53} 
+\mbox{\hyperlink{structunifex_1_1__util_1_1__expected}{\+\_\+expected}}$<$ T $>$ {\bfseries expected\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \mbox{\hyperlink{structunifex_1_1__task_1_1__promise__base}{\+\_\+promise\+\_\+base}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__promise__base_a5e58e99af7d36428fe044678eb11fbf4}\label{structunifex_1_1__task_1_1__promise__base_a5e58e99af7d36428fe044678eb11fbf4} 
+static constexpr \mbox{\hyperlink{structunifex_1_1__inline__sched_1_1scheduler}{inline\+\_\+scheduler}} {\bfseries \+\_\+default\+\_\+scheduler} \{\}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/task.\+hpp\end{DoxyCompactItemize}

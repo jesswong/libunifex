@@ -1,0 +1,127 @@
+\doxysection{async\+\_\+auto\+\_\+reset\+\_\+event.\+hpp}
+\hypertarget{async__auto__reset__event_8hpp_source}{}\label{async__auto__reset__event_8hpp_source}\index{include/unifex/async\_auto\_reset\_event.hpp@{include/unifex/async\_auto\_reset\_event.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ (c)\ Meta\ Platforms,\ Inc.\ and\ affiliates.\ Confidential\ and\ proprietary.}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <unifex/async\_manual\_reset\_event.hpp>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <unifex/defer.hpp>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <unifex/just\_done.hpp>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <unifex/just\_void\_or\_done.hpp>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <unifex/let\_value.hpp>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <unifex/let\_value\_with.hpp>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <unifex/let\_value\_with\_stop\_token.hpp>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{namespace\ }\_aare\ \{}
+\DoxyCodeLine{00022\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\_auto\_reset\_event}}\ final\ \{}
+\DoxyCodeLine{00026\ \ \ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a2ade90a7512392e8b3b4a0fc997358b1}{async\_auto\_reset\_event}}()\ noexcept\ :\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\_auto\_reset\_event}}(false)\ \{\}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00034\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a6fe48e0cadf113d282a7ee242fed9df6}{async\_auto\_reset\_event}}(\textcolor{keywordtype}{bool}\ startReady)\ noexcept}
+\DoxyCodeLine{00035\ \ \ \ \ :\ state\_(startReady\ ?\ state::SET\ :\ state::UNSET)}
+\DoxyCodeLine{00036\ \ \ \ \ ,\ event\_(startReady)\ \{\}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00043\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a39ff4adf4d7625431d2c3d5d65e1ef96}{set}}()\ noexcept;}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00050\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a359a2c7da831d63ea1fdb982ca5d39a7}{set\_done}}()\ noexcept;}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ struct\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{stream\_view}};}
+\DoxyCodeLine{00056\ \ \ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{stream\_view}}\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_ab561a248004e712d97374152974df46e}{stream}}()\ noexcept;}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ private:}
+\DoxyCodeLine{00059\ \ \ enum\ class\ state\ \{\ UNSET,\ SET,\ DONE\ \};}
+\DoxyCodeLine{00076\ \ \ std::mutex\ mutex\_;}
+\DoxyCodeLine{00077\ \ \ state\ state\_\{state::UNSET\};}
+\DoxyCodeLine{00078\ \ \ \mbox{\hyperlink{structunifex_1_1__amre_1_1async__manual__reset__event}{unifex::async\_manual\_reset\_event}}\ event\_;}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00086\ \ \ \textcolor{keywordtype}{bool}\ try\_reset()\ noexcept;}
+\DoxyCodeLine{00087\ \};}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ struct\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\_auto\_reset\_event}}::\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{stream\_view}}\ final\ \{}
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{stream\_view}}(\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\_auto\_reset\_event}}*\ evt)\ noexcept\ :\ evt\_(evt)\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ UNIFEX\_ASSERT(evt\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00092\ \ \ \}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00097\ \ \ \textcolor{keyword}{auto}\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_a6afc65a7c9588698372b80d35462b354}{next}}()\ noexcept\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::let\_value\_with\_stop\_token([evt\ =\ evt\_](}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ stopToken)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::let\_value\_with(}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ [stopToken,\ evt]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ unifex::async\_manual\_reset\_event::async\_wait()\ returns\ an}}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ unstoppable\ *Sender*\ so,\ to\ support\ prompt\ cancellation}}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ of\ the\ *Sender*\ we're\ composing\ here,\ we\ register\ a\ stop}}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ callback\ with\ our\ *Receiver*\ that\ responds\ to\ stop}}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ requests\ by\ transitioning\ the\ auto-\/reset\ event\ to\ the}}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ done\ state.\ When\ the\ auto-\/reset\ event\ transitions\ to\ the}}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ done\ state,\ anyone\ waiting\ on\ our\ next-\/sender\ will\ wake}}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ up\ and\ complete\ with\ set\_done.}}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ strategy\ matches\ the\ *Stream*\ contract\ because}}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ cancelling\ the\ result\ of\ next(stream)\ is\ expected\ to}}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ cancel\ the\ whole\ stream.\ \ The\ streams\ returned\ from}}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ event.stream()\ are\ light\ weight\ handles\ to\ the\ overall}}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ event\ and\ are\ indistinguishable\ from\ each\ other\ so}}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ cancelling\ one\ such\ stream\ by\ cancelling\ its\ next-\/sender}}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ is\ interpreted\ as\ cancelling\ the\ whole\ event.}}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ stopCallback\ =\ [evt]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ evt-\/>\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a359a2c7da831d63ea1fdb982ca5d39a7}{set\_done}}();}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ avoid\ inline\ \`{}Scheduler`:\ narrow\ margin\ for\ a\ lifetime\ issue}}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ during\ synchronous\ cancellation}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 1.\ when\ cancelling\ on\ the\ same\ \`{}Scheduler`\ that's\ waiting\ on}}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ \`{}async\_wait()`:\ the\ stop\ callback\ never\ synchronously\ wakes\ the}}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ event\ because\ \`{}evt-\/>set\_done()`\ always\ schedules\ the\ wakeup}}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 2.\ when\ cancelling\ from\ a\ different\ \`{}Scheduler`\ than\ the\ one}}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ that's\ waiting\ on\ \`{}async\_wait()`:\ there's\ a\ race\ between}}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ completing\ the\ stop\ callback\ and\ completing\ the\ \`{}async\_wait()`}}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ but\ the\ \`{}let\_value\_with`\ operation\ state\ will\ not\ complete\ the}}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ downstream\ \`{}Receiver`\ until\ the\ stop\ callback\ has\ been\ destroyed,}}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ which\ will\ synchronize\ with\ the\ completion\ of\ the\ callback;\ given}}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ this\ scenario\ is\ "{}cancel\ and\ complete\ on\ different\ Schedulers"{},}}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ the\ synchronization\ will\ block\ rather\ than\ no-\/op}}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }stop\_token\_t\ =\ unifex::remove\_cvref\_t<\textcolor{keyword}{decltype}(stopToken)>;}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }stop\_callback\_t\ =}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ stop\_token\_t::template\ callback\_type<}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{decltype}(stopCallback)>;}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ stop\_callback\_t\{stopToken,\ stopCallback\};}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ [evt](\textcolor{keyword}{auto}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::let\_value(}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ evt-\/>event\_.async\_wait(),\ [evt]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ unifex::just\_void\_or\_done(evt-\/>try\_reset());}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00150\ \ \ \ \ \});}
+\DoxyCodeLine{00151\ \ \ \}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00157\ \ \ \textcolor{keyword}{auto}\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_ad6f2925ea316e5ea378604790301830b}{cleanup}}()\ noexcept\ \{}
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::defer([evt\ =\ evt\_]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ evt-\/>\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_a359a2c7da831d63ea1fdb982ca5d39a7}{set\_done}}();}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::just\_done();}
+\DoxyCodeLine{00161\ \ \ \ \ \});}
+\DoxyCodeLine{00162\ \ \ \}}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00165\ \ \ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\_auto\_reset\_event}}*\ evt\_;}
+\DoxyCodeLine{00166\ \};}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \textcolor{keyword}{inline}\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{async\_auto\_reset\_event::stream\_view}}}
+\DoxyCodeLine{00169\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_ab561a248004e712d97374152974df46e}{async\_auto\_reset\_event::stream}}()\ noexcept\ \{}
+\DoxyCodeLine{00170\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{async\_auto\_reset\_event::stream\_view}}\{\textcolor{keyword}{this}\};}
+\DoxyCodeLine{00171\ \}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \}\ \ \textcolor{comment}{//\ namespace\ \_aare}}
+\DoxyCodeLine{00174\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event}{\_aare::async\_auto\_reset\_event}};}
+\DoxyCodeLine{00175\ \}\ \ \textcolor{comment}{//\ namespace\ unifex}}
+
+\end{DoxyCode}

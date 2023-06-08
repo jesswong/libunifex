@@ -1,0 +1,97 @@
+\doxysection{exception.\+hpp}
+\hypertarget{exception_8hpp_source}{}\label{exception_8hpp_source}\index{include/unifex/exception.hpp@{include/unifex/exception.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/std\_concepts.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ Microsoft's\ STL\ has\ a\ fast\ implementation\ of\ std::make\_exception\_ptr.}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ So\ does\ libc++\ when\ targetting\ Microsoft's\ ABI.\ On\ other\ stdlibs,}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ move\ as\ much\ exception\ machinery\ into\ a\ cpp\ file\ as\ possible\ to\ avoid}}
+\DoxyCodeLine{00029\ \textcolor{comment}{//\ template\ code\ bloat.}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#if\ !defined(\_LIBCPP\_ABI\_MICROSOFT)\ \&\&\ !defined(\_MSVC\_STL\_VERSION)}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#define\ UNIFEX\_HAS\_FAST\_MAKE\_EXCEPTION\_PTR\ 0}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#define\ UNIFEX\_HAS\_FAST\_MAKE\_EXCEPTION\_PTR\ 1}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00037\ \textcolor{keyword}{namespace\ }\_throw\ \{}
+\DoxyCodeLine{00038\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__throw_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00039\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Exception>}
+\DoxyCodeLine{00040\ \ \ [[noreturn]]\ UNIFEX\_ALWAYS\_INLINE}
+\DoxyCodeLine{00041\ \ \ \textcolor{keywordtype}{void}\ operator()([[maybe\_unused]]\ Exception\&\&\ ex)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\ \ \#if\ !UNIFEX\_NO\_EXCEPTIONS}}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordflow}{throw}\ (Exception\&\&)\ ex;}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\ \ \#else}}
+\DoxyCodeLine{00045\ \ \ \ \ std::terminate();}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\ \ \#endif}}
+\DoxyCodeLine{00047\ \ \ \}}
+\DoxyCodeLine{00048\ \};}
+\DoxyCodeLine{00049\ \}\ \textcolor{comment}{//\ namespace\ \_throw}}
+\DoxyCodeLine{00050\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__throw_1_1__fn}{\_throw::\_fn}}\ throw\_\ \{\};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{namespace\ }\_except\_ptr\ \{}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#if\ !UNIFEX\_HAS\_FAST\_MAKE\_EXCEPTION\_PTR}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ If\ std::make\_exeption\_ptr()\ is\ slow,\ then\ move\ it\ into\ a\ cpp}}
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ file\ to\ generate\ less\ code\ elsewhere.}}
+\DoxyCodeLine{00057\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__except__ptr_1_1__ref}{\_ref}}\ \{}
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Obj)}
+\DoxyCodeLine{00059\ \ \ \ \ (\textcolor{keyword}{requires}\ (!same\_as<remove\_cvref\_t<Obj>,\ \mbox{\hyperlink{structunifex_1_1__except__ptr_1_1__ref}{\_ref}}>))}
+\DoxyCodeLine{00060\ \ \ \mbox{\hyperlink{structunifex_1_1__except__ptr_1_1__ref}{\_ref}}(Obj\&\&\ obj)\ noexcept}
+\DoxyCodeLine{00061\ \ \ \ \ :\ p\_((\textcolor{keywordtype}{void}*)\ std::addressof(obj))}
+\DoxyCodeLine{00062\ \ \ \ \ ,\ throw\_([](\textcolor{keywordtype}{void}*\ p)\ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ unifex::throw\_((Obj\&\&)\ *(std::add\_pointer\_t<Obj>)\ p);}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \})}
+\DoxyCodeLine{00065\ \ \ \{\}}
+\DoxyCodeLine{00066\ \ \ \mbox{\hyperlink{structunifex_1_1__except__ptr_1_1__ref}{\_ref}}(\mbox{\hyperlink{structunifex_1_1__except__ptr_1_1__ref}{\_ref}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00067\ \ \ [[noreturn]]\ \textcolor{keywordtype}{void}\ rethrow()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00068\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00069\ \ \ \textcolor{keywordtype}{void}*\ p\_;}
+\DoxyCodeLine{00070\ \ \ void\ (*throw\_)(\textcolor{keywordtype}{void}*);}
+\DoxyCodeLine{00071\ \};}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__except__ptr_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00074\ \ \ [[nodiscard]]\ std::exception\_ptr\ operator()(\mbox{\hyperlink{structunifex_1_1__except__ptr_1_1__ref}{\_ref}})\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00075\ \};}
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\#else\ }\textcolor{comment}{//\ !UNIFEX\_HAS\_FAST\_MAKE\_EXCEPTION\_PTR}}
+\DoxyCodeLine{00077\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__except__ptr_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Obj>}
+\DoxyCodeLine{00079\ \ \ [[nodiscard]]\ UNIFEX\_ALWAYS\_INLINE}
+\DoxyCodeLine{00080\ \ \ std::exception\_ptr\ operator()(Obj\&\&\ obj)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::make\_exception\_ptr((Obj\&\&)\ obj);}
+\DoxyCodeLine{00082\ \ \ \}}
+\DoxyCodeLine{00083\ \};}
+\DoxyCodeLine{00084\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \}\ \textcolor{comment}{//\ namespace\ \_except\_ptr}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \_except\_ptr::\_fn\ make\_exception\_ptr\ \{\};}
+\DoxyCodeLine{00089\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

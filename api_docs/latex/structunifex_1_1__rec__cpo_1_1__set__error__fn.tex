@@ -1,0 +1,44 @@
+\doxysection{\+\_\+set\+\_\+error\+\_\+fn Struct Reference}
+\hypertarget{structunifex_1_1__rec__cpo_1_1__set__error__fn}{}\label{structunifex_1_1__rec__cpo_1_1__set__error__fn}\index{\_set\_error\_fn@{\_set\_error\_fn}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__rec__cpo_1_1__set__error__fn_a701eed101b0ad86deb9b82f353521f2e}\label{structunifex_1_1__rec__cpo_1_1__set__error__fn_a701eed101b0ad86deb9b82f353521f2e} 
+{\bfseries template} (typename Receiver, typename Error)() auto operator()(Receiver \&\&r
+\item 
+\Hypertarget{structunifex_1_1__rec__cpo_1_1__set__error__fn_a1053ae79c7aee3f3dc6245d452fd0c25}\label{structunifex_1_1__rec__cpo_1_1__set__error__fn_a1053ae79c7aee3f3dc6245d452fd0c25} 
+return {\bfseries unifex\+::tag\+\_\+invoke} (\mbox{\hyperlink{structunifex_1_1__rec__cpo_1_1__set__error__fn}{\+\_\+set\+\_\+error\+\_\+fn}}\{\},(Receiver \&\&) r,(Error \&\&) error)
+\item 
+\Hypertarget{structunifex_1_1__rec__cpo_1_1__set__error__fn_af016f7e478c6e285417fa132163f2f21}\label{structunifex_1_1__rec__cpo_1_1__set__error__fn_af016f7e478c6e285417fa132163f2f21} 
+{\bfseries template} (typename Receiver, typename Error)() auto operator()(Receiver \&\&r
+\item 
+\Hypertarget{structunifex_1_1__rec__cpo_1_1__set__error__fn_a47a4894bc172cab73e2363f5d93d31ec}\label{structunifex_1_1__rec__cpo_1_1__set__error__fn_a47a4894bc172cab73e2363f5d93d31ec} 
+return {\bfseries static\+\_\+cast} (r).set\+\_\+error((Error \&\&) error)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Error \&\&error const noexcept \mbox{\hyperlink{structunifex_1_1__rec__cpo_1_1__set__error__fn_a61cb5b4ae2feff8d55eaf030a3129e84}{\+\_\+result\+\_\+t$<$ Receiver, Error $>$}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__rec__cpo_1_1__set__error__fn_a61cb5b4ae2feff8d55eaf030a3129e84}\label{structunifex_1_1__rec__cpo_1_1__set__error__fn_a61cb5b4ae2feff8d55eaf030a3129e84} 
+\index{\_set\_error\_fn@{\_set\_error\_fn}!\_result\_t$<$ Receiver, Error $>$@{\_result\_t$<$ Receiver, Error $>$}}
+\index{\_result\_t$<$ Receiver, Error $>$@{\_result\_t$<$ Receiver, Error $>$}!\_set\_error\_fn@{\_set\_error\_fn}}
+\doxysubsubsection{\texorpdfstring{\_result\_t$<$ Receiver, Error $>$}{\_result\_t< Receiver, Error >}}
+{\footnotesize\ttfamily Error \&\&error const noexcept \+\_\+result\+\_\+t$<$ Receiver, Error $>$}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ is\_nothrow\_tag\_invocable\_v<\_set\_error\_fn,\ Receiver,\ Error>,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}set\_error()\ invocation\ is\ required\ to\ be\ noexcept."{}})}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/receiver\+\_\+concepts.\+hpp\end{DoxyCompactItemize}

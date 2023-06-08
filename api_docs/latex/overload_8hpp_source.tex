@@ -1,0 +1,86 @@
+\doxysection{overload.\+hpp}
+\hypertarget{overload_8hpp_source}{}\label{overload_8hpp_source}\index{include/unifex/overload.hpp@{include/unifex/overload.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{namespace\ }\_overload\ \{}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ Sig>}
+\DoxyCodeLine{00030\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__overload_1_1__cpo__t}{\_cpo\_t}}\ \{}
+\DoxyCodeLine{00031\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__overload_1_1__cpo__t_1_1type}{type}};}
+\DoxyCodeLine{00032\ \};}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ This\ type\ will\ have\ the\ associated\ namespaces}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ of\ CPO\ (by\ inheritance)\ but\ not\ those\ of\ Sig.}}
+\DoxyCodeLine{00036\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ Sig>}
+\DoxyCodeLine{00037\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__overload_1_1__cpo__t}{\_cpo\_t}}<CPO,\ Sig>::\mbox{\hyperlink{structunifex_1_1__overload_1_1__cpo__t_1_1type}{type}}\ :\ CPO\ \{}
+\DoxyCodeLine{00038\ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__overload_1_1__cpo__t_1_1type}{type}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00039\ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__overload_1_1__cpo__t_1_1type}{type}}(CPO)\ \textcolor{keyword}{noexcept}\ \{\}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \textcolor{keyword}{using\ }base\_cpo\_t\ =\ CPO;}
+\DoxyCodeLine{00042\ \ \ \textcolor{keyword}{using\ }type\_erased\_signature\_t\ =\ Sig;}
+\DoxyCodeLine{00043\ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ Enable\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00046\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__overload_1_1base__cpo}{base\_cpo}}\ \{}
+\DoxyCodeLine{00047\ \ \ \textcolor{keyword}{using\ }type\ =\ CPO;}
+\DoxyCodeLine{00048\ \};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO>}
+\DoxyCodeLine{00051\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__overload_1_1base__cpo}{base\_cpo}}<CPO,\ std::void\_t<typename\ CPO::base\_cpo\_t>>\ \{}
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{using\ }type\ =\ \textcolor{keyword}{typename}\ CPO::base\_cpo\_t;}
+\DoxyCodeLine{00053\ \};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO>}
+\DoxyCodeLine{00056\ \textcolor{keyword}{using\ }base\_cpo\_t\ =\ \textcolor{keyword}{typename}\ base\_cpo<CPO>::type;}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ Sig>}
+\DoxyCodeLine{00059\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__overload_1_1__cpo__t_1_1type}{\_cpo\_t<CPO,\ Sig>::type}}\ \_cpo\{\};}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sig>}
+\DoxyCodeLine{00062\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__overload_1_1__sig}{\_sig}}\ \{\};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \}\ \textcolor{comment}{//\ namespace\ \_overload}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sig>}
+\DoxyCodeLine{00067\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__overload_1_1__sig}{\_overload::\_sig<Sig>}}\ \textcolor{keyword}{const}\ sig\{\};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{keyword}{template}\ <auto\&\ CPO,\ \textcolor{keyword}{typename}\ Sig>}
+\DoxyCodeLine{00070\ \textcolor{keyword}{using\ }overload\_t\ =\ \textcolor{keyword}{typename}\ \_overload::\_cpo\_t<tag\_t<CPO>,\ Sig>::type;}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sig,\ \textcolor{keyword}{typename}\ CPO>}
+\DoxyCodeLine{00073\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{typename}\ \_overload::\_cpo\_t<CPO,\ Sig>::type\ \textcolor{keyword}{const}\&}
+\DoxyCodeLine{00074\ overload(CPO\ \textcolor{keyword}{const}\&,\ \_overload::\_sig<Sig>\ =\ \{\})\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00075\ \ \ \textcolor{keywordflow}{return}\ \_overload::\_cpo<CPO,\ Sig>;}
+\DoxyCodeLine{00076\ \}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

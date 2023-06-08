@@ -1,0 +1,415 @@
+\doxysection{thread\+\_\+unsafe\+\_\+event\+\_\+loop.\+hpp}
+\hypertarget{thread__unsafe__event__loop_8hpp_source}{}\label{thread__unsafe__event__loop_8hpp_source}\index{include/unifex/thread\_unsafe\_event\_loop.hpp@{include/unifex/thread\_unsafe\_event\_loop.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/get\_stop\_token.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/manual\_lifetime.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/stop\_token\_concepts.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <optional>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00034\ \textcolor{keyword}{class\ }thread\_unsafe\_event\_loop;}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{namespace\ }\_thread\_unsafe\_event\_loop\ \{}
+\DoxyCodeLine{00037\ \ \ \textcolor{keyword}{using\ }clock\_t\ =\ std::chrono::steady\_clock;}
+\DoxyCodeLine{00038\ \ \ \textcolor{keyword}{using\ }time\_point\_t\ =\ clock\_t::time\_point;}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \textcolor{keyword}{class\ }cancel\_callback;}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}\ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1cancel__callback}{cancel\_callback}};}
+\DoxyCodeLine{00044\ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{using\ }execute\_fn\ =\ void(\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}*)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}(\mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\&\ loop,\ execute\_fn*\ execute)\ noexcept}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ :\ loop\_(loop),\ execute\_(execute)\ \{\}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00051\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}(\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}};}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordtype}{void}\ execute()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ this-\/>execute\_(\textcolor{keyword}{this});}
+\DoxyCodeLine{00061\ \ \ \ \ \}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\&\ loop\_;}
+\DoxyCodeLine{00064\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}*\ next\_;}
+\DoxyCodeLine{00065\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}**\ prevPtr\_;}
+\DoxyCodeLine{00066\ \ \ \ \ execute\_fn*\ execute\_;}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00069\ \ \ \ \ time\_point\_t\ dueTime\_;}
+\DoxyCodeLine{00070\ \ \ \};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1cancel__callback}{cancel\_callback}}\ \{}
+\DoxyCodeLine{00073\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1cancel__callback}{cancel\_callback}}(\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}\&\ op)\ noexcept}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ :\ op\_(\&op)\ \{\}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordtype}{void}\ operator()()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00080\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}*\ \textcolor{keyword}{const}\ op\_;}
+\DoxyCodeLine{00081\ \ \ \};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00086\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__schedule__after__sender}{\_schedule\_after\_sender}}\ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__schedule__after__sender_1_1type}{type}};}
+\DoxyCodeLine{00088\ \ \ \};}
+\DoxyCodeLine{00089\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{using\ }schedule\_after\_sender\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__schedule__after__sender_1_1type}{\_schedule\_after\_sender<Duration>::type}};}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00093\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__after__op}{\_after\_op}}\ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__after__op_1_1type}{type}};}
+\DoxyCodeLine{00095\ \ \ \};}
+\DoxyCodeLine{00096\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00097\ \ \ \textcolor{keyword}{using\ }after\_operation\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__after__op}{\_after\_op<Duration,\ remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00100\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__after__op}{\_after\_op}}<Duration,\ Receiver>::\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__after__op_1_1type}{type}}\ final\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}\ \{}
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{friend}\ schedule\_after\_sender<Duration>;}
+\DoxyCodeLine{00102\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ this-\/>dueTime\_\ =\ clock\_t::now()\ +\ duration\_;}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ callback\_.construct(}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ get\_stop\_token(receiver\_),\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1cancel__callback}{cancel\_callback}}\{*\textcolor{keyword}{this}\});}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ operation\_base::start();}
+\DoxyCodeLine{00108\ \ \ \ \ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__after__op_1_1type}{type}}(}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ Receiver2\&\&\ r,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ Duration\ d,}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\&\ loop)}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ :\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}(loop,\ \&type::execute\_impl)}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ ,\ receiver\_((Receiver2\ \&\&)\ r)}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ ,\ duration\_(d)\ \{\}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ execute\_impl(\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}*\ p)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ self\ =\ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__after__op_1_1type}{type}}*\textcolor{keyword}{>}(p);}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ self.callback\_.destruct();}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (is\_stop\_never\_possible\_v<}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ stop\_token\_type\_t<Receiver\&>>)\ \{}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ unifex::set\_value(std::move(self.receiver\_));}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (get\_stop\_token(self.receiver\_).stop\_requested())\ \{}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ unifex::set\_done(std::move(self.receiver\_));}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ unifex::set\_value(std::move(self.receiver\_));}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00133\ \ \ \ \ \}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00136\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Duration\ duration\_;}
+\DoxyCodeLine{00137\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime}}<\textcolor{keyword}{typename}\ stop\_token\_type\_t<}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ Receiver\&>::template\ callback\_type<cancel\_callback>>}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ callback\_;}
+\DoxyCodeLine{00140\ \ \ \};}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00143\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__schedule__after__sender}{\_schedule\_after\_sender}}<Duration>::\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__schedule__after__sender_1_1type}{type}}\ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__schedule__after__sender_1_1type}{schedule\_after\_sender}}\ =\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__schedule__after__sender_1_1type}{type}};}
+\DoxyCodeLine{00145\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<>;}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00157\ \ \ \ \ after\_operation<Duration,\ remove\_cvref\_t<Receiver>>\ connect(Receiver\&\&\ r)\ \textcolor{keyword}{const}\&\ \{}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ after\_operation<Duration,\ remove\_cvref\_t<Receiver>>\{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ (Receiver\ \&\&)\ r,\ duration\_,\ loop\_\};}
+\DoxyCodeLine{00160\ \ \ \ \ \}}
+\DoxyCodeLine{00161\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}};}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__schedule__after__sender_1_1type}{type}}(}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\&\ loop,}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ Duration\ duration)\ noexcept}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ :\ loop\_(loop),\ duration\_(duration)\ \{\}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\&\ loop\_;}
+\DoxyCodeLine{00170\ \ \ \ \ Duration\ duration\_;}
+\DoxyCodeLine{00171\ \ \ \};}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1schedule__at__sender}{schedule\_at\_sender}};}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00176\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__at__op}{\_at\_op}}\ \{}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__at__op_1_1type}{type}};}
+\DoxyCodeLine{00178\ \ \ \};}
+\DoxyCodeLine{00179\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00180\ \ \ \textcolor{keyword}{using\ }at\_operation\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__at__op}{\_at\_op<remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00183\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__at__op}{\_at\_op}}<Receiver>::\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__at__op_1_1type}{type}}\ final\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}\ \{}
+\DoxyCodeLine{00184\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ callback\_.construct(}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ get\_stop\_token(receiver\_),\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1cancel__callback}{cancel\_callback}}\{*\textcolor{keyword}{this}\});}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ operation\_base::start();}
+\DoxyCodeLine{00189\ \ \ \ \ \}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1schedule__at__sender}{schedule\_at\_sender}};}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00195\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__at__op_1_1type}{type}}(}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ Receiver2\&\&\ r,}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ time\_point\_t\ tp,}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\&\ loop)}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ :\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}(loop,\ \&type::execute\_impl),\ receiver\_((Receiver2\ \&\&)\ r)\ \{}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ this-\/>dueTime\_\ =\ tp;}
+\DoxyCodeLine{00201\ \ \ \ \ \}}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ execute\_impl(\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}*\ p)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ self\ =\ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__at__op_1_1type}{type}}*\textcolor{keyword}{>}(p);}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ self.callback\_.destruct();}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (is\_stop\_never\_possible\_v<}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ stop\_token\_type\_t<Receiver\&>>)\ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ unifex::set\_value(std::move(self.receiver\_));}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (get\_stop\_token(self.receiver\_).stop\_requested())\ \{}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ unifex::set\_done(std::move(self.receiver\_));}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ unifex::set\_value(std::move(self.receiver\_));}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00216\ \ \ \ \ \}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00219\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime}}<\textcolor{keyword}{typename}\ stop\_token\_type\_t<}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ Receiver\&>::template\ callback\_type<cancel\_callback>>}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ callback\_;}
+\DoxyCodeLine{00222\ \ \ \};}
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00224\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1schedule__at__sender}{schedule\_at\_sender}}\ \{}
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00231\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<>;}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00236\ \ \ \ \ at\_operation<remove\_cvref\_t<Receiver>>\ connect(Receiver\&\&\ r)\ \textcolor{keyword}{const}\&\ \{}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ at\_operation<remove\_cvref\_t<Receiver>>\{}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ (Receiver\ \&\&)\ r,\ dueTime\_,\ loop\_\};}
+\DoxyCodeLine{00239\ \ \ \ \ \}}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00241\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00242\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}};}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1schedule__at__sender}{schedule\_at\_sender}}(}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\&\ loop,}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ time\_point\_t\ dueTime)}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ :\ loop\_(loop),\ dueTime\_(dueTime)\ \{\}}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\&\ loop\_;}
+\DoxyCodeLine{00250\ \ \ \ \ time\_point\_t\ dueTime\_;}
+\DoxyCodeLine{00251\ \ \ \};}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}}\ \{}
+\DoxyCodeLine{00254\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00255\ \ \ \ \ \textcolor{keyword}{auto}\ schedule\_at(time\_point\_t\ dueTime)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1schedule__at__sender}{schedule\_at\_sender}}\{*loop\_,\ dueTime\};}
+\DoxyCodeLine{00257\ \ \ \ \ \}}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rep,\ \textcolor{keyword}{typename}\ Ratio>}
+\DoxyCodeLine{00260\ \ \ \ \ \textcolor{keyword}{auto}\ schedule\_after(std::chrono::duration<Rep,\ Ratio>\ d)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ schedule\_after\_sender<std::chrono::duration<Rep,\ Ratio>>\{*loop\_,\ d\};}
+\DoxyCodeLine{00262\ \ \ \ \ \}}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keyword}{auto}\ schedule()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ schedule\_after(std::chrono::milliseconds(0));}
+\DoxyCodeLine{00266\ \ \ \ \ \}}
+\DoxyCodeLine{00267\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator==(\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}}\ a,\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}}\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ a.loop\_\ ==\ b.loop\_;}
+\DoxyCodeLine{00269\ \ \ \ \ \}}
+\DoxyCodeLine{00270\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator!=(\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}}\ a,\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}}\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ a.loop\_\ !=\ b.loop\_;}
+\DoxyCodeLine{00272\ \ \ \ \ \}}
+\DoxyCodeLine{00273\ }
+\DoxyCodeLine{00274\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00275\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}};}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}}(\mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\&\ loop)\ noexcept}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ :\ loop\_(\&loop)\ \{\}}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00280\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}*\ loop\_;}
+\DoxyCodeLine{00281\ \ \ \};}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00283\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00284\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise}{\_sync\_wait\_promise}}\ \{}
+\DoxyCodeLine{00285\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{type}};}
+\DoxyCodeLine{00286\ \ \ \};}
+\DoxyCodeLine{00287\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00288\ \ \ \textcolor{keyword}{using\ }sync\_wait\_promise\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{\_sync\_wait\_promise<T>::type}};}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00291\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise}{\_sync\_wait\_promise}}<T>::\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{type}}\ \{}
+\DoxyCodeLine{00292\ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{sync\_wait\_promise}}\ =\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{type}};}
+\DoxyCodeLine{00293\ \ \ \ \ \textcolor{keyword}{enum\ class}\ state\ \{\ incomplete,\ done,\ value,\ error\ \};}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \ \ \ \ \textcolor{keyword}{class\ }receiver\ \{}
+\DoxyCodeLine{00296\ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Values>}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ set\_value(Values\&\&...\ values)\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ UNIFEX\_TRY\ \{}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \ \ unifex::activate\_union\_member(promise\_.value\_,\ (Values\ \&\&)\ values...);}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \ \ promise\_.state\_\ =\ state::value;}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \}\ UNIFEX\_CATCH\ (...)\ \{}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ unifex::activate\_union\_member(promise\_.exception\_,\ std::current\_exception());}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ promise\_.state\_\ =\ state::error;}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ set\_error(std::exception\_ptr\ ex)\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ unifex::activate\_union\_member(promise\_.exception\_,\ std::move(ex));}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ promise\_.state\_\ =\ state::error;}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00312\ }
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ set\_done()\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ promise\_.state\_\ =\ state::done;}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{sync\_wait\_promise}};}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ receiver(\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{sync\_wait\_promise}}\&\ promise)\ noexcept}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ :\ promise\_(promise)\ \{\}}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{sync\_wait\_promise}}\&\ promise\_;}
+\DoxyCodeLine{00324\ \ \ \ \ \};}
+\DoxyCodeLine{00325\ }
+\DoxyCodeLine{00326\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00327\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{type}}()\ \textcolor{keyword}{noexcept}\ \{\}}
+\DoxyCodeLine{00328\ }
+\DoxyCodeLine{00329\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1__sync__wait__promise_1_1type}{\string~type}}()\ \{}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (state\_\ ==\ state::value)\ \{}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ unifex::deactivate\_union\_member(value\_);}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (state\_\ ==\ state::error)\ \{}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ unifex::deactivate\_union\_member(exception\_);}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00335\ \ \ \ \ \}}
+\DoxyCodeLine{00336\ }
+\DoxyCodeLine{00337\ \ \ \ \ receiver\ get\_receiver()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ receiver\{*\textcolor{keyword}{this}\};}
+\DoxyCodeLine{00339\ \ \ \ \ \}}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \ \ \ \ std::optional<T>\ get()\ \&\&\ \{}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (state\_)\ \{}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ state::done:}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::nullopt;}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ state::value:}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(value\_).get();}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ state::error:}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ \ \ std::rethrow\_exception(exception\_.get());}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ \ \ UNIFEX\_ASSERT(\textcolor{keyword}{false});}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ \ \ std::terminate();}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00353\ \ \ \ \ \}}
+\DoxyCodeLine{00354\ }
+\DoxyCodeLine{00355\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{keyword}{union\ }\{}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<T>}}\ value\_;}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<std::exception\_ptr>}}\ exception\_;}
+\DoxyCodeLine{00359\ \ \ \ \ \};}
+\DoxyCodeLine{00360\ }
+\DoxyCodeLine{00361\ \ \ \ \ state\ state\_\ =\ state::incomplete;}
+\DoxyCodeLine{00362\ \ \ \};}
+\DoxyCodeLine{00363\ \}\ \textcolor{comment}{//\ namespace\ \_thread\_unsafe\_event\_loop}}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00365\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1thread__unsafe__event__loop}{thread\_unsafe\_event\_loop}}\ \{}
+\DoxyCodeLine{00366\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}\ =\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{\_thread\_unsafe\_event\_loop::operation\_base}};}
+\DoxyCodeLine{00367\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}}\ =\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{\_thread\_unsafe\_event\_loop::scheduler}};}
+\DoxyCodeLine{00368\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1cancel__callback}{cancel\_callback}}\ =\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1cancel__callback}{\_thread\_unsafe\_event\_loop::cancel\_callback}};}
+\DoxyCodeLine{00369\ }
+\DoxyCodeLine{00370\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}};}
+\DoxyCodeLine{00371\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1cancel__callback}{cancel\_callback}};}
+\DoxyCodeLine{00372\ }
+\DoxyCodeLine{00373\ \ \ \textcolor{keywordtype}{void}\ enqueue(\mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}*\ op)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00374\ \ \ \textcolor{keywordtype}{void}\ run\_until\_empty()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00375\ }
+\DoxyCodeLine{00376\ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1operation__base}{operation\_base}}*\ head\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00377\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00378\ \ \ \textcolor{keyword}{using\ }clock\_t\ =\ \_thread\_unsafe\_event\_loop::clock\_t;}
+\DoxyCodeLine{00379\ \ \ \textcolor{keyword}{using\ }time\_point\_t\ =\ \_thread\_unsafe\_event\_loop::time\_point\_t;}
+\DoxyCodeLine{00380\ }
+\DoxyCodeLine{00381\ \ \ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}}\ get\_scheduler()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00382\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classunifex_1_1__thread__unsafe__event__loop_1_1scheduler}{scheduler}}\{*\textcolor{keyword}{this}\};}
+\DoxyCodeLine{00383\ \ \ \}}
+\DoxyCodeLine{00384\ }
+\DoxyCodeLine{00385\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ Sender,}
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ Result\ =\ sender\_single\_value\_result\_t<remove\_cvref\_t<Sender>>>}
+\DoxyCodeLine{00388\ \ \ std::optional<Result>\ sync\_wait(Sender\&\&\ sender)\ \{}
+\DoxyCodeLine{00389\ \ \ \ \ \textcolor{keyword}{using\ }promise\_t\ =\ \_thread\_unsafe\_event\_loop::sync\_wait\_promise<Result>;}
+\DoxyCodeLine{00390\ \ \ \ \ promise\_t\ promise;}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00392\ \ \ \ \ \textcolor{keyword}{auto}\ op\ =\ connect((Sender\ \&\&)\ sender,\ promise.get\_receiver());}
+\DoxyCodeLine{00393\ \ \ \ \ start(op);}
+\DoxyCodeLine{00394\ }
+\DoxyCodeLine{00395\ \ \ \ \ run\_until\_empty();}
+\DoxyCodeLine{00396\ }
+\DoxyCodeLine{00397\ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(promise).get();}
+\DoxyCodeLine{00398\ \ \ \}}
+\DoxyCodeLine{00399\ \};}
+\DoxyCodeLine{00400\ }
+\DoxyCodeLine{00401\ \textcolor{keyword}{namespace\ }\_thread\_unsafe\_event\_loop\ \{}
+\DoxyCodeLine{00402\ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ operation\_base::start()\ noexcept\ \{}
+\DoxyCodeLine{00403\ \ \ \ \ loop\_.enqueue(\textcolor{keyword}{this});}
+\DoxyCodeLine{00404\ \ \ \}}
+\DoxyCodeLine{00405\ \}}
+\DoxyCodeLine{00406\ }
+\DoxyCodeLine{00407\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00408\ }
+\DoxyCodeLine{00409\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

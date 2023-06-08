@@ -1,0 +1,80 @@
+\doxysection{\+\_\+stream\texorpdfstring{$<$}{<} Values \texorpdfstring{$>$}{>}\+::type\+::\+\_\+stream\texorpdfstring{$<$}{<} Stream \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type}{}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type}\index{\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type@{\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type}}
+Inheritance diagram for \+\_\+stream\texorpdfstring{$<$}{<} Values \texorpdfstring{$>$}{>}\+::type\+::\+\_\+stream\texorpdfstring{$<$}{<} Stream \texorpdfstring{$>$}{>}\+::type\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_1_1cleanup__receiver__wrapper}{cleanup\+\_\+receiver\+\_\+wrapper}}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_1_1next__receiver__wrapper}{next\+\_\+receiver\+\_\+wrapper}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a39a0b6f65f5ce389b7675d454bfc6837}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a39a0b6f65f5ce389b7675d454bfc6837} 
+using {\bfseries stream} = \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type}{type}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_af2b21251505175f92d7bd5ebffa95938}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_af2b21251505175f92d7bd5ebffa95938} 
+{\footnotesize template$<$typename Stream2 $>$ }\\{\bfseries type} (Stream2 \&\&strm)
+\item 
+void \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a7c55013f2f66b0c6b8e444ed79615056}{start\+\_\+next}} (\mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__receiver__base}{next\+\_\+receiver\+\_\+base}} \&receiver, \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\+\_\+stop\+\_\+token}} stop\+Token) noexcept override
+\item 
+void \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a3359675b278a70465c13902ee20c1c92}{start\+\_\+cleanup}} (\mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1cleanup__receiver__base}{cleanup\+\_\+receiver\+\_\+base}} \&receiver) noexcept override
+\end{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1stream__base_a646f293b3275f9d5d5615dc5d4b1ca26}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1stream__base_a646f293b3275f9d5d5615dc5d4b1ca26} 
+virtual void {\bfseries start\+\_\+next} (\mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__receiver__base}{next\+\_\+receiver\+\_\+base}} \&receiver, \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\+\_\+stop\+\_\+token}} stop\+Token) noexcept=0
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1stream__base_a1c9b4f9d6b1d8acc7acf79eda6fa6169}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1stream__base_a1c9b4f9d6b1d8acc7acf79eda6fa6169} 
+virtual void {\bfseries start\+\_\+cleanup} (\mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1cleanup__receiver__base}{cleanup\+\_\+receiver\+\_\+base}} \&receiver) noexcept=0
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a35298f02959a3a5da50dded1a9a487dc}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a35298f02959a3a5da50dded1a9a487dc} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Stream {\bfseries stream\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a33f3e495d0d27a45e2ecc6caacc2c26b}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a33f3e495d0d27a45e2ecc6caacc2c26b} 
+union \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream}{unifex\+::\+\_\+type\+\_\+erase\+::\+\_\+stream}}$<$ Values... $>$\+::type\+::\+\_\+stream\+::type\+:: \{ ... \}  
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a3359675b278a70465c13902ee20c1c92}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a3359675b278a70465c13902ee20c1c92} 
+\index{\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type@{\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type}!start\_cleanup@{start\_cleanup}}
+\index{start\_cleanup@{start\_cleanup}!\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type@{\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type}}
+\doxysubsubsection{\texorpdfstring{start\_cleanup()}{start\_cleanup()}}
+{\footnotesize\ttfamily template$<$typename... Values$>$ \\
+template$<$typename Stream $>$ \\
+void start\+\_\+cleanup (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1cleanup__receiver__base}{cleanup\+\_\+receiver\+\_\+base}} \&}]{receiver }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}, {\ttfamily [noexcept]}}
+
+
+
+Implements \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1stream__base}{\+\_\+stream$<$ Values $>$\+::type\+::stream\+\_\+base}}.
+
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a7c55013f2f66b0c6b8e444ed79615056}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1__stream_1_1type_a7c55013f2f66b0c6b8e444ed79615056} 
+\index{\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type@{\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type}!start\_next@{start\_next}}
+\index{start\_next@{start\_next}!\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type@{\_stream$<$ Values $>$::type::\_stream$<$ Stream $>$::type}}
+\doxysubsubsection{\texorpdfstring{start\_next()}{start\_next()}}
+{\footnotesize\ttfamily template$<$typename... Values$>$ \\
+template$<$typename Stream $>$ \\
+void start\+\_\+next (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__receiver__base}{next\+\_\+receiver\+\_\+base}} \&}]{receiver,  }\item[{\mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\+\_\+stop\+\_\+token}}}]{stop\+Token }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}, {\ttfamily [noexcept]}}
+
+
+
+Implements \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1stream__base}{\+\_\+stream$<$ Values $>$\+::type\+::stream\+\_\+base}}.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/type\+\_\+erased\+\_\+stream.\+hpp\end{DoxyCompactItemize}

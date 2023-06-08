@@ -1,0 +1,84 @@
+\doxysection{execute.\+hpp}
+\hypertarget{execute_8hpp_source}{}\label{execute_8hpp_source}\index{include/unifex/execute.hpp@{include/unifex/execute.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/detail/unifex\_fwd.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/std\_concepts.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/scheduler\_concepts.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/submit.hpp>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00031\ \textcolor{keyword}{namespace\ }\_execute\ \{}
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F,\ \textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00033\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__execute_1_1__as__receiver}{\_as\_receiver}}\ \{}
+\DoxyCodeLine{00034\ \ \ F\ f\_;}
+\DoxyCodeLine{00035\ \ \ \textcolor{keywordtype}{void}\ set\_value()\ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<F\&>)\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ f\_();}
+\DoxyCodeLine{00037\ \ \ \}}
+\DoxyCodeLine{00038\ \ \ [[noreturn]]\ \textcolor{keywordtype}{void}\ set\_error(std::exception\_ptr)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00039\ \ \ \ \ std::terminate();}
+\DoxyCodeLine{00040\ \ \ \}}
+\DoxyCodeLine{00041\ \ \ \textcolor{keywordtype}{void}\ set\_done()\ \textcolor{keyword}{noexcept}\ \{\}}
+\DoxyCodeLine{00042\ \};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{namespace\ }\_cpo\ \{}
+\DoxyCodeLine{00045\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Fn>}
+\DoxyCodeLine{00046\ \ \ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00047\ \ \ \ \ \_lvalue\_callable\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ callable<remove\_cvref\_t<Fn>\&>\ \&\&}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ constructible\_from<remove\_cvref\_t<Fn>,\ Fn>\ \&\&}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ move\_constructible<remove\_cvref\_t<Fn>>;}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__execute_1_1__cpo_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Scheduler,\ \textcolor{keyword}{typename}\ Fn)}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ \_lvalue\_callable<Fn>\ AND}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ scheduler<Scheduler>\ AND}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ tag\_invocable<\_fn,\ Scheduler,\ Fn>)}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{void}\ operator()(Scheduler\&\&\ sched,\ Fn\&\&\ fn)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ Scheduler,\ Fn>)\ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ unifex::tag\_invoke(\mbox{\hyperlink{structunifex_1_1__execute_1_1__cpo_1_1__fn}{\_fn}}\{\},\ (Scheduler\ \&\&)\ sched,\ (Fn\ \&\&)\ fn);}
+\DoxyCodeLine{00060\ \ \ \ \ \}}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Scheduler,\ \textcolor{keyword}{typename}\ Fn)}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ \_lvalue\_callable<Fn>\ AND}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ scheduler<Scheduler>\ AND}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ (!tag\_invocable<\_fn,\ Scheduler,\ Fn>))}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{void}\ \textcolor{keyword}{operator}()(Scheduler\&\&\ sched,\ Fn\&\&\ fn)\ \textcolor{keyword}{const}\ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \textcolor{keyword}{using\ }Receiver\ =}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__execute_1_1__as__receiver}{\_as\_receiver<remove\_cvref\_t<Fn>}},\ Scheduler>;}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ snd\ =\ unifex::schedule((Scheduler\&\&)\ sched);}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ unifex::submit(std::move(snd),\ Receiver\{(Fn\&\&)\ fn\});}
+\DoxyCodeLine{00070\ \ \ \ \ \}}
+\DoxyCodeLine{00071\ \ \ \};}
+\DoxyCodeLine{00072\ \}\ \textcolor{comment}{//\ namespace\ \_cpo}}
+\DoxyCodeLine{00073\ \}\ \textcolor{comment}{//\ namespace\ \_execute}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__execute_1_1__cpo_1_1__fn}{\_execute::\_cpo::\_fn}}\ execute\ \{\};}
+\DoxyCodeLine{00076\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

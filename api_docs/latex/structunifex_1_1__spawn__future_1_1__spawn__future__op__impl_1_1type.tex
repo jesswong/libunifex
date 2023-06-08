@@ -1,0 +1,61 @@
+\doxysection{\+\_\+spawn\+\_\+future\+\_\+op\+\_\+impl\texorpdfstring{$<$}{<} Sender, Scope, Alloc \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}\index{\_spawn\_future\_op\_impl$<$ Sender, Scope, Alloc $>$::type@{\_spawn\_future\_op\_impl$<$ Sender, Scope, Alloc $>$::type}}
+Inheritance diagram for \+\_\+spawn\+\_\+future\+\_\+op\+\_\+impl\texorpdfstring{$<$}{<} Sender, Scope, Alloc \texorpdfstring{$>$}{>}\+::type\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_aad034849a59ee949219d9bf01a6f7489}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_aad034849a59ee949219d9bf01a6f7489} 
+using {\bfseries nest\+\_\+sender\+\_\+t} = decltype(nest(UNIFEX\+\_\+\+DECLVAL(Sender), UNIFEX\+\_\+\+DECLVAL(Scope \&)))
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_aefae30d1bd4216cc6a858090e88d26f0}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_aefae30d1bd4216cc6a858090e88d26f0} 
+using {\bfseries receiver\+\_\+t} = spawn\+\_\+future\+\_\+receiver\+\_\+for$<$ Sender, Alloc $>$
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_af5252d4d3eafae34ef7503450ac7643d}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_af5252d4d3eafae34ef7503450ac7643d} 
+using {\bfseries op\+\_\+t} = connect\+\_\+result\+\_\+t$<$ nest\+\_\+sender\+\_\+t, receiver\+\_\+t $>$
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_aac0c40a9267dca47196d8aec99f0db1f}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_aac0c40a9267dca47196d8aec99f0db1f} 
+using {\bfseries future\+\_\+t} = typename spawn\+\_\+future\+\_\+op\+\_\+for$<$ Sender $>$\+::template future\+\_\+t$<$ Scope $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_a827b1c039b5d4b3c9895259c2e7173a1}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_a827b1c039b5d4b3c9895259c2e7173a1} 
+{\bfseries type} (const Alloc \&alloc) noexcept
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_aaae8622d1ca58d9960aad31655e548f3}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_aaae8622d1ca58d9960aad31655e548f3} 
+{\bfseries type} (\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}} \&\&)=delete
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_ac8134fb7967f3692669dbf60a7cc008f}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_ac8134fb7967f3692669dbf60a7cc008f} 
+{\footnotesize template$<$typename Sender2 $>$ }\\void {\bfseries init\+\_\+operation} (Sender2 \&\&sender, Scope \&scope, \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}} \texorpdfstring{$\ast$}{*}self) noexcept(noexcept(nest(static\+\_\+cast$<$ Sender2 \&\& $>$(sender), scope)) \&\&is\+\_\+nothrow\+\_\+connectable\+\_\+v$<$ nest\+\_\+sender\+\_\+t, receiver\+\_\+t $>$)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_ad169764a06515f8fd3fa7efdb7711e44}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_ad169764a06515f8fd3fa7efdb7711e44} 
+static void {\bfseries destroy\+\_\+operation} (\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\+\_\+spawn\+\_\+future\+\_\+op\+\_\+base}} \texorpdfstring{$\ast$}{*}self) noexcept
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_a16f439413e007601aac9ec76e6aab0b5}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_a16f439413e007601aac9ec76e6aab0b5} 
+static void {\bfseries deleter} (\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\+\_\+spawn\+\_\+future\+\_\+op\+\_\+base}} \texorpdfstring{$\ast$}{*}base, \+\_\+future\+\_\+state state) noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_a3d230e0d03bfb9d4ff681b3dd615579c}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type_a3d230e0d03bfb9d4ff681b3dd615579c} 
+\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\+\_\+lifetime}}$<$ op\+\_\+t $>$ {\bfseries op\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc_1_1type}{\+\_\+spawn\+\_\+future\+\_\+op\+\_\+alloc$<$ Alloc $>$\+::type}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc_1_1type_af05e4816ffdce8a7f9f5a4f47c60fcd1}\label{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc_1_1type_af05e4816ffdce8a7f9f5a4f47c60fcd1} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Alloc {\bfseries alloc\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/spawn\+\_\+future.\+hpp\end{DoxyCompactItemize}

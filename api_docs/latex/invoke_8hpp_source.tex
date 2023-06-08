@@ -1,0 +1,65 @@
+\doxysection{invoke.\+hpp}
+\hypertarget{invoke_8hpp_source}{}\label{invoke_8hpp_source}\index{include/unifex/invoke.hpp@{include/unifex/invoke.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{namespace\ }\_co\_invoke\ \{}
+\DoxyCodeLine{00028\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__co__invoke_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Fn,\ \textcolor{keyword}{typename}...\ Args)}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__co__invoke_1_1__fn}{\_fn}},}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__ti_1_1type__identity}{type\_identity}}<std::invoke\_result\_t<Fn,\ Args...>>,}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ Fn,}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ Args...>)}
+\DoxyCodeLine{00035\ \ \ \ \ UNIFEX\_ALWAYS\_INLINE\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Fn\&\&\ fn,\ Args\&\&...\ args)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__co__invoke_1_1__fn}{\_fn}},}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__ti_1_1type__identity}{type\_identity}}<std::invoke\_result\_t<Fn,\ Args...>>,}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ Fn,}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ Args...>)}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ -\/>\ tag\_invoke\_result\_t<}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__co__invoke_1_1__fn}{\_fn}},}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__ti_1_1type__identity}{type\_identity}}<std::invoke\_result\_t<Fn,\ Args...>>,}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ Fn,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ Args...>\ \{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ *\textcolor{keyword}{this},}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__ti_1_1type__identity}{type\_identity}}<std::invoke\_result\_t<Fn,\ Args...>>\{\},}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ (Fn\&\&)\ fn,}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ (Args\&\&)\ args...);}
+\DoxyCodeLine{00051\ \ \ \ \ \}}
+\DoxyCodeLine{00052\ \}\ co\_invoke\{\};}
+\DoxyCodeLine{00053\ \}\ \textcolor{comment}{//\ namespace\ \_co\_invoke}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{keyword}{using\ }\_co\_invoke::co\_invoke;}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

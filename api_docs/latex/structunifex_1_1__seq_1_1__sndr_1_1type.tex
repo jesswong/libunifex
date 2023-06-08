@@ -1,0 +1,50 @@
+\doxysection{\+\_\+sndr\texorpdfstring{$<$}{<} Predecessor, Successor \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__seq_1_1__sndr_1_1type}{}\label{structunifex_1_1__seq_1_1__sndr_1_1type}\index{\_sndr$<$ Predecessor, Successor $>$::type@{\_sndr$<$ Predecessor, Successor $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__sndr_1_1type_a4d8e03acc9e9cd256e382c27d4b4028f}\label{structunifex_1_1__seq_1_1__sndr_1_1type_a4d8e03acc9e9cd256e382c27d4b4028f} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Successor, Variant, Tuple $>$
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__sndr_1_1type_a690ef64644c6d3301f302486cd6c70eb}\label{structunifex_1_1__seq_1_1__sndr_1_1type_a690ef64644c6d3301f302486cd6c70eb} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ Predecessor, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, sender\+\_\+error\+\_\+types\+\_\+t$<$ Successor, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__sndr_1_1type_a42487aa5405d0d9dd8de3facc1f3a17f}\label{structunifex_1_1__seq_1_1__sndr_1_1type_a42487aa5405d0d9dd8de3facc1f3a17f} 
+{\bfseries template} (typename Predecessor2, typename Successor2)(AND const ructible\+\_\+from$<$ Successor
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__sndr_1_1type_ae8982d9411b4f8af2f7e57b42750d1dc}\label{structunifex_1_1__seq_1_1__sndr_1_1type_ae8982d9411b4f8af2f7e57b42750d1dc} 
+Successor2 {\bfseries type} (Predecessor2 \&\&predecessor, Successor2 \&\&successor) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Predecessor, Predecessor2 $>$ \&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Successor, Successor2 $>$)
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__sndr_1_1type_a029f0be4201915972c3bf4bb7ac2e3fa}\label{structunifex_1_1__seq_1_1__sndr_1_1type_a029f0be4201915972c3bf4bb7ac2e3fa} 
+{\bfseries template} (typename Receiver, typename Sender)(AND const ructible\+\_\+from$<$ Successor
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr bool \mbox{\hyperlink{structunifex_1_1__seq_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a}{sends\+\_\+done}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__seq_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__seq_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+\index{\_sndr$<$ Predecessor, Successor $>$::type@{\_sndr$<$ Predecessor, Successor $>$::type}!sends\_done@{sends\_done}}
+\index{sends\_done@{sends\_done}!\_sndr$<$ Predecessor, Successor $>$::type@{\_sndr$<$ Predecessor, Successor $>$::type}}
+\doxysubsubsection{\texorpdfstring{sends\_done}{sends\_done}}
+{\footnotesize\ttfamily template$<$typename Predecessor , typename Successor $>$ \\
+constexpr bool sends\+\_\+done\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ sender\_traits<Predecessor>::sends\_done\ ||}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ sender\_traits<Successor>::sends\_done}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/sequence.\+hpp\end{DoxyCompactItemize}

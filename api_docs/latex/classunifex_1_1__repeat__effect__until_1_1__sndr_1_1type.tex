@@ -1,0 +1,31 @@
+\doxysection{\+\_\+sndr\texorpdfstring{$<$}{<} Source, Predicate \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type}{}\label{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type}\index{\_sndr$<$ Source, Predicate $>$::type@{\_sndr$<$ Source, Predicate $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_ad0993cef3b28159db0c3c9f30151fdca}\label{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_ad0993cef3b28159db0c3c9f30151fdca} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = Variant$<$ Tuple$<$$>$ $>$
+\item 
+\Hypertarget{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_a122c7742d92ae6ff53d7deb8b89ca370}\label{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_a122c7742d92ae6ff53d7deb8b89ca370} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ Source, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_ab77447526ebb670c0a7efd46e6f97464}\label{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_ab77447526ebb670c0a7efd46e6f97464} 
+{\footnotesize template$<$typename Source2 , typename Predicate2 $>$ }\\{\bfseries type} (Source2 \&\&source, Predicate2 \&\&predicate) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Source, Source2 $>$ \&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Predicate, Predicate2 $>$)
+\item 
+\Hypertarget{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_a049a0aeeed7e931a58d6556bede42980}\label{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_a049a0aeeed7e931a58d6556bede42980} 
+{\bfseries template} (typename Sender, typename Receiver)(AND const ructible\+\_\+from$<$ remove\+\_\+cvref\+\_\+t$<$ Receiver $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__repeat__effect__until_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = true
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/repeat\+\_\+effect\+\_\+until.\+hpp\end{DoxyCompactItemize}

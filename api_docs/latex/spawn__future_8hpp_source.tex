@@ -1,0 +1,1032 @@
+\doxysection{spawn\+\_\+future.\+hpp}
+\hypertarget{spawn__future_8hpp_source}{}\label{spawn__future_8hpp_source}\index{include/unifex/spawn\_future.hpp@{include/unifex/spawn\_future.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/async\_manual\_reset\_event.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/blocking.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/get\_allocator.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/inplace\_stop\_token.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/just.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/just\_done.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/just\_error.hpp>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <unifex/let\_done.hpp>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <unifex/let\_value.hpp>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/let\_value\_with.hpp>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <unifex/let\_value\_with\_stop\_token.hpp>}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <unifex/manual\_lifetime.hpp>}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <unifex/nest.hpp>}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ <unifex/variant\_sender.hpp>}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00041\ \textcolor{keyword}{namespace\ }\_spawn\_future\ \{}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ Spawning\ a\ future\ creates\ a\ race\ condition\ between\ the\ spawned\ operation}}
+\DoxyCodeLine{00044\ \textcolor{comment}{//\ completing\ and\ the\ future\ trying\ to\ observe\ the\ result;\ we\ resolve\ this\ race}}
+\DoxyCodeLine{00045\ \textcolor{comment}{//\ by\ moving\ the\ operation\ through\ a\ state\ machine\ that\ reflects\ what\ work\ has}}
+\DoxyCodeLine{00046\ \textcolor{comment}{//\ been\ done\ and\ who's\ waiting\ for\ whom.}}
+\DoxyCodeLine{00047\ \textcolor{comment}{//}}
+\DoxyCodeLine{00048\ \textcolor{comment}{//\ Successfully-\/spawned\ operations\ start\ in\ the\ init\ state;\ from\ there,\ the}}
+\DoxyCodeLine{00049\ \textcolor{comment}{//\ simplest\ path\ is\ for\ the\ operation\ to\ complete\ normally\ before\ the\ future's}}
+\DoxyCodeLine{00050\ \textcolor{comment}{//\ continuation\ consumes\ the\ result,\ in\ which\ case\ the\ operation\ moves\ from\ init}}
+\DoxyCodeLine{00051\ \textcolor{comment}{//\ to\ one\ of\ value,\ error,\ or\ done\ (depending\ on\ the\ result)\ and\ then\ the}}
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ future\ deletes\ the\ spawned\ operation\ as\ a\ side\ effect\ of\ completing.}}
+\DoxyCodeLine{00053\ \textcolor{comment}{//}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ There\ are\ several\ other\ paths\ through\ the\ state\ machine:}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//}}
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ 1.\ The\ future\ is\ dropped\ (i.e.\ destroyed\ beforing\ being\ connected,\ or}}
+\DoxyCodeLine{00057\ \textcolor{comment}{//\ \ \ \ destroyed\ after\ connect\ but\ before\ start)\ before\ the\ spawned\ operation}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ \ \ \ completes.\ \ In\ this\ scenario,\ we\ request\ stop\ on\ the\ spawned\ operation\ and}}
+\DoxyCodeLine{00059\ \textcolor{comment}{//\ \ \ \ then\ move\ to\ the\ complete\ state;\ when\ the\ operation\ ultimately\ completes,}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ \ \ \ it\ observes\ the\ complete\ state\ and\ cleans\ up.}}
+\DoxyCodeLine{00061\ \textcolor{comment}{//}}
+\DoxyCodeLine{00062\ \textcolor{comment}{//\ 2.\ The\ future\ is\ dropped\ after\ the\ spawned\ operation\ completes.\ \ In\ this}}
+\DoxyCodeLine{00063\ \textcolor{comment}{//\ \ \ \ scenario,\ we'll\ observe\ that\ the\ operation\ is\ in\ the\ value,\ error,\ or\ done}}
+\DoxyCodeLine{00064\ \textcolor{comment}{//\ \ \ \ state\ and\ clean\ up\ as\ a\ side\ effect\ of\ dropping\ the\ future.}}
+\DoxyCodeLine{00065\ \textcolor{comment}{//}}
+\DoxyCodeLine{00066\ \textcolor{comment}{//\ 3.\ The\ future\ is\ connected\ and\ started,\ but\ then\ receives\ a\ stop\ request}}
+\DoxyCodeLine{00067\ \textcolor{comment}{//\ \ \ \ before\ the\ operation\ completes.\ \ In\ this\ scenario,\ \ we\ need\ to\ signal\ the}}
+\DoxyCodeLine{00068\ \textcolor{comment}{//\ \ \ \ operation\ and\ then\ complete\ the\ future\ with\ set\_done().\ \ To\ do\ this,\ we}}
+\DoxyCodeLine{00069\ \textcolor{comment}{//\ \ \ \ request\ stop\ on\ the\ spawned\ operation\ and\ then\ move\ the\ operation\ to\ the}}
+\DoxyCodeLine{00070\ \textcolor{comment}{//\ \ \ \ abandoned\ state;\ as\ the\ future\ completes\ with\ done\ in\ this\ scenario,\ we}}
+\DoxyCodeLine{00071\ \textcolor{comment}{//\ \ \ \ need\ to\ negotiate\ who\ will\ delete\ the\ spawned\ operation:\ the\ now-\/completed}}
+\DoxyCodeLine{00072\ \textcolor{comment}{//\ \ \ \ future\ or\ the\ spawned\ operation?\ \ We\ resolve\ this\ negotiation\ by\ having}}
+\DoxyCodeLine{00073\ \textcolor{comment}{//\ \ \ \ both\ sides\ race\ to\ see\ who\ can\ move\ the\ state\ from\ abandoned\ to\ complete;}}
+\DoxyCodeLine{00074\ \textcolor{comment}{//\ \ \ \ whoever\ *fails*\ to\ update\ the\ state\ is\ deemed\ responsible\ for\ cleaning\ up.}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//}}
+\DoxyCodeLine{00076\ \textcolor{comment}{//\ 4.\ The\ future\ is\ connected\ and\ started,\ but\ then\ receives\ a\ stop\ request}}
+\DoxyCodeLine{00077\ \textcolor{comment}{//\ \ \ \ after\ the\ operation\ completes.\ \ In\ this\ final\ scenario,\ the\ stop\ request}}
+\DoxyCodeLine{00078\ \textcolor{comment}{//\ \ \ \ is\ effectively\ ignored.\ \ The\ operation\ will\ move\ the\ state\ from\ init\ to}}
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ \ \ \ one\ of\ value,\ error,\ or\ done,\ and\ then\ the\ future\ will\ complete\ with\ the}}
+\DoxyCodeLine{00080\ \textcolor{comment}{//\ \ \ \ appropriate\ result\ as\ if\ the\ stop\ request\ was\ never\ received.}}
+\DoxyCodeLine{00081\ \textcolor{comment}{//}}
+\DoxyCodeLine{00082\ \textcolor{comment}{//\ All\ of\ the\ above-\/described\ state\ transitions\ happen\ with\ atomic\ updates\ to}}
+\DoxyCodeLine{00083\ \textcolor{comment}{//\ the\ operation's\ state\_\ field\ so\ any\ "{}happens-\/before"{}\ relationships\ are\ as}}
+\DoxyCodeLine{00084\ \textcolor{comment}{//\ observed\ by\ those\ atomic\ operations.}}
+\DoxyCodeLine{00085\ \textcolor{keyword}{enum\ class}\ \_future\_state\ :\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ \{}
+\DoxyCodeLine{00086\ \ \ \textcolor{comment}{//\ the\ operation\ has\ been\ constructed,\ and\ perhaps\ started}}
+\DoxyCodeLine{00087\ \ \ init,}
+\DoxyCodeLine{00088\ \ \ \textcolor{comment}{//\ the\ future\ received\ a\ stop\ request\ and\ managed\ to\ signal\ so\ before\ the}}
+\DoxyCodeLine{00089\ \ \ \textcolor{comment}{//\ operation\ completed}}
+\DoxyCodeLine{00090\ \ \ abandoned,}
+\DoxyCodeLine{00091\ \ \ \textcolor{comment}{//\ the\ operation\ completed\ with\ set\_value();\ the\ values\_\ member\ has\ been}}
+\DoxyCodeLine{00092\ \ \ \textcolor{comment}{//\ constructed}}
+\DoxyCodeLine{00093\ \ \ value,}
+\DoxyCodeLine{00094\ \ \ \textcolor{comment}{//\ the\ operation\ completed\ with\ set\_error();\ the\ error\_\ member\ has\ been}}
+\DoxyCodeLine{00095\ \ \ \textcolor{comment}{//\ constructed}}
+\DoxyCodeLine{00096\ \ \ error,}
+\DoxyCodeLine{00097\ \ \ \textcolor{comment}{//\ the\ operation\ completed\ with\ set\_done()}}
+\DoxyCodeLine{00098\ \ \ done,}
+\DoxyCodeLine{00099\ \ \ \textcolor{comment}{//\ one\ of\ three\ things\ happened:\ a)\ the\ future\ was\ dropped,\ b)\ the\ future\ was}}
+\DoxyCodeLine{00100\ \ \ \textcolor{comment}{//\ cancelled\ and\ it\ completed\ with\ done\ before\ the\ spawned\ operation}}
+\DoxyCodeLine{00101\ \ \ \textcolor{comment}{//\ completed,\ or\ c)\ the\ future\ was\ cancelled\ and\ the\ spawned\ operation}}
+\DoxyCodeLine{00102\ \ \ \textcolor{comment}{//\ completed\ before\ the\ future\ could\ complete\ with\ done;\ regardless,\ whoever}}
+\DoxyCodeLine{00103\ \ \ \textcolor{comment}{//\ (future\ or\ operation)\ observes\ the\ complete\ state\ is\ responsible\ for}}
+\DoxyCodeLine{00104\ \ \ \textcolor{comment}{//\ deleting\ the\ operation}}
+\DoxyCodeLine{00105\ \ \ complete,}
+\DoxyCodeLine{00106\ \};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00109\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future}{\_future}}\ final\ \{}
+\DoxyCodeLine{00110\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{type}};}
+\DoxyCodeLine{00111\ \};}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00114\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc}{\_spawn\_future\_op\_alloc}}\ final\ \{}
+\DoxyCodeLine{00115\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc_1_1type}{type}};}
+\DoxyCodeLine{00116\ \};}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{comment}{//\ an\ allocator-\/holder;\ this\ type\ exists\ to\ let\ us\ lay\ out\ \_spawn\_future\_op\_impl}}
+\DoxyCodeLine{00119\ \textcolor{comment}{//\ with\ the\ allocator\ before\ the\ \_spawn\_future\_op\_base\ in\ memory}}
+\DoxyCodeLine{00120\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00121\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc}{\_spawn\_future\_op\_alloc}}<Alloc>::\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc_1_1type}{type}}\ \{}
+\DoxyCodeLine{00122\ \ \ \textcolor{comment}{//\ standardize\ on\ allocators\ of\ std::bytes\ to\ minimize\ template}}
+\DoxyCodeLine{00123\ \ \ \textcolor{comment}{//\ instantiations}}
+\DoxyCodeLine{00124\ \ \ \textcolor{keyword}{static\_assert}(same\_as<std::byte,\ typename\ Alloc::value\_type>);}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Alloc\ alloc\_;}
+\DoxyCodeLine{00127\ \};}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \textcolor{comment}{//\ the\ type-\/indepedent\ base\ class\ for\ the\ spawned\ operation's\ operation\ state}}
+\DoxyCodeLine{00130\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}\ \{}
+\DoxyCodeLine{00131\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}(}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ (*destructOp)(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*)\ \textcolor{keyword}{noexcept},}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ (*deleter)(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*,\ \_future\_state)\ \textcolor{keyword}{noexcept})\ noexcept}
+\DoxyCodeLine{00134\ \ \ \ \ :\ destructOp\_(destructOp)}
+\DoxyCodeLine{00135\ \ \ \ \ ,\ deleter\_(deleter)\ \{\}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\string~\_spawn\_future\_op\_base}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \textcolor{comment}{//\ invoked\ when\ the\ waiting\ future\ receives\ a\ stop\ request;\ attempts\ to\ cancel}}
+\DoxyCodeLine{00142\ \ \ \textcolor{comment}{//\ the\ spawned\ operation\ and\ ensure\ that\ the\ waiting\ future\ is\ awoken\ promptly}}
+\DoxyCodeLine{00143\ \ \ \textcolor{keywordtype}{void}\ abandon()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{comment}{//\ abandon()\ is\ only\ invoked\ from\ a\ stop\ callback\ that's\ registered\ when\ the}}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{comment}{//\ future\ is\ awaited;\ we\ know\ for\ sure\ that\ the\ future\ has\ been\ started\ and}}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{comment}{//\ will\ consume\ the\ spawned\ operation.\ \ if\ abandonment\ fails,\ it\ means\ the}}
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{comment}{//\ stop\ request\ has\ lost\ the\ race\ to\ a\ natural\ completion\ and\ the\ future}}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{comment}{//\ will\ produce\ whatever\ the\ operation\ produced.}}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{comment}{//\ the\ operation\ must\ either\ be\ in\ the\ init\ state\ or\ one\ of\ the\ natural}}
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{comment}{//\ completion\ states;\ in\ the\ former\ case\ we\ want\ to\ mark\ it\ as\ abandoned\ and}}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{comment}{//\ in\ the\ latter\ we'll\ just\ allow\ the\ future\ to\ complete\ naturally}}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keyword}{auto}\ expected\ =\ \_future\_state::init;}
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keywordflow}{if}\ (state\_.compare\_exchange\_strong(}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ expected,}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \_future\_state::abandoned,}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ success,\ there\ are\ two\ audiences\ to\ publish\ to:\ the\ waiting}}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ future\ and\ the\ still-\/running\ operation;\ the\ future\ will}}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ synchronize\ through\ evt\_\ and\ see\ everything\ we've\ written;\ the}}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ still\ running\ operation\ will\ eventually\ complete\ and\ have\ to}}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ negotiate\ completion\ with\ the\ completing\ future\ so\ relaxed\ is}}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ fine\ at\ this\ point.}}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ failure,\ we've\ lost\ a\ completion\ race\ with\ the\ spawned}}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ operation,\ in\ which\ case\ the\ state\ is\ a\ completion\ signal\ and\ the}}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ operation\ is\ waking\ up\ the\ future\ with\ evt\_.set(),\ which\ causes\ a}}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ synchronization\ between\ operation\ and\ future;\ the\ attempted}}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ abandonment\ "{}never\ happened"{}\ and\ so\ there's\ nothing\ to}}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ synchronize}}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_relaxed))\ \{}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \textcolor{comment}{//\ we\ set\ the\ state\ to\ abandoned;\ the\ future\ will\ complete\ with\ set\_done()}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \ \ stopSource\_.request\_stop();}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \textcolor{comment}{//\ publish\ the\ result}}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ evt\_.set();}
+\DoxyCodeLine{00177\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ UNIFEX\_ASSERT(}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ expected\ ==\ \_future\_state::value\ ||}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ expected\ ==\ \_future\_state::error\ ||\ expected\ ==\ \_future\_state::done);}
+\DoxyCodeLine{00181\ \ \ \ \ \}}
+\DoxyCodeLine{00182\ \ \ \}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \ \ \textcolor{comment}{//\ invoked\ by\ the\ spawned\ operation\ when\ it\ completes;\ attempts\ to\ record\ the}}
+\DoxyCodeLine{00185\ \ \ \textcolor{comment}{//\ operation's\ completion\ style\ (value,\ error,\ or\ done)\ and\ store\ the\ result}}
+\DoxyCodeLine{00186\ \ \ \textcolor{comment}{//\ in\ case\ of\ value\ or\ error.}}
+\DoxyCodeLine{00187\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00188\ \ \ \textcolor{keywordtype}{void}\ complete(\_future\_state\ desired,\ Func\ func)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00189\ \ \ \ \ UNIFEX\_ASSERT(}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ desired\ ==\ \_future\_state::value\ ||\ desired\ ==\ \_future\_state::error\ ||}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ desired\ ==\ \_future\_state::done);}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{comment}{//\ the\ happy\ path\ is\ that\ we\ transition\ from\ init\ to\ the\ desired\ state}}
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keyword}{auto}\ expected\ =\ \_future\_state::init;}
+\DoxyCodeLine{00195\ \ \ \ \ \textcolor{keywordflow}{if}\ (state\_.compare\_exchange\_strong(}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ expected,}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ desired,}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ success,\ we'll\ invoke\ evt\_.set()\ to\ publish\ the\ writes\ that}}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ happen\ in\ func()\ and\ destruct\_op();\ if\ the\ future\ is\ ever}}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ started,\ it\ will\ synchronize\ through\ evt\_\ to\ consume\ the\ result;}}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ if\ the\ future\ is\ never\ started\ then\ drop()\ will\ observe\ that\ the}}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ future\ was\ dropped\ after\ the\ spawned\ operation\ completed\ and}}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ synchronize\ through\ evt\_.ready()\ before\ deleting\ this\ operation}}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ state}}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_relaxed,}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ failure\ we\ need\ to\ consume\ the\ future's\ writes\ in\ case}}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ negotiate\_deletion()\ decides\ the\ next\ step\ is\ to\ delete\ this}}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ operation\ state}}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_acquire))\ \{}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \textcolor{comment}{//\ we\ successfully\ set\ the\ state\ to\ a\ completion\ signal\ (value,\ error,\ or}}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \textcolor{comment}{//\ done)\ so\ invoke\ func\ to\ store\ the\ operation's\ result}}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ func();}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \textcolor{comment}{//\ func()\ has\ stored\ whatever\ it\ needs\ to\ in\ either\ values\_\ or\ error\_\ so}}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \textcolor{comment}{//\ we\ can\ safely\ destruct\ the\ nested\ operation\ state\ now.\ \ we\ have\ to\ do}}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \textcolor{comment}{//\ this\ *before*\ waking\ up\ the\ future\ because\ the\ future\ might\ wake\ up\ on}}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \textcolor{comment}{//\ another\ thread\ and\ delete\ the\ whole\ spawned\ operation\ while\ we're\ busy}}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \textcolor{comment}{//\ trying\ to\ destroy\ a\ sub-\/part.\ \ we\ also\ need\ to\ do\ this\ first\ because}}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \textcolor{comment}{//\ we're\ relying\ on\ the\ event's\ memory\ ordering\ semantics\ to\ publish\ our}}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \textcolor{comment}{//\ effects\ to\ the\ future\ and,\ since\ we've\ succeeded\ in\ completing\ here,}}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \textcolor{comment}{//\ the\ future\ is\ going\ to\ be\ the\ one\ to\ destroy\ the\ overall\ operation,}}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \textcolor{comment}{//\ which\ it\ should\ do\ *after*\ the\ nested\ operation\ has\ been\ destructed.}}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ destruct\_op();}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \textcolor{comment}{//\ now\ that\ the\ spawned\ operation\ is\ really\ done,\ wake\ up\ the\ future\ and}}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \textcolor{comment}{//\ let\ it\ take\ things\ from\ here}}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ evt\_.set();}
+\DoxyCodeLine{00228\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \textcolor{comment}{//\ the\ future\ has\ disappeared\ before\ we\ completed\ so\ we\ need\ to\ coordinate}}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \textcolor{comment}{//\ deletion\ of\ this\ operation\ state}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \textcolor{comment}{//\ If\ expected\ is\ abandoned\ then\ the\ future\ is\ currently\ responding\ to\ a}}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \textcolor{comment}{//\ stop\ request;\ if\ expected\ is\ complete\ then\ either\ the\ future\ was}}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \textcolor{comment}{//\ dropped\ before\ being\ started\ or\ it\ was\ cancelled\ and\ has\ already}}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \textcolor{comment}{//\ completed.\ \ There's\ no\ other\ valid\ state\ here.}}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ UNIFEX\_ASSERT(}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ expected\ ==\ \_future\_state::abandoned\ ||}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ expected\ ==\ \_future\_state::complete);}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \textcolor{comment}{//\ Figure\ out\ which\ case\ we're\ in\ and\ delete\ the\ operation\ state;\ do\ this}}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \textcolor{comment}{//\ in\ a\ helper\ function\ because\ it's\ not\ dependent\ on\ Func}}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ negotiate\_deletion(expected);}
+\DoxyCodeLine{00243\ \ \ \ \ \}}
+\DoxyCodeLine{00244\ \ \ \}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \textcolor{keywordtype}{void}\ negotiate\_deletion(\_future\_state\ expected)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{comment}{//\ the\ spawned\ operation\ has\ completed\ so\ we\ can\ unconditionally\ destruct\ it}}
+\DoxyCodeLine{00248\ \ \ \ \ destruct\_op();}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keywordflow}{if}\ (expected\ ==\ \_future\_state::abandoned)\ \{}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \textcolor{comment}{//\ the\ future\ abandoned\ the\ operation\ but\ hasn't\ dropped\ its\ ownership}}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \textcolor{comment}{//\ stake,\ yet;\ we\ need\ to\ coordinate\ who's\ going\ to\ delete\ the\ operation}}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \textcolor{comment}{//\ state}}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (state\_.compare\_exchange\_strong(}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ expected,}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_future\_state::complete,}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ success\ we\ need\ to\ publish\ our\ writes\ to\ the\ future's\ thread}}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_release,}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ failure\ we\ need\ to\ observe\ the\ future's\ writes}}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_acquire))\ \{}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we've\ handed\ ownership\ of\ the\ operation\ state\ to\ the\ future\ so\ just}}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ bail\ out}}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00265\ \ \ \ \ \}}
+\DoxyCodeLine{00266\ }
+\DoxyCodeLine{00267\ \ \ \ \ \textcolor{comment}{//\ the\ future\ has\ disappeared\ and\ we\ own\ clean-\/up;\ it\ could\ be\ that\ the}}
+\DoxyCodeLine{00268\ \ \ \ \ \textcolor{comment}{//\ future\ was\ already\ gone\ when\ we\ tried\ to\ set\ state\_\ to\ a\ completion}}
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{comment}{//\ signal,\ or\ it\ could\ be\ that\ we\ observed\ the\ abandoned\ state\ and\ then\ lost}}
+\DoxyCodeLine{00270\ \ \ \ \ \textcolor{comment}{//\ the\ race\ to\ set\ state\_\ to\ complete}}
+\DoxyCodeLine{00271\ \ \ \ \ UNIFEX\_ASSERT(expected\ ==\ \_future\_state::complete);}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \ \ \ \ \textcolor{comment}{//\ we\ own\ deletion}}
+\DoxyCodeLine{00274\ \ \ \ \ deleter\_(\textcolor{keyword}{this},\ expected);}
+\DoxyCodeLine{00275\ \ \ \}}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \ \ \textcolor{comment}{//\ invoked\ by\ the\ future\ if\ it's\ dropped\ before\ being\ started}}
+\DoxyCodeLine{00278\ \ \ \textcolor{keywordtype}{void}\ drop()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00279\ \ \ \ \ \textcolor{keyword}{auto}\ state\ =\ state\_.load(}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ either\ we'll\ see\ init,\ in\ which\ case\ we'll\ do\ more\ synchronizing,\ or}}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we'll\ see\ a\ completion\ signal,\ in\ which\ case\ we'll\ synchronize}}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ through\ evt\_}}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ std::memory\_order\_relaxed);}
+\DoxyCodeLine{00284\ }
+\DoxyCodeLine{00285\ \ \ \ \ \textcolor{keywordflow}{switch}\ (state)\ \{}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \_future\_state::init:}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we're\ being\ dropped\ before\ the\ spawned\ operation\ has\ completed;}}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ request\ stop\ to\ hurry\ it\ up}}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ stopSource\_.request\_stop();}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we\ want\ to\ give\ the\ spawned\ operation\ responsibility\ to\ delete\ the}}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ operation\ state\ but\ it\ might\ have\ finished\ since\ we\ read\ the\ state\ as}}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ init\ so\ try\ to\ assign\ the\ complete\ state\ with\ a\ CAS}}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (state\_.compare\_exchange\_strong(}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ state,}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_future\_state::complete,}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ success\ we\ need\ to\ publish\ our\ writes\ to\ the\ spawned}}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ operation}}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_release,}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ failure\ we'll\ synchronize\ the\ operation's\ final\ write\ by}}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ reading\ evt\_}}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_relaxed))\ \{}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we've\ assigned\ clean-\/up\ responsibility\ to\ the\ not-\/yet-\/completed}}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ operation;\ we're\ done}}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00308\ }
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we\ lost\ the\ race;\ this\ means\ the\ operation\ completed\ and\ we're}}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ responsible\ for\ clean-\/up}}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ UNIFEX\_ASSERT(}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ \ \ state\ ==\ \_future\_state::value\ ||\ state\ ==\ \_future\_state::error\ ||}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \ \ \ \ state\ ==\ \_future\_state::done);}
+\DoxyCodeLine{00314\ }
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ [[fallthrough]];}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \_future\_state::value:}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \_future\_state::error:}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \_future\_state::done:}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we're\ being\ dropped\ after\ the\ operation\ finished;\ we\ need\ to\ clean\ up}}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ the\ values\_\ or\ error\_\ that\ was\ written\ by\ the\ spawned\ operation}}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ because\ the\ future\ isn't\ going\ to\ consume\ them\ naturally}}
+\DoxyCodeLine{00323\ }
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ reading\ evt\_.ready()\ performs\ a\ load-\/acquire\ on\ the\ event\ so\ this\ is}}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ how\ we\ consume\ the\ operation's\ last\ writes}}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ (void)evt\_.ready();}
+\DoxyCodeLine{00327\ }
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ having\ synchronized\ with\ evt\_,\ we\ can\ now\ clean\ up}}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ deleter\_(\textcolor{keyword}{this},\ state);}
+\DoxyCodeLine{00330\ }
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00332\ }
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \textcolor{keywordflow}{default}:\ \ \textcolor{comment}{//\ should\ never\ happen}}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ std::terminate();}
+\DoxyCodeLine{00335\ \ \ \ \ \}}
+\DoxyCodeLine{00336\ \ \ \}}
+\DoxyCodeLine{00337\ }
+\DoxyCodeLine{00338\ \ \ \textcolor{keywordtype}{void}\ destruct\_op()\ \textcolor{keyword}{noexcept}\ \{\ destructOp\_(\textcolor{keyword}{this});\ \}}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00340\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00341\ \ \ Alloc\ get\_allocator()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00342\ \ \ \ \ \textcolor{keyword}{using\ }byte\_alloc\_t\ =}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::allocator\_traits<Alloc>::template\ rebind\_alloc<std::byte>;}
+\DoxyCodeLine{00344\ \ \ \ \ \textcolor{keyword}{using\ }op\_alloc\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc_1_1type}{\_spawn\_future\_op\_alloc<byte\_alloc\_t>::type}};}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00346\ \ \ \ \ \textcolor{comment}{//\ see\ the\ class-\/level\ comment\ for\ \_spawn\_future\_op\_impl<>::type\ that}}
+\DoxyCodeLine{00347\ \ \ \ \ \textcolor{comment}{//\ explains\ that\ type's\ memory\ layout}}
+\DoxyCodeLine{00348\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00349\ \ \ \ \ \textcolor{comment}{//\ we\ know\ that\ this\ points\ into\ the\ "{}middle"{}\ of\ the\ spawned\ operation,}}
+\DoxyCodeLine{00350\ \ \ \ \ \textcolor{comment}{//\ right\ after\ the\ \_spawn\_future\_op\_alloc\ sub-\/object,\ so\ we\ can\ move}}
+\DoxyCodeLine{00351\ \ \ \ \ \textcolor{comment}{//\ backwards\ from\ this\ by\ the\ size\ of\ a\ \_spawn\_future\_op\_alloc<Alloc>\ to\ get}}
+\DoxyCodeLine{00352\ \ \ \ \ \textcolor{comment}{//\ to\ our\ allocator}}
+\DoxyCodeLine{00353\ \ \ \ \ \textcolor{keyword}{const}\ std::byte*\ bytePtr\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }std::byte*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00354\ }
+\DoxyCodeLine{00355\ \ \ \ \ bytePtr\ -\/=\ \textcolor{keyword}{sizeof}(op\_alloc\_t);}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00357\ \ \ \ \ \textcolor{keyword}{const}\ op\_alloc\_t*\ op\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }op\_alloc\_t*\textcolor{keyword}{>}(bytePtr);}
+\DoxyCodeLine{00358\ }
+\DoxyCodeLine{00359\ \ \ \ \ \textcolor{keywordflow}{return}\ op-\/>alloc\_;}
+\DoxyCodeLine{00360\ \ \ \}}
+\DoxyCodeLine{00361\ }
+\DoxyCodeLine{00362\ \ \ \textcolor{comment}{//\ the\ event\ upon\ which\ the\ future\ waits;\ we\ signal\ it\ to\ wake\ up\ the\ future}}
+\DoxyCodeLine{00363\ \ \ \textcolor{comment}{//\ once\ its\ result\ is\ known}}
+\DoxyCodeLine{00364\ \ \ \mbox{\hyperlink{structunifex_1_1__amre_1_1async__manual__reset__event}{async\_manual\_reset\_event}}\ evt\_;}
+\DoxyCodeLine{00365\ \ \ \textcolor{comment}{//\ destroys\ the\ operation\ state\ for\ the\ spawned\ operation}}
+\DoxyCodeLine{00366\ \ \ void\ (*destructOp\_)(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00367\ \ \ \textcolor{comment}{//\ deletes\ this\ object}}
+\DoxyCodeLine{00368\ \ \ void\ (*deleter\_)(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*,\ \_future\_state)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00369\ \ \ \textcolor{comment}{//\ the\ stop\ source\ from\ which\ the\ spawned\ operation\ gets\ stop\ tokens}}
+\DoxyCodeLine{00370\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\ stopSource\_;}
+\DoxyCodeLine{00371\ \ \ \textcolor{comment}{//\ the\ operation's\ current\ state;\ see\ the\ comments\ on\ the\ \_future\_state\ enum}}
+\DoxyCodeLine{00372\ \ \ \textcolor{comment}{//\ for\ an\ explanation\ of\ the\ state\ machine}}
+\DoxyCodeLine{00373\ \ \ std::atomic<\_future\_state>\ state\_\{\_future\_state::init\};}
+\DoxyCodeLine{00374\ \};}
+\DoxyCodeLine{00375\ }
+\DoxyCodeLine{00376\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00377\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op}{\_spawn\_future\_op}}\ final\ \{}
+\DoxyCodeLine{00378\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op_1_1type}{type}};}
+\DoxyCodeLine{00379\ \};}
+\DoxyCodeLine{00380\ }
+\DoxyCodeLine{00381\ \textcolor{comment}{//\ the\ "{}middle"{}\ class\ in\ the\ spawned\ operation's\ operation\ state\ type\ hierarchy;}}
+\DoxyCodeLine{00382\ \textcolor{comment}{//\ it\ depends\ on\ the\ types\ of\ values\ the\ spawned\ operation\ can\ produce,\ but\ not}}
+\DoxyCodeLine{00383\ \textcolor{comment}{//\ on\ the\ Sender\ itself}}
+\DoxyCodeLine{00384\ \textcolor{comment}{//}}
+\DoxyCodeLine{00385\ \textcolor{comment}{//\ this\ type\ is\ primarily\ responsible\ for\ providing\ storage\ for\ the\ operation's}}
+\DoxyCodeLine{00386\ \textcolor{comment}{//\ results}}
+\DoxyCodeLine{00387\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00388\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op}{\_spawn\_future\_op}}<T...>::\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op_1_1type}{type}}\ :\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}\ \{}
+\DoxyCodeLine{00389\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op_1_1type}{type}}(}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ (*destroyOp)(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*)\ \textcolor{keyword}{noexcept},}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ (*deleter)(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*,\ \_future\_state)\ \textcolor{keyword}{noexcept})\ noexcept}
+\DoxyCodeLine{00392\ \ \ \ \ :\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}(destroyOp,\ deleter)\ \{\}}
+\DoxyCodeLine{00393\ }
+\DoxyCodeLine{00394\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op_1_1type}{type}}(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op_1_1type}{type}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00395\ }
+\DoxyCodeLine{00396\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op_1_1type}{\string~type}}()\ \{\}}
+\DoxyCodeLine{00397\ }
+\DoxyCodeLine{00398\ \ \ \textcolor{comment}{//\ returns\ a\ Sender\ that\ produces\ the\ values\ produced\ by\ the\ spawned}}
+\DoxyCodeLine{00399\ \ \ \textcolor{comment}{//\ operation}}
+\DoxyCodeLine{00400\ \ \ \textcolor{keyword}{auto}\ get\_value\_sender()\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(apply(just,\ std::move(this-\/>values\_).get())))\ \{}
+\DoxyCodeLine{00402\ \ \ \ \ \textcolor{keywordflow}{return}\ apply(just,\ std::move(values\_).get());}
+\DoxyCodeLine{00403\ \ \ \}}
+\DoxyCodeLine{00404\ }
+\DoxyCodeLine{00405\ \ \ \textcolor{comment}{//\ returns\ a\ Sender\ that\ produces\ the\ error\ produced\ by\ the\ spawned\ operation}}
+\DoxyCodeLine{00406\ \ \ \textcolor{keyword}{auto}\ get\_error\_sender()\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(just\_error(std::move(this-\/>error\_).get())))\ \{}
+\DoxyCodeLine{00408\ \ \ \ \ \textcolor{keywordflow}{return}\ just\_error(std::move(error\_).get());}
+\DoxyCodeLine{00409\ \ \ \}}
+\DoxyCodeLine{00410\ }
+\DoxyCodeLine{00411\ \ \ \textcolor{comment}{//\ storage\ for\ the\ result\ of\ the\ spawned\ operation}}
+\DoxyCodeLine{00412\ \ \ \textcolor{keyword}{union\ }\{}
+\DoxyCodeLine{00413\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime}}<std::tuple<T...>>\ values\_;}
+\DoxyCodeLine{00414\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<std::exception\_ptr>}}\ error\_;}
+\DoxyCodeLine{00415\ \ \ \};}
+\DoxyCodeLine{00416\ }
+\DoxyCodeLine{00417\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope>}
+\DoxyCodeLine{00418\ \ \ \textcolor{keyword}{using\ }future\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future}{\_future}}<Scope,\ T...>::type;}
+\DoxyCodeLine{00419\ \};}
+\DoxyCodeLine{00420\ }
+\DoxyCodeLine{00421\ \textcolor{comment}{//\ a\ helper\ to\ map\ a\ Sender\ to\ the\ \_spawn\_future\_op<...>::type\ that\ will\ be\ its}}
+\DoxyCodeLine{00422\ \textcolor{comment}{//\ operation\ state;\ the\ general\ case\ is\ just\ single\_overload<>}}
+\DoxyCodeLine{00423\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Overloads>}
+\DoxyCodeLine{00424\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1choose__spawn__future__op}{choose\_spawn\_future\_op}}\ final\ :\ \mbox{\hyperlink{structunifex_1_1single__overload}{single\_overload}}<Overloads...>\ \{\};}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00426\ \textcolor{comment}{//\ in\ the\ special\ case\ of\ a\ Sender\ that\ does\ not\ complete\ with\ set\_value(),}}
+\DoxyCodeLine{00427\ \textcolor{comment}{//\ choose\ \_spawn\_future\_op<>::type;\ in\ other\ words,\ map\ a\ Sender\ that\ doesn't}}
+\DoxyCodeLine{00428\ \textcolor{comment}{//\ succeed\ to\ a\ Sender\ of\ no\ values}}
+\DoxyCodeLine{00429\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00430\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1choose__spawn__future__op}{choose\_spawn\_future\_op}}<>\ final\ \{}
+\DoxyCodeLine{00431\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op}{type}}\ =\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op}{\_spawn\_future\_op<>}};}
+\DoxyCodeLine{00432\ \};}
+\DoxyCodeLine{00433\ }
+\DoxyCodeLine{00434\ \textcolor{comment}{//\ maps\ a\ Sender\ to\ the\ appropriate\ instantiation\ of\ \_spawn\_future\_op<...>::type}}
+\DoxyCodeLine{00435\ \textcolor{comment}{//\ with\ some\ help\ from\ choose\_spawn\_future\_op,\ above}}
+\DoxyCodeLine{00436\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00437\ \textcolor{keyword}{using\ }spawn\_future\_op\_for\ =\ \textcolor{keyword}{typename}\ sender\_value\_types\_t<}
+\DoxyCodeLine{00438\ \ \ \ \ Sender,}
+\DoxyCodeLine{00439\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1choose__spawn__future__op}{choose\_spawn\_future\_op}},}
+\DoxyCodeLine{00440\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op}{\_spawn\_future\_op}}>::type::type;}
+\DoxyCodeLine{00441\ }
+\DoxyCodeLine{00442\ \textcolor{comment}{//\ the\ type-\/independent\ base\ class\ for\ the\ spawned\ operation's\ receiver}}
+\DoxyCodeLine{00443\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__base}{\_spawn\_future\_receiver\_base}}\ \{}
+\DoxyCodeLine{00444\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*\ op\_;}
+\DoxyCodeLine{00445\ }
+\DoxyCodeLine{00446\ \ \ \textcolor{keywordtype}{void}\ set\_done()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00447\ \ \ \ \ op\_-\/>complete(\_future\_state::done,\ []()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \textcolor{comment}{//\ we've\ set\ the\ state\ to\ done\ but\ there's\ nothing\ else\ to\ store\ so\ this}}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \textcolor{comment}{//\ is\ a\ no-\/op}}
+\DoxyCodeLine{00450\ \ \ \ \ \});}
+\DoxyCodeLine{00451\ \ \ \}}
+\DoxyCodeLine{00452\ }
+\DoxyCodeLine{00453\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ tag\_invoke(}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ tag\_t<get\_stop\_token>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__base}{\_spawn\_future\_receiver\_base}}\&\ r)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00455\ \ \ \ \ \textcolor{keywordflow}{return}\ r.op\_-\/>stopSource\_.get\_token();}
+\DoxyCodeLine{00456\ \ \ \}}
+\DoxyCodeLine{00457\ \};}
+\DoxyCodeLine{00458\ }
+\DoxyCodeLine{00459\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00460\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__alloc}{\_spawn\_future\_receiver\_alloc}}\ final\ \{}
+\DoxyCodeLine{00461\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__alloc_1_1type}{type}};}
+\DoxyCodeLine{00462\ \};}
+\DoxyCodeLine{00463\ }
+\DoxyCodeLine{00464\ \textcolor{comment}{//\ this\ type\ injects\ into\ the\ fully-\/composed\ receiver's\ scope\ an\ implementation}}
+\DoxyCodeLine{00465\ \textcolor{comment}{//\ of\ get\_allocator\ that\ depends\ only\ on\ the\ allocator's\ type}}
+\DoxyCodeLine{00466\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00467\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__alloc}{\_spawn\_future\_receiver\_alloc}}<Alloc>::\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__alloc_1_1type}{type}}\ \{}
+\DoxyCodeLine{00468\ \ \ \textcolor{keyword}{friend}\ Alloc\ tag\_invoke(tag\_t<get\_allocator>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__alloc_1_1type}{type}}\&\ r)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00469\ \ \ \ \ \textcolor{comment}{//\ \_spawn\_future\_receiver\_impl's\ constructor\ contains\ static\_asserts\ that}}
+\DoxyCodeLine{00470\ \ \ \ \ \textcolor{comment}{//\ guarantee\ the\ validity\ of\ this\ reinterpret\_cast}}
+\DoxyCodeLine{00471\ \ \ \ \ \textcolor{keyword}{auto}\ baseReceiver\ =}
+\DoxyCodeLine{00472\ \ \ \ \ \ \ \ \ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__base}{\_spawn\_future\_receiver\_base}}*\textcolor{keyword}{>}(\&r);}
+\DoxyCodeLine{00473\ }
+\DoxyCodeLine{00474\ \ \ \ \ \textcolor{keywordflow}{return}\ baseReceiver-\/>op\_-\/>template\ get\_allocator<Alloc>();}
+\DoxyCodeLine{00475\ \ \ \}}
+\DoxyCodeLine{00476\ \};}
+\DoxyCodeLine{00477\ }
+\DoxyCodeLine{00478\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00479\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver}{\_spawn\_future\_receiver}}\ final\ \{}
+\DoxyCodeLine{00480\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver_1_1type}{type}};}
+\DoxyCodeLine{00481\ \};}
+\DoxyCodeLine{00482\ }
+\DoxyCodeLine{00483\ \textcolor{comment}{//\ a\ "{}middle"{}\ class\ in\ the\ spawned\ operation's\ receiver's\ type\ hierarchy;\ this}}
+\DoxyCodeLine{00484\ \textcolor{comment}{//\ is\ the\ class\ that\ knows\ the\ types\ of\ values\ produced\ by\ the\ spawned\ operation}}
+\DoxyCodeLine{00485\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00486\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver}{\_spawn\_future\_receiver}}<T...>::\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver_1_1type}{type}}\ :\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__base}{\_spawn\_future\_receiver\_base}}\ \{}
+\DoxyCodeLine{00487\ \ \ \textcolor{keyword}{using\ }op\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op}{\_spawn\_future\_op}}<T...>::type;}
+\DoxyCodeLine{00488\ }
+\DoxyCodeLine{00489\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver_1_1type}{type}}(op\_t*\ op)\ noexcept\ :\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__base}{\_spawn\_future\_receiver\_base}}\{op\}\ \{\}}
+\DoxyCodeLine{00490\ }
+\DoxyCodeLine{00491\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Values>}
+\DoxyCodeLine{00492\ \ \ \textcolor{keywordtype}{void}\ set\_value(Values\&\&...\ values)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00493\ \ \ \ \ op()-\/>complete(\_future\_state::value,\ [\&,\ op\ =\ op()]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \textcolor{comment}{//\ we\ set\ the\ state\ to\ value}}
+\DoxyCodeLine{00495\ \ \ \ \ \ \ UNIFEX\_TRY\ \{}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ \ \ activate\_union\_member(op-\/>values\_,\ \textcolor{keyword}{static\_cast<}Values\&\&\textcolor{keyword}{>}(values)...);}
+\DoxyCodeLine{00497\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00498\ \ \ \ \ \ \ UNIFEX\_CATCH(...)\ \{}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we\ failed\ to\ store\ the\ value\ so\ update\ the\ state\ and\ store\ the}}
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ current\ exception}}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \ \ op-\/>state\_.store(}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ \ \ \ \ \_future\_state::error,}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ since\ we\ made\ it\ here,\ the\ curent\ value\ of\ state\_\ is\ value,\ which}}
+\DoxyCodeLine{00504\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ was\ stored\ with\ release\ semantics\ inside\ complete()}}
+\DoxyCodeLine{00505\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00506\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ updating\ from\ value\ to\ error\ with\ relaxed\ semantics\ is\ fine}}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ because\ the\ write\ to\ op-\/>error\_\ will\ be\ published\ when\ complete()}}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ sets\ evt\_\ after\ we\ return}}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_relaxed);}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ activate\_union\_member(op-\/>error\_,\ std::current\_exception());}
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00512\ \ \ \ \ \});}
+\DoxyCodeLine{00513\ \ \ \}}
+\DoxyCodeLine{00514\ }
+\DoxyCodeLine{00515\ \ \ \textcolor{keywordtype}{void}\ set\_error(std::exception\_ptr\&\&\ e)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00516\ \ \ \ \ op()-\/>complete(\_future\_state::error,\ [\&,\ op\ =\ op()]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \textcolor{comment}{//\ we\ set\ the\ state\ to\ error}}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ activate\_union\_member(op-\/>error\_,\ std::move(e));}
+\DoxyCodeLine{00519\ \ \ \ \ \});}
+\DoxyCodeLine{00520\ \ \ \}}
+\DoxyCodeLine{00521\ }
+\DoxyCodeLine{00522\ \ \ op\_t*\ op()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}op\_t*\textcolor{keyword}{>}(this-\/>op\_);\ \}}
+\DoxyCodeLine{00523\ \};}
+\DoxyCodeLine{00524\ }
+\DoxyCodeLine{00525\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc,\ \textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00526\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__impl}{\_spawn\_future\_receiver\_impl}}\ final\ \{}
+\DoxyCodeLine{00527\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__impl_1_1type}{type}};}
+\DoxyCodeLine{00528\ \};}
+\DoxyCodeLine{00529\ }
+\DoxyCodeLine{00530\ \textcolor{comment}{//\ the\ fully-\/composed\ receiver\ for\ the\ spawned\ operation;\ this\ type\ combines}}
+\DoxyCodeLine{00531\ \textcolor{comment}{//\ knowledge\ of\ both\ the\ operation's\ value\ types\ and\ its\ allocator}}
+\DoxyCodeLine{00532\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc,\ \textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00533\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__impl}{\_spawn\_future\_receiver\_impl}}<Alloc,\ T...>::\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__impl_1_1type}{type}}\ final}
+\DoxyCodeLine{00534\ \ \ :\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__alloc}{\_spawn\_future\_receiver\_alloc}}<Alloc>::type}
+\DoxyCodeLine{00535\ \ \ ,\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver}{\_spawn\_future\_receiver}}<T...>::type\ \{}
+\DoxyCodeLine{00536\ \ \ \textcolor{keyword}{static\_assert}(same\_as<std::byte,\ typename\ Alloc::value\_type>);}
+\DoxyCodeLine{00537\ }
+\DoxyCodeLine{00538\ \ \ \textcolor{keyword}{using\ }op\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op}{\_spawn\_future\_op}}<T...>::type;}
+\DoxyCodeLine{00539\ }
+\DoxyCodeLine{00540\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__impl_1_1type}{type}}(op\_t*\ op)\ noexcept\ :\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver}{\_spawn\_future\_receiver}}<T...>::type\{op\}\ \{}
+\DoxyCodeLine{00541\ \ \ \ \ \textcolor{comment}{//\ offsetof\ is\ only\ defined\ behaviour\ on\ standard-\/layout\ types}}
+\DoxyCodeLine{00542\ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_standard\_layout\_v<type>);}
+\DoxyCodeLine{00543\ }
+\DoxyCodeLine{00544\ \ \ \ \ \textcolor{comment}{//\ we\ rely\ on\ op\_\ being\ at\ offset\ zero\ in\ the\ implementation\ of}}
+\DoxyCodeLine{00545\ \ \ \ \ \textcolor{comment}{//\ get\_allocator;\ if\ this\ assertion\ fails,\ we\ can't\ safely\ reinterpret\_cast}}
+\DoxyCodeLine{00546\ \ \ \ \ \textcolor{comment}{//\ a\ \_spawn\_future\_receiver\_alloc<Alloc>::type*\ to\ a}}
+\DoxyCodeLine{00547\ \ \ \ \ \textcolor{comment}{//\ \_spawn\_future\_receiver\_base*}}
+\DoxyCodeLine{00548\ \ \ \ \ \textcolor{keyword}{static\_assert}(offsetof(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__impl_1_1type}{type}},\ op\_)\ ==\ 0);}
+\DoxyCodeLine{00549\ \ \ \}}
+\DoxyCodeLine{00550\ \};}
+\DoxyCodeLine{00551\ }
+\DoxyCodeLine{00552\ \textcolor{comment}{//\ a\ metafunction\ that\ has\ curried\ a\ value\ type\ pack\ so\ that,\ provided\ an}}
+\DoxyCodeLine{00553\ \textcolor{comment}{//\ allocator\ type,\ you\ can\ choose\ a\ fully-\/composed\ \_spawn\_future\_receiver\_impl}}
+\DoxyCodeLine{00554\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00555\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1alloc__binder}{alloc\_binder}}\ final\ \{}
+\DoxyCodeLine{00556\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00557\ \ \ \textcolor{keyword}{using\ }bind\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__receiver__impl}{\_spawn\_future\_receiver\_impl}}<Alloc,\ T...>::type;}
+\DoxyCodeLine{00558\ \};}
+\DoxyCodeLine{00559\ }
+\DoxyCodeLine{00560\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Overloads>}
+\DoxyCodeLine{00561\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1choose__spawn__future__receiver}{choose\_spawn\_future\_receiver}}\ final\ :\ \mbox{\hyperlink{structunifex_1_1single__overload}{single\_overload}}<Overloads...>\ \{\};}
+\DoxyCodeLine{00562\ }
+\DoxyCodeLine{00563\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00564\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1choose__spawn__future__receiver}{choose\_spawn\_future\_receiver}}<>\ final\ \{}
+\DoxyCodeLine{00565\ \ \ \textcolor{comment}{//\ map\ "{}does\ not\ invoke\ set\_value"{}\ to\ "{}invokes\ set\_value\ with\ no\ arguments"{}}}
+\DoxyCodeLine{00566\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1alloc__binder}{type}}\ =\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1alloc__binder}{alloc\_binder<>}};}
+\DoxyCodeLine{00567\ \};}
+\DoxyCodeLine{00568\ }
+\DoxyCodeLine{00569\ \textcolor{comment}{//\ maps\ a\ Sender\ and\ Allocator\ to\ the\ fully-\/composed\ \_spawn\_future\_receiver\_impl}}
+\DoxyCodeLine{00570\ \textcolor{comment}{//\ that\ will\ consume\ the\ sender's\ result}}
+\DoxyCodeLine{00571\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00572\ \textcolor{keyword}{using\ }spawn\_future\_receiver\_for\ =\ \textcolor{keyword}{typename}\ sender\_value\_types\_t<}
+\DoxyCodeLine{00573\ \ \ \ \ Sender,}
+\DoxyCodeLine{00574\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1choose__spawn__future__receiver}{choose\_spawn\_future\_receiver}},}
+\DoxyCodeLine{00575\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1alloc__binder}{alloc\_binder}}>::type::template\ bind<Alloc>;}
+\DoxyCodeLine{00576\ }
+\DoxyCodeLine{00577\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00578\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl}{\_spawn\_future\_op\_impl}}\ final\ \{}
+\DoxyCodeLine{00579\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}};}
+\DoxyCodeLine{00580\ \};}
+\DoxyCodeLine{00581\ }
+\DoxyCodeLine{00582\ \textcolor{comment}{//\ the\ complete\ spawned\ operation}}
+\DoxyCodeLine{00583\ \textcolor{comment}{//}}
+\DoxyCodeLine{00584\ \textcolor{comment}{//\ The\ memory\ layout\ for\ this\ object\ is\ as\ follows:}}
+\DoxyCodeLine{00585\ \textcolor{comment}{//}}
+\DoxyCodeLine{00586\ \textcolor{comment}{//\ \_spawn\_future\_op\_impl<Sender,\ Scope,\ Alloc>}}
+\DoxyCodeLine{00587\ \textcolor{comment}{//\ \ \ \_spawn\_future\_op\_alloc<Alloc>}}
+\DoxyCodeLine{00588\ \textcolor{comment}{//\ \ \ \ \ alloc\_}}
+\DoxyCodeLine{00589\ \textcolor{comment}{//\ \ \ \_spawn\_future\_op<T...>\ //\ T...\ is\ computed\ from\ Sender}}
+\DoxyCodeLine{00590\ \textcolor{comment}{//\ \ \ \ \ \_spawn\_future\_op\_base}}
+\DoxyCodeLine{00591\ \textcolor{comment}{//\ \ \ \ \ \ \ //\ common\ members}}
+\DoxyCodeLine{00592\ \textcolor{comment}{//\ \ \ \ \ values\_/error\_}}
+\DoxyCodeLine{00593\ \textcolor{comment}{//\ \ \ op\_}}
+\DoxyCodeLine{00594\ \textcolor{comment}{//}}
+\DoxyCodeLine{00595\ \textcolor{comment}{//\ The\ Receiver\ inside\ op\_\ knows\ the\ address\ of\ the\ \_spawn\_future\_op<T...>\ and}}
+\DoxyCodeLine{00596\ \textcolor{comment}{//\ it\ knows\ the\ Alloc\ type\ and\ can\ thus\ compute\ the\ size\ of}}
+\DoxyCodeLine{00597\ \textcolor{comment}{//\ \_spawn\_future\_op\_alloc<Alloc>.}}
+\DoxyCodeLine{00598\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00599\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl}{\_spawn\_future\_op\_impl}}<Sender,\ Scope,\ Alloc>::\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}}\ final}
+\DoxyCodeLine{00600\ \ \ :\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc}{\_spawn\_future\_op\_alloc}}<Alloc>::type}
+\DoxyCodeLine{00601\ \ \ ,\ spawn\_future\_op\_for<Sender>\ \{}
+\DoxyCodeLine{00602\ \ \ \textcolor{comment}{//\ standardize\ on\ allocators\ of\ std::bytes\ to\ minimize\ template}}
+\DoxyCodeLine{00603\ \ \ \textcolor{comment}{//\ instantiations}}
+\DoxyCodeLine{00604\ \ \ \textcolor{keyword}{static\_assert}(same\_as<std::byte,\ typename\ Alloc::value\_type>);}
+\DoxyCodeLine{00605\ }
+\DoxyCodeLine{00606\ \ \ \textcolor{keyword}{using\ }nest\_sender\_t\ =}
+\DoxyCodeLine{00607\ \ \ \ \ \ \ \textcolor{keyword}{decltype}(nest(UNIFEX\_DECLVAL(Sender),\ UNIFEX\_DECLVAL(Scope\&)));}
+\DoxyCodeLine{00608\ }
+\DoxyCodeLine{00609\ \ \ \textcolor{keyword}{using\ }receiver\_t\ =\ spawn\_future\_receiver\_for<Sender,\ Alloc>;}
+\DoxyCodeLine{00610\ }
+\DoxyCodeLine{00611\ \ \ \textcolor{keyword}{using\ }op\_t\ =\ connect\_result\_t<nest\_sender\_t,\ receiver\_t>;}
+\DoxyCodeLine{00612\ }
+\DoxyCodeLine{00613\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}}(\textcolor{keyword}{const}\ Alloc\&\ alloc)\ noexcept}
+\DoxyCodeLine{00614\ \ \ \ \ :\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__alloc_1_1type}{\_spawn\_future\_op\_alloc<Alloc>::type}}\{alloc\}}
+\DoxyCodeLine{00615\ \ \ \ \ ,\ spawn\_future\_op\_for<Sender>\{\&destroy\_operation,\ \&deleter\}\ \{\}}
+\DoxyCodeLine{00616\ }
+\DoxyCodeLine{00617\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}}(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00618\ }
+\DoxyCodeLine{00619\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender2>}
+\DoxyCodeLine{00620\ \ \ \textcolor{keywordtype}{void}\ init\_operation(Sender2\&\&\ sender,\ Scope\&\ scope,\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}}*\ self)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00621\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(nest(\textcolor{keyword}{static\_cast<}Sender2\&\&\textcolor{keyword}{>}(sender),\ scope))\ \&\&}
+\DoxyCodeLine{00622\ \ \ \ \ \ \ is\_nothrow\_connectable\_v<nest\_sender\_t,\ receiver\_t>)\ \{}
+\DoxyCodeLine{00623\ \ \ \ \ op\_.construct\_with([\&]()\ \{}
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ connect(}
+\DoxyCodeLine{00625\ \ \ \ \ \ \ \ \ \ \ nest(\textcolor{keyword}{static\_cast<}Sender2\&\&\textcolor{keyword}{>}(sender),\ scope),\ receiver\_t\{self\});}
+\DoxyCodeLine{00626\ \ \ \ \ \});}
+\DoxyCodeLine{00627\ \ \ \}}
+\DoxyCodeLine{00628\ }
+\DoxyCodeLine{00629\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ destroy\_operation(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*\ self)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00630\ \ \ \ \ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}}*\textcolor{keyword}{>}(self)-\/>op\_.destruct();}
+\DoxyCodeLine{00631\ \ \ \}}
+\DoxyCodeLine{00632\ }
+\DoxyCodeLine{00633\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00634\ \ \ deleter(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*\ base,\ \_future\_state\ state)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00635\ \ \ \ \ \textcolor{comment}{//\ get\ an\ allocator\ for\ *this*\ type}}
+\DoxyCodeLine{00636\ \ \ \ \ \textcolor{keyword}{using\ }alloc\_t\ =}
+\DoxyCodeLine{00637\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::allocator\_traits<Alloc>::template\ rebind\_alloc<type>;}
+\DoxyCodeLine{00638\ }
+\DoxyCodeLine{00639\ \ \ \ \ \textcolor{keyword}{auto}\ self\ =\ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}}*\textcolor{keyword}{>}(base);}
+\DoxyCodeLine{00640\ \ \ \ \ alloc\_t\ alloc\ =\ self-\/>alloc\_;}
+\DoxyCodeLine{00641\ }
+\DoxyCodeLine{00642\ \ \ \ \ \textcolor{comment}{//\ state\ is\ a\ function\ argument\ to\ avoid\ reloading\ the\ current\ state\ from}}
+\DoxyCodeLine{00643\ \ \ \ \ \textcolor{comment}{//\ the\ state\_\ member\ when\ we\ already\ know\ its\ current\ value}}
+\DoxyCodeLine{00644\ \ \ \ \ UNIFEX\_ASSERT(state\ ==\ self-\/>state\_.load(std::memory\_order\_relaxed));}
+\DoxyCodeLine{00645\ }
+\DoxyCodeLine{00646\ \ \ \ \ \textcolor{keywordflow}{if}\ (state\ ==\ \_future\_state::value)\ \{}
+\DoxyCodeLine{00647\ \ \ \ \ \ \ deactivate\_union\_member(self-\/>values\_);}
+\DoxyCodeLine{00648\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (state\ ==\ \_future\_state::error)\ \{}
+\DoxyCodeLine{00649\ \ \ \ \ \ \ deactivate\_union\_member(self-\/>error\_);}
+\DoxyCodeLine{00650\ \ \ \ \ \}}
+\DoxyCodeLine{00651\ }
+\DoxyCodeLine{00652\ \ \ \ \ std::allocator\_traits<alloc\_t>::destroy(alloc,\ self);}
+\DoxyCodeLine{00653\ \ \ \ \ std::allocator\_traits<alloc\_t>::deallocate(alloc,\ self,\ 1);}
+\DoxyCodeLine{00654\ \ \ \}}
+\DoxyCodeLine{00655\ }
+\DoxyCodeLine{00656\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ tag\_invoke(tag\_t<start>,\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl_1_1type}{type}}\&\ op)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00657\ \ \ \ \ start(op.op\_.get());}
+\DoxyCodeLine{00658\ \ \ \}}
+\DoxyCodeLine{00659\ }
+\DoxyCodeLine{00660\ \ \ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<op\_t>}}\ op\_;}
+\DoxyCodeLine{00661\ }
+\DoxyCodeLine{00662\ \ \ \textcolor{keyword}{using\ }future\_t\ =}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ spawn\_future\_op\_for<Sender>::template\ future\_t<Scope>;}
+\DoxyCodeLine{00664\ \};}
+\DoxyCodeLine{00665\ }
+\DoxyCodeLine{00666\ \textcolor{comment}{//\ a\ callable,\ used\ in\ \_future\_sender\_from\_stop\_token,\ that\ constructs\ a\ stop}}
+\DoxyCodeLine{00667\ \textcolor{comment}{//\ callback\ to\ respond\ to\ stop\ requests\ on\ future<>s\ by\ abandoning\ the\ related}}
+\DoxyCodeLine{00668\ \textcolor{comment}{//\ operation.}}
+\DoxyCodeLine{00669\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future__stop__callback__factory}{\_future\_stop\_callback\_factory}}\ final\ \{}
+\DoxyCodeLine{00670\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*\ op\_;}
+\DoxyCodeLine{00671\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ stopToken\_;}
+\DoxyCodeLine{00672\ }
+\DoxyCodeLine{00673\ \ \ \textcolor{keyword}{auto}\ operator()()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00674\ \ \ \ \ \textcolor{keyword}{auto}\ stopCallback\ =\ [op\ =\ op\_]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00675\ \ \ \ \ \ \ op-\/>abandon();}
+\DoxyCodeLine{00676\ \ \ \ \ \};}
+\DoxyCodeLine{00677\ }
+\DoxyCodeLine{00678\ \ \ \ \ \textcolor{keyword}{using\ }stop\_callback\_t\ =}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback}{inplace\_stop\_token::callback\_type}}<\textcolor{keyword}{decltype}(stopCallback)>;}
+\DoxyCodeLine{00680\ }
+\DoxyCodeLine{00681\ \ \ \ \ \textcolor{keywordflow}{return}\ stop\_callback\_t\{stopToken\_,\ stopCallback\};}
+\DoxyCodeLine{00682\ \ \ \}}
+\DoxyCodeLine{00683\ \};}
+\DoxyCodeLine{00684\ }
+\DoxyCodeLine{00685\ \textcolor{comment}{//\ this\ type\ is\ used\ immediately\ below\ as\ a\ std::unique\_ptr<>-\/compatible}}
+\DoxyCodeLine{00686\ \textcolor{comment}{//\ deleter;\ it\ "{}deletes"{}\ the\ spawned\ operation\ by\ invoking\ its\ drop()\ method}}
+\DoxyCodeLine{00687\ \textcolor{comment}{//\ to\ signal\ that\ the\ future\ has\ been\ dropped\ without\ being\ started}}
+\DoxyCodeLine{00688\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__op__dropper}{\_op\_dropper}}\ final\ \{}
+\DoxyCodeLine{00689\ \ \ \textcolor{keywordtype}{void}\ operator()(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__base}{\_spawn\_future\_op\_base}}*\ op)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00690\ \ \ \ \ \textcolor{keywordflow}{if}\ (op)\ \{}
+\DoxyCodeLine{00691\ \ \ \ \ \ \ op-\/>drop();}
+\DoxyCodeLine{00692\ \ \ \ \ \}}
+\DoxyCodeLine{00693\ \ \ \}}
+\DoxyCodeLine{00694\ \};}
+\DoxyCodeLine{00695\ }
+\DoxyCodeLine{00696\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00697\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future__sender__from__stop__token}{\_future\_sender\_from\_stop\_token}}\ final\ \{}
+\DoxyCodeLine{00698\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future__sender__from__stop__token_1_1type}{type}};}
+\DoxyCodeLine{00699\ \};}
+\DoxyCodeLine{00700\ }
+\DoxyCodeLine{00701\ \textcolor{comment}{//\ A\ callable\ that\ returns\ a\ Sender\ given\ an\ inplace\_stop\_token.\ \ An\ instance\ of}}
+\DoxyCodeLine{00702\ \textcolor{comment}{//\ this\ type\ is\ given\ to\ let\_value\_with\_stop\_token\ while\ constructing\ a}}
+\DoxyCodeLine{00703\ \textcolor{comment}{//\ future<>.}}
+\DoxyCodeLine{00704\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00705\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future__sender__from__stop__token}{\_future\_sender\_from\_stop\_token}}<T...>::\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future__sender__from__stop__token_1_1type}{type}}\ final\ \{}
+\DoxyCodeLine{00706\ \ \ \textcolor{keyword}{using\ }spawn\_future\_op\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op}{\_spawn\_future\_op}}<T...>::type;}
+\DoxyCodeLine{00707\ }
+\DoxyCodeLine{00708\ \ \ \textcolor{comment}{//\ an\ owning\ handle\ type\ that\ drops\ a\ spawned\ operation\ upon\ destruction}}
+\DoxyCodeLine{00709\ \ \ \textcolor{keyword}{using\ }op\_handle\ =\ std::unique\_ptr<spawn\_future\_op\_t,\ \_op\_dropper>;}
+\DoxyCodeLine{00710\ }
+\DoxyCodeLine{00711\ \ \ op\_handle\ op\_;}
+\DoxyCodeLine{00712\ }
+\DoxyCodeLine{00713\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future__sender__from__stop__token_1_1type}{type}}(spawn\_future\_op\_t*\ op)\ noexcept\ :\ op\_(op)\ \{\}}
+\DoxyCodeLine{00714\ }
+\DoxyCodeLine{00715\ \ \ \textcolor{keyword}{auto}\ operator()(\mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ stopToken)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00716\ \ \ \ \ \textcolor{keywordflow}{return}\ let\_value\_with(}
+\DoxyCodeLine{00717\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future__stop__callback__factory}{\_future\_stop\_callback\_factory}}\{op\_.get(),\ stopToken\},}
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ [\textcolor{keyword}{this}](\textcolor{keyword}{auto}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ let\_value(}
+\DoxyCodeLine{00720\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ op\_-\/>evt\_.async\_wait(),}
+\DoxyCodeLine{00721\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ [\textcolor{keyword}{this}]()\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00722\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(op\_-\/>get\_value\_sender(),\ op\_-\/>get\_error\_sender()))\ \{}
+\DoxyCodeLine{00723\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ auto\ rawOp\ =\ op\_.release();}
+\DoxyCodeLine{00724\ }
+\DoxyCodeLine{00725\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ using\ value\_t\ =\ decltype(op\_-\/>get\_value\_sender());}
+\DoxyCodeLine{00726\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ using\ error\_t\ =\ decltype(op\_-\/>get\_error\_sender());}
+\DoxyCodeLine{00727\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ using\ done\_t\ =\ decltype(just\_done());}
+\DoxyCodeLine{00728\ }
+\DoxyCodeLine{00729\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ using\ return\_t\ =\ variant\_sender<value\_t,\ error\_t,\ done\_t>;}
+\DoxyCodeLine{00730\ }
+\DoxyCodeLine{00731\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ auto\ state\ =\ rawOp-\/>state\_.load(std::memory\_order\_relaxed);}
+\DoxyCodeLine{00732\ }
+\DoxyCodeLine{00733\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we\ capture\ state\ by\ reference\ because\ it\ may\ be\ updated\ by}}
+\DoxyCodeLine{00734\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ the\ compare\_exchange\_strong\ below}}
+\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ scope\_guard\ cleanup\ =\ [rawOp,\ \&state]()\ noexcept\ \{}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ rawOp-\/>deleter\_(rawOp,\ state);}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00738\ }
+\DoxyCodeLine{00739\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (state\ ==\ \_future\_state::abandoned)\ \{}
+\DoxyCodeLine{00740\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (rawOp-\/>state\_.compare\_exchange\_strong(}
+\DoxyCodeLine{00741\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ state,}
+\DoxyCodeLine{00742\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_future\_state::complete,}
+\DoxyCodeLine{00743\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ success,\ publish\ our\ writes\ to\ the\ still-\/running}}
+\DoxyCodeLine{00744\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ spawned\ operation}}
+\DoxyCodeLine{00745\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_release,}
+\DoxyCodeLine{00746\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ on\ failure,\ consume\ the\ now-\/finished\ operation's}}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ writes}}
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::memory\_order\_acquire))\ \{}
+\DoxyCodeLine{00749\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we\ gave\ clean-\/up\ responsibility\ to\ the\ spawned\ operation}}
+\DoxyCodeLine{00750\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cleanup.release();}
+\DoxyCodeLine{00751\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00752\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ we\ run\ this\ if\ the\ CAS\ failed,\ which\ should\ mean\ the}}
+\DoxyCodeLine{00753\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ spawned\ operation\ beat\ us\ to\ setting\ state\ to\ complete}}
+\DoxyCodeLine{00754\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ UNIFEX\_ASSERT(state\ ==\ \_future\_state::complete);}
+\DoxyCodeLine{00755\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00756\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00757\ }
+\DoxyCodeLine{00758\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (state)\ \{}
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \_future\_state::value:}
+\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ return\_t\{rawOp-\/>get\_value\_sender()\};}
+\DoxyCodeLine{00761\ }
+\DoxyCodeLine{00762\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \_future\_state::error:}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ return\_t\{rawOp-\/>get\_error\_sender()\};}
+\DoxyCodeLine{00764\ }
+\DoxyCodeLine{00765\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \_future\_state::done:}
+\DoxyCodeLine{00766\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \_future\_state::abandoned:}
+\DoxyCodeLine{00767\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \_future\_state::complete:\ \textcolor{keywordflow}{return}\ return\_t\{just\_done()\};}
+\DoxyCodeLine{00768\ }
+\DoxyCodeLine{00769\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00770\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ doesn't\ happen}}
+\DoxyCodeLine{00771\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::terminate();}
+\DoxyCodeLine{00772\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00773\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00775\ \ \ \}}
+\DoxyCodeLine{00776\ \};}
+\DoxyCodeLine{00777\ }
+\DoxyCodeLine{00778\ \textcolor{comment}{//\ A\ future<Scope,\ T...>\ is\ a\ Sender\ of\ T...\ that,\ when\ awaited,\ completes\ with}}
+\DoxyCodeLine{00779\ \textcolor{comment}{//\ the\ result\ of\ an\ operation\ that\ was\ earlier\ spawned\ in\ an\ async\_scope\ of\ type}}
+\DoxyCodeLine{00780\ \textcolor{comment}{//\ Scope.}}
+\DoxyCodeLine{00781\ \textcolor{comment}{//}}
+\DoxyCodeLine{00782\ \textcolor{comment}{//\ A\ future<>\ is\ nested\ within\ its\ associated\ scope,\ which\ means\ that\ a)\ it\ may}}
+\DoxyCodeLine{00783\ \textcolor{comment}{//\ have\ *failed*\ to\ nest,\ in\ which\ case\ there\ is\ no\ associated\ spawned\ operation}}
+\DoxyCodeLine{00784\ \textcolor{comment}{//\ and\ the\ future<>\ can\ only\ complete\ with\ set\_done(),\ and\ b)\ if\ it\ was}}
+\DoxyCodeLine{00785\ \textcolor{comment}{//\ successfully\ nested\ then\ the\ future<>\ holds\ a\ reference\ on\ its\ associated}}
+\DoxyCodeLine{00786\ \textcolor{comment}{//\ scope\ until\ it\ is\ either\ discarded\ or\ completed.}}
+\DoxyCodeLine{00787\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{00788\ \textcolor{keyword}{struct\ }[[nodiscard]]\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future}{\_future}}<Scope,\ T...>::\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{type}}\ final\ \{}
+\DoxyCodeLine{00789\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00790\ \ \ \textcolor{keyword}{using\ }spawn\_future\_op\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op}{\_spawn\_future\_op}}<T...>::type;}
+\DoxyCodeLine{00791\ }
+\DoxyCodeLine{00792\ \ \ \textcolor{comment}{//\ constructs\ the\ Sender}}
+\DoxyCodeLine{00793\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{auto}\ make\_sender(spawn\_future\_op\_t*\ op)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00794\ \ \ \ \ \textcolor{keyword}{using\ }callable\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future__sender__from__stop__token}{\_future\_sender\_from\_stop\_token}}<T...>::type;}
+\DoxyCodeLine{00795\ }
+\DoxyCodeLine{00796\ \ \ \ \ \textcolor{keywordflow}{return}\ let\_value\_with\_stop\_token(callable\{op\});}
+\DoxyCodeLine{00797\ \ \ \}}
+\DoxyCodeLine{00798\ }
+\DoxyCodeLine{00799\ \ \ \textcolor{keyword}{using\ }sender\_t\ =\ \textcolor{keyword}{decltype}(nest(make\_sender(\textcolor{keyword}{nullptr}),\ UNIFEX\_DECLVAL(Scope\&)));}
+\DoxyCodeLine{00800\ }
+\DoxyCodeLine{00801\ \ \ sender\_t\ sender\_;}
+\DoxyCodeLine{00802\ }
+\DoxyCodeLine{00803\ \ \ \textcolor{comment}{//\ this\ is\ just\ good\ hygiene\ but\ let's\ assert\ it\ because\ we\ depend\ on\ it\ for}}
+\DoxyCodeLine{00804\ \ \ \textcolor{comment}{//\ *our*\ move\ operators\ to\ be\ nothrow}}
+\DoxyCodeLine{00805\ \ \ \textcolor{keyword}{static\_assert}(std::is\_nothrow\_move\_constructible\_v<sender\_t>);}
+\DoxyCodeLine{00806\ \ \ \textcolor{keyword}{static\_assert}(std::is\_nothrow\_move\_assignable\_v<sender\_t>);}
+\DoxyCodeLine{00807\ }
+\DoxyCodeLine{00808\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00809\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00810\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>}
+\DoxyCodeLine{00811\ \ \ \ \ \ \ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00812\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>}
+\DoxyCodeLine{00813\ \ \ \ \ \ \ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00814\ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<T...>>;}
+\DoxyCodeLine{00815\ }
+\DoxyCodeLine{00816\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00817\ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<std::exception\_ptr>;}
+\DoxyCodeLine{00818\ }
+\DoxyCodeLine{00819\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00820\ }
+\DoxyCodeLine{00821\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{type}}(}
+\DoxyCodeLine{00822\ \ \ \ \ \ \ Scope\&\ scope,}
+\DoxyCodeLine{00823\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op_1_1type}{\_spawn\_future\_op<T...>::type}}*}
+\DoxyCodeLine{00824\ \ \ \ \ \ \ \ \ \ \ op)\ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(nest(make\_sender(op),\ scope)))}
+\DoxyCodeLine{00825\ \ \ \ \ :\ sender\_(nest(make\_sender(op),\ scope))\ \{\}}
+\DoxyCodeLine{00826\ }
+\DoxyCodeLine{00827\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{type}}(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{type}}\&\&)\ \textcolor{keyword}{noexcept}\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00828\ }
+\DoxyCodeLine{00829\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{\string~type}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00830\ }
+\DoxyCodeLine{00831\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{type}}\&\ operator=(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{type}}\&\&)\ \textcolor{keyword}{noexcept}\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00832\ }
+\DoxyCodeLine{00833\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00834\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}}
+\DoxyCodeLine{00835\ \ \ tag\_invoke(tag\_t<connect>,\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{type}}\&\&\ self,\ Receiver\&\&\ receiver)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00836\ \ \ \ \ \ \ is\_nothrow\_connectable\_v<sender\_t,\ Receiver>)\ \{}
+\DoxyCodeLine{00837\ \ \ \ \ \textcolor{keywordflow}{return}\ connect(std::move(self).sender\_,\ \textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(receiver));}
+\DoxyCodeLine{00838\ \ \ \}}
+\DoxyCodeLine{00839\ }
+\DoxyCodeLine{00840\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<blocking>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__future_1_1type}{type}}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00841\ \ \ \ \ \textcolor{comment}{//\ we're\ never\ when\ nest\ succeeds\ and\ always\_inline\ when\ it\ fails}}
+\DoxyCodeLine{00842\ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::maybe;}
+\DoxyCodeLine{00843\ \ \ \}}
+\DoxyCodeLine{00844\ \};}
+\DoxyCodeLine{00845\ }
+\DoxyCodeLine{00846\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00847\ \textcolor{keyword}{using\ }future\_for\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl}{\_spawn\_future\_op\_impl}}<}
+\DoxyCodeLine{00848\ \ \ \ \ Sender,}
+\DoxyCodeLine{00849\ \ \ \ \ Scope,}
+\DoxyCodeLine{00850\ \ \ \ \ \textcolor{keyword}{typename}\ std::allocator\_traits<Alloc>::template\ rebind\_alloc<std::byte>>::}
+\DoxyCodeLine{00851\ \ \ \ \ type::future\_t;}
+\DoxyCodeLine{00852\ }
+\DoxyCodeLine{00853\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__fn}{\_spawn\_future\_fn}}\ \{}
+\DoxyCodeLine{00854\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00855\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__fn_1_1deref}{deref}};}
+\DoxyCodeLine{00856\ }
+\DoxyCodeLine{00857\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00858\ \ \ \textcolor{keyword}{template}(}
+\DoxyCodeLine{00859\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ Sender,}
+\DoxyCodeLine{00860\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ Scope,}
+\DoxyCodeLine{00861\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ Alloc\ =\ std::allocator<std::byte>)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00862\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ typed\_sender<remove\_cvref\_t<Sender>>\ AND}
+\DoxyCodeLine{00863\ \ \ \ \ \ \ \ \ \ \ \ std::is\_invocable\_v<tag\_t<nest>,\ Sender,\ Scope\&>\ AND}
+\DoxyCodeLine{00864\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_allocator\_v<Alloc>)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00865\ \ \ \ \ \ \ \textcolor{keyword}{auto}}
+\DoxyCodeLine{00866\ \ \ \ \ \ \ operator()(Sender\&\&\ sender,\ Scope\&\ scope,\ \textcolor{keyword}{const}\ Alloc\&\ alloc\ =\ \{\})\ \textcolor{keyword}{const}\ \{}
+\DoxyCodeLine{00867\ \ \ \ \ \textcolor{comment}{//\ We\ need\ to\ do\ several\ things\ here\ and\ the\ ordering\ is\ nuanced:}}
+\DoxyCodeLine{00868\ \ \ \ \ \textcolor{comment}{//\ \ -\/\ We\ should\ provide\ the\ Strong\ Exception\ Guarantee:\ if\ an\ exception\ is}}
+\DoxyCodeLine{00869\ \ \ \ \ \textcolor{comment}{//\ \ \ \ thrown\ then\ the\ state\ of\ the\ programme\ should\ be\ rolled\ back\ to\ the}}
+\DoxyCodeLine{00870\ \ \ \ \ \textcolor{comment}{//\ \ \ \ state\ just\ before\ we\ were\ called;\ this\ means\ no\ memory\ leaks,\ no}}
+\DoxyCodeLine{00871\ \ \ \ \ \textcolor{comment}{//\ \ \ \ running\ operations,\ and\ no\ leaked\ references\ to\ the\ given\ scope.\ There}}
+\DoxyCodeLine{00872\ \ \ \ \ \textcolor{comment}{//\ \ \ \ are\ comments\ interwoven\ with\ the\ implementation\ that\ explain\ how\ we}}
+\DoxyCodeLine{00873\ \ \ \ \ \textcolor{comment}{//\ \ \ \ meet\ this\ requirement.}}
+\DoxyCodeLine{00874\ \ \ \ \ \textcolor{comment}{//\ \ -\/\ We'll\ be\ nesting\ two\ Senders\ in\ the\ given\ scope\ (the\ given\ Sender\ and}}
+\DoxyCodeLine{00875\ \ \ \ \ \textcolor{comment}{//\ \ \ \ the\ future\ that\ we\ return).\ \ We\ must\ tolerate\ the\ scope\ being}}
+\DoxyCodeLine{00876\ \ \ \ \ \textcolor{comment}{//\ \ \ \ closed\ a)\ before\ we\ start,\ b)\ between\ nesting\ the\ two\ Senders,\ and}}
+\DoxyCodeLine{00877\ \ \ \ \ \textcolor{comment}{//\ \ \ \ c)\ after\ we've\ nested\ both\ Senders.\ \ Handling\ c)\ is\ trivial;\ a)\ is}}
+\DoxyCodeLine{00878\ \ \ \ \ \textcolor{comment}{//\ \ \ \ not\ hard;\ b)\ is\ tricky.}}
+\DoxyCodeLine{00879\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00880\ \ \ \ \ \textcolor{comment}{//\ Considering\ the\ ordering\ of\ nesting\ Senders,\ there\ are\ two\ options:}}
+\DoxyCodeLine{00881\ \ \ \ \ \textcolor{comment}{//\ \ 1.\ If\ we\ nest\ the\ spawned\ operation\ before\ nesting\ the\ future\ then\ we}}
+\DoxyCodeLine{00882\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ risk\ the\ former\ succeeding\ and\ the\ latter\ failing,\ which\ would}}
+\DoxyCodeLine{00883\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ leave\ us\ with\ a\ running\ operation\ whose\ result\ can't\ be\ observed}}
+\DoxyCodeLine{00884\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ (because\ a\ failed\ nest()\ is\ analogous\ to\ just\_done()-\/-\/it\ will}}
+\DoxyCodeLine{00885\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ complete\ synchronously\ with\ set\_done()\ once\ observed).}}
+\DoxyCodeLine{00886\ \ \ \ \ \textcolor{comment}{//\ \ 2.\ If\ we\ nest\ the\ future\ before\ nesting\ the\ operation\ then\ we\ avoid\ the}}
+\DoxyCodeLine{00887\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ above\ problem;\ if\ the\ former\ succeeds\ and\ the\ latter\ fails\ then}}
+\DoxyCodeLine{00888\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ we\ have\ a\ successfully-\/nested\ future\ that,\ when\ awaited,\ will}}
+\DoxyCodeLine{00889\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ observe\ the\ failed\ operation\ as\ having\ synchronously\ completed}}
+\DoxyCodeLine{00890\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ with\ set\_done().}}
+\DoxyCodeLine{00891\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00892\ \ \ \ \ \textcolor{comment}{//\ We\ choose\ option\ 2\ to\ ensure\ we\ don't\ waste\ time\ running\ an\ unobservable}}
+\DoxyCodeLine{00893\ \ \ \ \ \textcolor{comment}{//\ operation.\ \ Obviously,\ if\ both\ nest\ operations\ succeed,\ the\ future\ can\ be}}
+\DoxyCodeLine{00894\ \ \ \ \ \textcolor{comment}{//\ used\ to\ observe\ the\ result\ of\ the\ spawned\ operation.\ If\ both\ nest}}
+\DoxyCodeLine{00895\ \ \ \ \ \textcolor{comment}{//\ operations\ fail\ then\ we'll\ have\ allocated\ an\ operation\ state\ in\ which\ the}}
+\DoxyCodeLine{00896\ \ \ \ \ \textcolor{comment}{//\ spawned\ operation\ completes\ with\ set\_done()\ and\ we'll\ have\ constructed\ a}}
+\DoxyCodeLine{00897\ \ \ \ \ \textcolor{comment}{//\ future\ that\ will\ complete\ with\ set\_done()\ without\ observing\ the\ allocated}}
+\DoxyCodeLine{00898\ \ \ \ \ \textcolor{comment}{//\ operation\ state.}}
+\DoxyCodeLine{00899\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00900\ \ \ \ \ \textcolor{comment}{//\ The\ obvious\ downside\ to\ this\ algorithm\ is\ that\ we\ sometimes\ make}}
+\DoxyCodeLine{00901\ \ \ \ \ \textcolor{comment}{//\ allocations\ that\ could,\ perhaps,\ be\ elided.\ \ In\ the\ case\ that\ nesting}}
+\DoxyCodeLine{00902\ \ \ \ \ \textcolor{comment}{//\ the\ spawned\ operation\ fails,\ we\ allocate\ space\ for\ an\ operation\ that,}}
+\DoxyCodeLine{00903\ \ \ \ \ \textcolor{comment}{//\ in\ principle,\ we\ know\ will\ complete\ with\ set\_done()\ so\ it\ seems\ like}}
+\DoxyCodeLine{00904\ \ \ \ \ \textcolor{comment}{//\ we\ could\ skip\ the\ allocation\ and\ just\ mark\ the\ future\ as\ cancelled;}}
+\DoxyCodeLine{00905\ \ \ \ \ \textcolor{comment}{//\ given\ that\ the\ future\ is\ nested\ successfully,\ though,\ the\ current}}
+\DoxyCodeLine{00906\ \ \ \ \ \textcolor{comment}{//\ implementation\ unifies\ successful\ and\ unsuccessful\ nesting\ of\ the}}
+\DoxyCodeLine{00907\ \ \ \ \ \textcolor{comment}{//\ spawned\ operation:\ a\ successfully\ nested\ future\ always\ consults\ the}}
+\DoxyCodeLine{00908\ \ \ \ \ \textcolor{comment}{//\ spawned\ operation\ state\ for\ its\ completion.\ \ In\ the\ case\ that\ both}}
+\DoxyCodeLine{00909\ \ \ \ \ \textcolor{comment}{//\ nests\ fail,\ the\ heap\ allocation\ seems\ particularly\ useless\ because}}
+\DoxyCodeLine{00910\ \ \ \ \ \textcolor{comment}{//\ the\ future\ won't\ even\ consult\ it\ for\ its\ result.\ \ It's\ not\ obvious\ to}}
+\DoxyCodeLine{00911\ \ \ \ \ \textcolor{comment}{//\ me\ how\ to\ detect\ that\ a\ nest\ operation\ has\ failed\ so\ I\ don't\ know\ how}}
+\DoxyCodeLine{00912\ \ \ \ \ \textcolor{comment}{//\ to\ elide\ unnecessary\ allocations.\ \ Perhaps\ we\ could\ elide\ the}}
+\DoxyCodeLine{00913\ \ \ \ \ \textcolor{comment}{//\ allocation\ if\ there\ were\ a\ "{}reserve"{}\ operation\ on\ an\ async\_scope.}}
+\DoxyCodeLine{00914\ }
+\DoxyCodeLine{00915\ \ \ \ \ \textcolor{comment}{//\ rebind\ Alloc\ to\ be\ a\ std::byte\ allocator;\ this\ ensures\ that}}
+\DoxyCodeLine{00916\ \ \ \ \ \textcolor{comment}{//\ \_spawn\_future\_op\_impl\ is\ always\ instantiated\ with\ a\ std::byte\ allocator,}}
+\DoxyCodeLine{00917\ \ \ \ \ \textcolor{comment}{//\ cutting\ down\ on\ a\ potential\ explosion\ of\ template\ instantiations.}}
+\DoxyCodeLine{00918\ \ \ \ \ \textcolor{keyword}{using\ }byte\_alloc\_t\ =}
+\DoxyCodeLine{00919\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::allocator\_traits<Alloc>::template\ rebind\_alloc<std::byte>;}
+\DoxyCodeLine{00920\ }
+\DoxyCodeLine{00921\ \ \ \ \ \textcolor{keyword}{using\ }op\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__op__impl}{\_spawn\_future\_op\_impl}}<}
+\DoxyCodeLine{00922\ \ \ \ \ \ \ \ \ remove\_cvref\_t<Sender>,}
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ Scope,}
+\DoxyCodeLine{00924\ \ \ \ \ \ \ \ \ byte\_alloc\_t>::type;}
+\DoxyCodeLine{00925\ }
+\DoxyCodeLine{00926\ \ \ \ \ \textcolor{comment}{//\ rebind\ again\ because\ we\ need\ to\ allocate\ op\_ts,\ not\ std::bytes;\ we\ need}}
+\DoxyCodeLine{00927\ \ \ \ \ \textcolor{comment}{//\ both\ an\ allocator\ and\ its\ std::allocator\_traits}}
+\DoxyCodeLine{00928\ \ \ \ \ \textcolor{keyword}{using\ }alloc\_traits\_t\ =}
+\DoxyCodeLine{00929\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::allocator\_traits<Alloc>::template\ rebind\_traits<op\_t>;}
+\DoxyCodeLine{00930\ \ \ \ \ \textcolor{keyword}{using\ }op\_alloc\_t\ =\ \textcolor{keyword}{typename}\ alloc\_traits\_t::allocator\_type;}
+\DoxyCodeLine{00931\ }
+\DoxyCodeLine{00932\ \ \ \ \ \textcolor{comment}{//\ now\ actually\ construct\ the\ necessary\ allocator;\ the\ spec\ says\ this\ has\ to}}
+\DoxyCodeLine{00933\ \ \ \ \ \textcolor{comment}{//\ be\ a\ noexcept\ expression\ for\ Alloc\ to\ conform\ to\ the\ Allocator\ concept}}
+\DoxyCodeLine{00934\ \ \ \ \ \textcolor{comment}{//\ but,\ since\ this\ is\ the\ first\ thing\ we're\ doing,\ if\ it\ throws\ in\ practice}}
+\DoxyCodeLine{00935\ \ \ \ \ \textcolor{comment}{//\ we\ don't\ care-\/-\/we\ can\ just\ let\ the\ exception\ escape}}
+\DoxyCodeLine{00936\ \ \ \ \ op\_alloc\_t\ opAlloc\{std::move(alloc)\};}
+\DoxyCodeLine{00937\ }
+\DoxyCodeLine{00938\ \ \ \ \ \textcolor{comment}{//\ allocate\ space\ for\ the\ spawned\ operation;\ we\ expect\ this\ to\ throw\ if\ the}}
+\DoxyCodeLine{00939\ \ \ \ \ \textcolor{comment}{//\ allocation\ fails\ but,\ again,\ we\ don't\ care-\/-\/letting\ the\ exception\ escape}}
+\DoxyCodeLine{00940\ \ \ \ \ \textcolor{comment}{//\ is\ the\ right\ thing\ to\ do}}
+\DoxyCodeLine{00941\ \ \ \ \ \textcolor{keyword}{auto}*\ op\ =\ alloc\_traits\_t::allocate(opAlloc,\ 1);}
+\DoxyCodeLine{00942\ }
+\DoxyCodeLine{00943\ \ \ \ \ \textcolor{comment}{//\ now\ construct\ the\ spawned\ operation\ in\ the\ just-\/allocated\ space;\ we\ can't}}
+\DoxyCodeLine{00944\ \ \ \ \ \textcolor{comment}{//\ assert\ that\ this\ is\ noexcept\ because}}
+\DoxyCodeLine{00945\ \ \ \ \ \textcolor{comment}{//\ std::allocator\_traits<T>::construct()\ is\ declared\ to\ throw\ rather\ than}}
+\DoxyCodeLine{00946\ \ \ \ \ \textcolor{comment}{//\ being\ conditionally-\/noexcept,\ but\ we\ know\ that\ the\ underlying\ constructor}}
+\DoxyCodeLine{00947\ \ \ \ \ \textcolor{comment}{//\ is\ noexcept\ so\ we'll\ assume\ this\ doesn't\ throw\ in\ practice}}
+\DoxyCodeLine{00948\ \ \ \ \ alloc\_traits\_t::construct(opAlloc,\ op,\ opAlloc);}
+\DoxyCodeLine{00949\ }
+\DoxyCodeLine{00950\ \ \ \ \ \textcolor{comment}{//\ the\ next\ two\ steps\ might\ throw\ and\ we\ have\ to\ destroy\ op\ if\ one\ of\ them}}
+\DoxyCodeLine{00951\ \ \ \ \ \textcolor{comment}{//\ does\ throw\ so\ set\ up\ a\ scope\_guard\ that\ will\ do\ that\ for\ us;}}
+\DoxyCodeLine{00952\ \ \ \ \ \textcolor{comment}{//\ conveniently,\ the\ deleter()\ static\ method\ does\ exactly\ the\ right\ thing}}
+\DoxyCodeLine{00953\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1scope__guard}{scope\_guard}}\ cleanUp\ =\ [op]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00954\ \ \ \ \ \ \ \textcolor{comment}{//\ Constructing\ the\ future\ is\ *almost*\ no-\/throw-\/-\/only\ the\ call\ to\ nest()}}
+\DoxyCodeLine{00955\ \ \ \ \ \ \ \textcolor{comment}{//\ might\ throw-\/-\/so\ the\ future\ will\ invoke\ drop()\ on\ the\ operation\ (moving}}
+\DoxyCodeLine{00956\ \ \ \ \ \ \ \textcolor{comment}{//\ it\ from\ init\ to\ complete)\ as\ part\ of\ its\ destructor\ before\ this\ code}}
+\DoxyCodeLine{00957\ \ \ \ \ \ \ \textcolor{comment}{//\ runs.}}
+\DoxyCodeLine{00958\ \ \ \ \ \ \ op\_t::deleter(op,\ \_future\_state::complete);}
+\DoxyCodeLine{00959\ \ \ \ \ \};}
+\DoxyCodeLine{00960\ }
+\DoxyCodeLine{00961\ \ \ \ \ \textcolor{keyword}{using\ }future\_t\ =\ future\_for<remove\_cvref\_t<Sender>,\ Scope,\ byte\_alloc\_t>;}
+\DoxyCodeLine{00962\ }
+\DoxyCodeLine{00963\ \ \ \ \ \textcolor{comment}{//\ construct\ the\ future\ that\ we'll\ hand\ back\ to\ the\ caller;\ this\ is\ fairly}}
+\DoxyCodeLine{00964\ \ \ \ \ \textcolor{comment}{//\ likely\ to\ be\ noexcept\ since\ it's\ not\ much\ more\ than\ a\ Sender\ construction}}
+\DoxyCodeLine{00965\ \ \ \ \ \textcolor{comment}{//\ but\ it\ depends\ on\ the\ implementation\ of\ nest()\ for\ scope\ so\ it\ might}}
+\DoxyCodeLine{00966\ \ \ \ \ \textcolor{comment}{//\ throw}}
+\DoxyCodeLine{00967\ \ \ \ \ future\_t\ future\{scope,\ op\};}
+\DoxyCodeLine{00968\ }
+\DoxyCodeLine{00969\ \ \ \ \ \textcolor{comment}{//\ now\ finally\ construct\ the\ spawned\ operation,\ which\ might\ throw}}
+\DoxyCodeLine{00970\ \ \ \ \ op-\/>init\_operation(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ scope,\ op);}
+\DoxyCodeLine{00971\ }
+\DoxyCodeLine{00972\ \ \ \ \ \textcolor{comment}{//\ now\ that\ everything\ is\ wired\ together\ there\ are\ no\ more\ exception}}
+\DoxyCodeLine{00973\ \ \ \ \ \textcolor{comment}{//\ concerns}}
+\DoxyCodeLine{00974\ \ \ \ \ cleanUp.release();}
+\DoxyCodeLine{00975\ }
+\DoxyCodeLine{00976\ \ \ \ \ \textcolor{comment}{//\ start\ the\ spawned\ operation}}
+\DoxyCodeLine{00977\ \ \ \ \ start(*op);}
+\DoxyCodeLine{00978\ }
+\DoxyCodeLine{00979\ \ \ \ \ \textcolor{comment}{//\ ideally,\ the\ compiler\ performs\ NRVO\ and\ constructs\ this\ future\ in-\/place}}
+\DoxyCodeLine{00980\ \ \ \ \ \textcolor{comment}{//\ at\ the\ call\ site\ but\ future<>'s\ move\ constructor\ is\ noexcept\ so\ even\ if}}
+\DoxyCodeLine{00981\ \ \ \ \ \textcolor{comment}{//\ there's\ an\ actual\ move\ here,\ there's\ still\ no\ chance\ of\ an\ exception}}
+\DoxyCodeLine{00982\ \ \ \ \ \textcolor{keywordflow}{return}\ future;}
+\DoxyCodeLine{00983\ \ \ \}}
+\DoxyCodeLine{00984\ }
+\DoxyCodeLine{00985\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Alloc\ =\ std::allocator<std::\textcolor{keywordtype}{byte}>>}
+\DoxyCodeLine{00986\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Scope\&\ scope,\ \textcolor{keyword}{const}\ Alloc\&\ alloc\ =\ \{\})\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00987\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00988\ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_callable\_v<tag\_t<bind\_back>,\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__fn_1_1deref}{deref}},\ Scope*,\ \textcolor{keyword}{const}\ Alloc\&>)}
+\DoxyCodeLine{00989\ \ \ \ \ \ \ \ \ \ \ -\/>\ std::enable\_if\_t<}
+\DoxyCodeLine{00990\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_allocator\_v<Alloc>,}
+\DoxyCodeLine{00991\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bind\_back\_result\_t<deref,\ Scope*,\ const\ Alloc\&>>;}
+\DoxyCodeLine{00992\ \};}
+\DoxyCodeLine{00993\ }
+\DoxyCodeLine{00994\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__fn_1_1deref}{\_spawn\_future\_fn::deref}}\ final\ \{}
+\DoxyCodeLine{00995\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00996\ \ \ \textcolor{keyword}{auto}\ operator()(Sender\&\&\ sender,\ Scope*\ scope,\ \textcolor{keyword}{const}\ Alloc\&\ alloc)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00997\ \ \ \ \ \ \ -\/>\ \textcolor{keyword}{decltype}(}
+\DoxyCodeLine{00998\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__fn}{\_spawn\_future\_fn}}\{\}(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ *scope,\ alloc))\ \{}
+\DoxyCodeLine{00999\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__fn}{\_spawn\_future\_fn}}\{\}(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ *scope,\ alloc);}
+\DoxyCodeLine{01000\ \ \ \}}
+\DoxyCodeLine{01001\ \};}
+\DoxyCodeLine{01002\ }
+\DoxyCodeLine{01003\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{01004\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}}
+\DoxyCodeLine{01005\ \_spawn\_future\_fn::operator()(Scope\&\ scope,\ \textcolor{keyword}{const}\ Alloc\&\ alloc)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{01006\ \ \ \ \ is\_nothrow\_callable\_v<tag\_t<bind\_back>,\ \mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__fn_1_1deref}{deref}},\ Scope*,\ \textcolor{keyword}{const}\ Alloc\&>)}
+\DoxyCodeLine{01007\ \ \ \ \ -\/>\ std::enable\_if\_t<}
+\DoxyCodeLine{01008\ \ \ \ \ \ \ \ \ is\_allocator\_v<Alloc>,}
+\DoxyCodeLine{01009\ \ \ \ \ \ \ \ \ bind\_back\_result\_t<deref,\ Scope*,\ const\ Alloc\&>>\ \{}
+\DoxyCodeLine{01010\ \ \ \textcolor{keywordflow}{return}\ bind\_back(\mbox{\hyperlink{structunifex_1_1__spawn__future_1_1__spawn__future__fn_1_1deref}{deref}}\{\},\ \&scope,\ alloc);}
+\DoxyCodeLine{01011\ \}}
+\DoxyCodeLine{01012\ }
+\DoxyCodeLine{01013\ \}\ \ \textcolor{comment}{//\ namespace\ \_spawn\_future}}
+\DoxyCodeLine{01014\ }
+\DoxyCodeLine{01015\ \textcolor{keyword}{namespace\ }v2\ \{}
+\DoxyCodeLine{01016\ }
+\DoxyCodeLine{01017\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{01018\ \textcolor{keyword}{using\ }future\ =\ \textcolor{keyword}{typename}\ \_spawn\_future::\_future<Scope,\ T...>::type;}
+\DoxyCodeLine{01019\ }
+\DoxyCodeLine{01020\ \}\ \ \textcolor{comment}{//\ namespace\ v2}}
+\DoxyCodeLine{01021\ }
+\DoxyCodeLine{01022\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \_spawn\_future::\_spawn\_future\_fn\ spawn\_future\{\};}
+\DoxyCodeLine{01023\ }
+\DoxyCodeLine{01024\ \}\ \ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{01025\ }
+\DoxyCodeLine{01026\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

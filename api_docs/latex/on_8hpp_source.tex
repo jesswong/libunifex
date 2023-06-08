@@ -1,0 +1,67 @@
+\doxysection{on.\+hpp}
+\hypertarget{on_8hpp_source}{}\label{on_8hpp_source}\index{include/unifex/on.hpp@{include/unifex/on.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/scheduler\_concepts.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/with\_query\_value.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/sequence.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/bind\_back.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\_on\ \{}
+\DoxyCodeLine{00031\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__on_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Scheduler,\ \textcolor{keyword}{typename}\ Sender)}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ sender<Sender>\ AND\ scheduler<Scheduler>\ AND\ \textcolor{comment}{//}}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ tag\_invocable<\_fn,\ Scheduler,\ Sender>)}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{auto}\ operator()(Scheduler\&\&\ scheduler,\ Sender\&\&\ sender)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ Scheduler,\ Sender>)}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ -\/>\ tag\_invoke\_result\_t<\_fn,\ Scheduler,\ Sender>\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::tag\_invoke(}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__on_1_1__fn}{\_fn}}\{\},\ (Scheduler\ \&\&)\ scheduler,\ (Sender\ \&\&)\ sender);}
+\DoxyCodeLine{00040\ \ \ \ \ \}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Scheduler,\ \textcolor{keyword}{typename}\ Sender)}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ sender<Sender>\ AND\ scheduler<Scheduler>\ AND\ \textcolor{comment}{//}}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ (!tag\_invocable<\_fn,\ Scheduler,\ Sender>))}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(Scheduler\&\&\ scheduler,\ Sender\&\&\ sender)\ \textcolor{keyword}{const}\ \{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ scheduleSender\ =\ schedule(scheduler);}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ sequence(}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ std::move(scheduleSender),}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ with\_query\_value(}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ (Sender\&\&)\ sender,}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ get\_scheduler,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ (Scheduler\&\&)\ scheduler));}
+\DoxyCodeLine{00053\ \ \ \ \ \}}
+\DoxyCodeLine{00054\ \ \ \}\ on\{\};}
+\DoxyCodeLine{00055\ \}\ \textcolor{comment}{//\ namespace\ \_on}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \textcolor{keyword}{using\ }\_on::on;}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

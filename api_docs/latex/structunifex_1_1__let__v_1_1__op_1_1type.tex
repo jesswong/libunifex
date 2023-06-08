@@ -1,0 +1,37 @@
+\doxysection{\+\_\+op\texorpdfstring{$<$}{<} Predecessor, Successor\+Factory, Receiver \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__let__v_1_1__op_1_1type}{}\label{structunifex_1_1__let__v_1_1__op_1_1type}\index{\_op$<$ Predecessor, SuccessorFactory, Receiver $>$::type@{\_op$<$ Predecessor, SuccessorFactory, Receiver $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__let__v_1_1__op_1_1type_a7dfb285348d69990dc7d3845717253bf}\label{structunifex_1_1__let__v_1_1__op_1_1type_a7dfb285348d69990dc7d3845717253bf} 
+using {\bfseries operation} = \mbox{\hyperlink{structunifex_1_1__let__v_1_1__op_1_1type}{type}}
+\item 
+\Hypertarget{structunifex_1_1__let__v_1_1__op_1_1type_a1f9a61d47718bd8abca4ec72c73b4461}\label{structunifex_1_1__let__v_1_1__op_1_1type_a1f9a61d47718bd8abca4ec72c73b4461} 
+using {\bfseries receiver\+\_\+type} = Receiver
+\item 
+\Hypertarget{structunifex_1_1__let__v_1_1__op_1_1type_a271cf01478e399020c88443c82917d6f}\label{structunifex_1_1__let__v_1_1__op_1_1type_a271cf01478e399020c88443c82917d6f} 
+{\footnotesize template$<$typename... Values$>$ }\\using {\bfseries successor\+\_\+type} = std\+::invoke\+\_\+result\+\_\+t$<$ Successor\+Factory, std\+::decay\+\_\+t$<$ Values $>$ \&... $>$
+\item 
+\Hypertarget{structunifex_1_1__let__v_1_1__op_1_1type_a5ce0025d56664dcfc59f7f375a34aa59}\label{structunifex_1_1__let__v_1_1__op_1_1type_a5ce0025d56664dcfc59f7f375a34aa59} 
+{\footnotesize template$<$typename... Values$>$ }\\using {\bfseries successor\+\_\+operation} = connect\+\_\+result\+\_\+t$<$ successor\+\_\+type$<$ Values... $>$, successor\+\_\+receiver$<$ \mbox{\hyperlink{structunifex_1_1__let__v_1_1__op_1_1type}{operation}}, Values... $>$ $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__let__v_1_1__op_1_1type_adfacd6b31fa8c2437391e815fe3807ac}\label{structunifex_1_1__let__v_1_1__op_1_1type_adfacd6b31fa8c2437391e815fe3807ac} 
+{\footnotesize template$<$typename Successor\+Factory2 , typename Receiver2 $>$ }\\{\bfseries type} (Predecessor \&\&pred, Successor\+Factory2 \&\&func, Receiver2 \&\&receiver)
+\item 
+\Hypertarget{structunifex_1_1__let__v_1_1__op_1_1type_af49c603a002db3c46b470d2fcfd96046}\label{structunifex_1_1__let__v_1_1__op_1_1type_af49c603a002db3c46b470d2fcfd96046} 
+void {\bfseries start} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__let__v_1_1__op_1_1type_aa6fc6ec86eab8d6d9c8db2d84e533305}\label{structunifex_1_1__let__v_1_1__op_1_1type_aa6fc6ec86eab8d6d9c8db2d84e533305} 
+friend {\bfseries predecessor\+\_\+receiver$<$ operation $>$}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/let\+\_\+value.\+hpp\end{DoxyCompactItemize}

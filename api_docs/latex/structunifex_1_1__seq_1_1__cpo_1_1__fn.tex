@@ -1,0 +1,49 @@
+\doxysection{\+\_\+fn Struct Reference}
+\hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn}{}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn}\index{\_fn@{\_fn}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_a136c68c87a1bffd901ab091dfccaf6f7}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_a136c68c87a1bffd901ab091dfccaf6f7} 
+{\footnotesize template$<$typename First $>$ }\\remove\+\_\+cvref\+\_\+t$<$ First $>$ {\bfseries operator()} (First \&\&first) const noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ remove\+\_\+cvref\+\_\+t$<$ First $>$, First $>$)
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_a77a3b9ce0a1329b40aff28def2884a63}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_a77a3b9ce0a1329b40aff28def2884a63} 
+{\bfseries template} (typename First, typename Second)(AND sender$<$ Second $>$ AND tag\+\_\+invocable$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_a16a9e1d5f98a699aa8d0c579c13663ab}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_a16a9e1d5f98a699aa8d0c579c13663ab} 
+Second auto {\bfseries operator()} (First \&\&first, Second \&\&second) const noexcept(is\+\_\+nothrow\+\_\+tag\+\_\+invocable\+\_\+v$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}, First, Second $>$) -\/$>$ tag\+\_\+invoke\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}, First, Second $>$
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_ac6b808a175bfa52f97dabc98aa58fd13}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_ac6b808a175bfa52f97dabc98aa58fd13} 
+{\bfseries template} (typename First, typename Second)(AND sender$<$ Second $>$ AND(!tag\+\_\+invocable$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_ae7661e8896693677dcba4e762a2276c0}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_ae7661e8896693677dcba4e762a2276c0} 
+Second auto {\bfseries operator()} (First \&\&first, Second \&\&second) const noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ \+\_\+seq\+::\+\_\+sender$<$ First, Second $>$, First, Second $>$) -\/$>$ \+\_\+seq\+::\+\_\+sender$<$ First, Second $>$
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_a5f386ff3be531289390cf69c5121c033}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_a5f386ff3be531289390cf69c5121c033} 
+{\bfseries template} (typename First, typename Second, typename Third, typename... Rest)(AND sender$<$ Second $>$ AND sender$<$ Third $>$ AND(sender$<$ Rest $>$ \&\&...) AND tag\+\_\+invocable$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_a36f1291bafa64dbc52560f4248af1930}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_a36f1291bafa64dbc52560f4248af1930} 
+Rest auto {\bfseries operator()} (First \&\&first, Second \&\&second, Third \&\&third, Rest \&\&... rest) const noexcept(is\+\_\+nothrow\+\_\+tag\+\_\+invocable\+\_\+v$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}, First, Second, Third, Rest... $>$) -\/$>$ tag\+\_\+invoke\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}, First, Second, Third, Rest... $>$
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_a3622ef012df3a70876a3e766a9b8c469}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_a3622ef012df3a70876a3e766a9b8c469} 
+{\bfseries template} (typename First, typename Second, typename Third, typename... Rest)(AND sender$<$ Second $>$ AND sender$<$ Third $>$ AND(sender$<$ Rest $>$ \&\&...) AND(!tag\+\_\+invocable$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_aa8f86d792c4aa0896b59cacbd2353121}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_aa8f86d792c4aa0896b59cacbd2353121} 
+Rest auto {\bfseries operator()} (First \&\&first, Second \&\&second, Third \&\&third, Rest \&\&... rest) const noexcept(is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}, First, Second $>$ \&\&is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}, callable\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}, First, Second $>$, Third, Rest... $>$) -\/$>$ callable\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}, callable\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__seq_1_1__cpo_1_1__fn}{\+\_\+fn}}, First, Second $>$, Third, Rest... $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_ac0005745f18f3ed5d3e2f7943e5243c4}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_ac0005745f18f3ed5d3e2f7943e5243c4} 
+{\bfseries First}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_afe00d3334ba96d8010a28b930e819ebb}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_afe00d3334ba96d8010a28b930e819ebb} 
+{\bfseries Second}
+\item 
+\Hypertarget{structunifex_1_1__seq_1_1__cpo_1_1__fn_a3f821da9d47ac648fa2c5e6424df846f}\label{structunifex_1_1__seq_1_1__cpo_1_1__fn_a3f821da9d47ac648fa2c5e6424df846f} 
+{\bfseries Third}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/sequence.\+hpp\end{DoxyCompactItemize}

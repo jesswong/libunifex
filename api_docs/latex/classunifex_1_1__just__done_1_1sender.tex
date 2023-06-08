@@ -1,0 +1,48 @@
+\doxysection{sender Class Reference}
+\hypertarget{classunifex_1_1__just__done_1_1sender}{}\label{classunifex_1_1__just__done_1_1sender}\index{sender@{sender}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__just__done_1_1sender_ab7866f36304ffe70611860cf58cafa06}\label{classunifex_1_1__just__done_1_1sender_ab7866f36304ffe70611860cf58cafa06} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = Variant$<$$>$
+\item 
+\Hypertarget{classunifex_1_1__just__done_1_1sender_a93e5975961f4a74912f027aa41ad3134}\label{classunifex_1_1__just__done_1_1sender_a93e5975961f4a74912f027aa41ad3134} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = Variant$<$$>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__just__done_1_1sender_a7d1d666e3475a8e65ac19e7eb9bdb593}\label{classunifex_1_1__just__done_1_1sender_a7d1d666e3475a8e65ac19e7eb9bdb593} 
+{\bfseries template} (typename This, typename Receiver)(AND receiver$<$ Receiver $>$) friend auto tag\+\_\+invoke(tag\+\_\+t$<$ connect $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+This Receiver \&\&r noexcept \mbox{\hyperlink{classunifex_1_1__just__done_1_1sender_a6af495d085369202494695ba49eda75d}{operation$<$ Receiver $>$}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__just__done_1_1sender_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__just__done_1_1sender_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = true
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classunifex_1_1__just__done_1_1sender_a6af495d085369202494695ba49eda75d}\label{classunifex_1_1__just__done_1_1sender_a6af495d085369202494695ba49eda75d} 
+\index{sender@{sender}!operation$<$ Receiver $>$@{operation$<$ Receiver $>$}}
+\index{operation$<$ Receiver $>$@{operation$<$ Receiver $>$}!sender@{sender}}
+\doxysubsubsection{\texorpdfstring{operation$<$ Receiver $>$}{operation< Receiver >}}
+{\footnotesize\ttfamily This Receiver\&\& r noexcept operation$<$ Receiver $>$}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ \{\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(r)\}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/just\+\_\+done.\+hpp\end{DoxyCompactItemize}

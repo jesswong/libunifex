@@ -1,0 +1,71 @@
+\doxysection{\+\_\+cleanup\+\_\+promise\texorpdfstring{$<$}{<} Ts \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structunifex_1_1__cleanup__promise}{}\label{structunifex_1_1__cleanup__promise}\index{\_cleanup\_promise$<$ Ts $>$@{\_cleanup\_promise$<$ Ts $>$}}
+Inheritance diagram for \+\_\+cleanup\+\_\+promise\texorpdfstring{$<$}{<} Ts \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structunifex_1_1__cleanup__promise}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise_a01e4c10d2479e05a9df8487a515d093c}\label{structunifex_1_1__cleanup__promise_a01e4c10d2479e05a9df8487a515d093c} 
+{\footnotesize template$<$typename Action $>$ }\\{\bfseries \+\_\+cleanup\+\_\+promise} (Action \&\&, Ts \&... ts) noexcept
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise_a768e42a97fa9aae40ca59368f5eb1fb8}\label{structunifex_1_1__cleanup__promise_a768e42a97fa9aae40ca59368f5eb1fb8} 
+\mbox{\hyperlink{structunifex_1_1__cleanup__task}{\+\_\+cleanup\+\_\+task}}$<$ Ts... $>$ {\bfseries get\+\_\+return\+\_\+object} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise_a7b7c74f0d118ce53545add0dba627a4c}\label{structunifex_1_1__cleanup__promise_a7b7c74f0d118ce53545add0dba627a4c} 
+coro\+::coroutine\+\_\+handle {\bfseries unhandled\+\_\+done} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise_ad99426d7eea9e6bc2efb25e15474312e}\label{structunifex_1_1__cleanup__promise_ad99426d7eea9e6bc2efb25e15474312e} 
+{\footnotesize template$<$typename Value $>$ }\\decltype(auto) {\bfseries await\+\_\+transform} (Value \&\&value) noexcept(noexcept(unifex\+::await\+\_\+transform(\texorpdfstring{$\ast$}{*}this, \mbox{\hyperlink{structunifex_1_1__die__on__done__fn}{\+\_\+die\+\_\+on\+\_\+done\+\_\+fn}}\{\}((Value \&\&) value))))
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{structunifex_1_1__cleanup__promise__base}{\+\_\+cleanup\+\_\+promise\+\_\+base}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise__base_ad5cba7925ef82b1952186955dadc3b4a}\label{structunifex_1_1__cleanup__promise__base_ad5cba7925ef82b1952186955dadc3b4a} 
+coro\+::suspend\+\_\+always {\bfseries initial\+\_\+suspend} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise__base_a5f1439d676bb1ec71483252d1e487c77}\label{structunifex_1_1__cleanup__promise__base_a5f1439d676bb1ec71483252d1e487c77} 
+\mbox{\hyperlink{structunifex_1_1__cleanup__promise__base_1_1final__awaitable}{final\+\_\+awaitable}} {\bfseries final\+\_\+suspend} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise__base_aa59944875d60c275a53e862dfd626dd5}\label{structunifex_1_1__cleanup__promise__base_aa59944875d60c275a53e862dfd626dd5} 
+void {\bfseries unhandled\+\_\+exception} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise__base_aacdb2971dd7cc92e37a2133f721f87f4}\label{structunifex_1_1__cleanup__promise__base_aacdb2971dd7cc92e37a2133f721f87f4} 
+void {\bfseries return\+\_\+void} () noexcept
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise__base_a3c7d21d545b41f55256febcb31a283fd}\label{structunifex_1_1__cleanup__promise__base_a3c7d21d545b41f55256febcb31a283fd} 
+coro\+::coroutine\+\_\+handle {\bfseries next} () const noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise_a24bacf6b432674ffe3e96e690991c4a3}\label{structunifex_1_1__cleanup__promise_a24bacf6b432674ffe3e96e690991c4a3} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS std\+::tuple$<$ Ts \&... $>$ {\bfseries args\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{structunifex_1_1__cleanup__promise__base}{\+\_\+cleanup\+\_\+promise\+\_\+base}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise__base_a2f1d3da4dc6b1750a03bfa77d77657b8}\label{structunifex_1_1__cleanup__promise__base_a2f1d3da4dc6b1750a03bfa77d77657b8} 
+\mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\+\_\+handle}} {\bfseries continuation\+\_\+} \{\}
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise__base_a0d6657708fdb054451984d7e7f0d014c}\label{structunifex_1_1__cleanup__promise__base_a0d6657708fdb054451984d7e7f0d014c} 
+any\+\_\+scheduler {\bfseries sched\+\_\+} \{\+\_\+default\+\_\+scheduler\}
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise__base_a3f1c1dc4beaf160bc3baf47b0d738884}\label{structunifex_1_1__cleanup__promise__base_a3f1c1dc4beaf160bc3baf47b0d738884} 
+bool {\bfseries is\+Unhandled\+Done\+\_\+} \{false\}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Attributes inherited from \mbox{\hyperlink{structunifex_1_1__cleanup__promise__base}{\+\_\+cleanup\+\_\+promise\+\_\+base}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__cleanup__promise__base_a5e58e99af7d36428fe044678eb11fbf4}\label{structunifex_1_1__cleanup__promise__base_a5e58e99af7d36428fe044678eb11fbf4} 
+static constexpr \mbox{\hyperlink{structunifex_1_1__inline__sched_1_1scheduler}{inline\+\_\+scheduler}} {\bfseries \+\_\+default\+\_\+scheduler} \{\}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/at\+\_\+coroutine\+\_\+exit.\+hpp\end{DoxyCompactItemize}

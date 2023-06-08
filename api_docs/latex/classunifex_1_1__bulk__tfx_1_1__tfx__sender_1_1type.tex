@@ -1,0 +1,34 @@
+\doxysection{\+\_\+tfx\+\_\+sender\texorpdfstring{$<$}{<} Source, Func, Policy \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type}{}\label{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type}\index{\_tfx\_sender$<$ Source, Func, Policy $>$::type@{\_tfx\_sender$<$ Source, Func, Policy $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_ad814d8cf065ac02fabb79e5e116b1a6a}\label{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_ad814d8cf065ac02fabb79e5e116b1a6a} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries next\+\_\+types} = type\+\_\+list\+\_\+nested\+\_\+apply\+\_\+t$<$ typename \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$ Source $>$\+::template next\+\_\+types$<$ concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t, \mbox{\hyperlink{structunifex_1_1type__list}{result}} $>$, Variant, Tuple $>$
+\item 
+\Hypertarget{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_aaf38072451e4cd2b414a5e0ecc128666}\label{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_aaf38072451e4cd2b414a5e0ecc128666} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Source, Variant, Tuple $>$
+\item 
+\Hypertarget{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_a306fabb9a86267c3cc510206bb918279}\label{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_a306fabb9a86267c3cc510206bb918279} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = sender\+\_\+error\+\_\+types\+\_\+t$<$ Source, Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_a6b8d2ea623ce6bc992aee6815d9a515a}\label{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_a6b8d2ea623ce6bc992aee6815d9a515a} 
+{\footnotesize template$<$typename Source2 , typename Func2 $>$ }\\{\bfseries type} (Source2 \&\&source, Func2 \&\&func, Policy policy)
+\item 
+\Hypertarget{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_a1244bb6fe5684a6f5e3018b83d354236}\label{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_a1244bb6fe5684a6f5e3018b83d354236} 
+{\bfseries template} (typename Self, typename Receiver)(AND const ructible\+\_\+from$<$ Func
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__bulk__tfx_1_1__tfx__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$Source$>$\+::sends\+\_\+done
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/bulk\+\_\+transform.\+hpp\end{DoxyCompactItemize}

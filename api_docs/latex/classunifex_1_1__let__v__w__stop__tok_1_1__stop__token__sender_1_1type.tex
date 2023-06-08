@@ -1,0 +1,31 @@
+\doxysection{\+\_\+stop\+\_\+token\+\_\+sender\texorpdfstring{$<$}{<} Successor\+Factory \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type}{}\label{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type}\index{\_stop\_token\_sender$<$ SuccessorFactory $>$::type@{\_stop\_token\_sender$<$ SuccessorFactory $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_af00b27dbefa664cc04cec1dcaebd4106}\label{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_af00b27dbefa664cc04cec1dcaebd4106} 
+using {\bfseries inner\+\_\+sender\+\_\+t} = std\+::invoke\+\_\+result\+\_\+t$<$ Successor\+Factory \&, \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\+\_\+stop\+\_\+token}} $>$
+\item 
+\Hypertarget{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_a6c12e224846ab113235a9b7a67021439}\label{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_a6c12e224846ab113235a9b7a67021439} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ inner\+\_\+sender\+\_\+t, Variant, Tuple $>$
+\item 
+\Hypertarget{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_a942a87b97a2d7bb4f833a2b50b5e3150}\label{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_a942a87b97a2d7bb4f833a2b50b5e3150} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = sender\+\_\+error\+\_\+types\+\_\+t$<$ inner\+\_\+sender\+\_\+t, Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_ac6a15e0de0adc81a7c50cc481564f0af}\label{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_ac6a15e0de0adc81a7c50cc481564f0af} 
+{\footnotesize template$<$typename Successor\+Factory2 $>$ }\\{\bfseries type} (Successor\+Factory2 \&\&func) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Successor\+Factory, Successor\+Factory2 \&\& $>$)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__let__v__w__stop__tok_1_1__stop__token__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$inner\+\_\+sender\+\_\+t$>$\+::sends\+\_\+done
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/let\+\_\+value\+\_\+with\+\_\+stop\+\_\+token.\+hpp\end{DoxyCompactItemize}

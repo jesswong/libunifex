@@ -1,0 +1,490 @@
+\doxysection{scheduler\+\_\+concepts.\+hpp}
+\hypertarget{scheduler__concepts_8hpp_source}{}\label{scheduler__concepts_8hpp_source}\index{include/unifex/scheduler\_concepts.hpp@{include/unifex/scheduler\_concepts.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/sender\_for.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/blocking.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\_schedule\ \{}
+\DoxyCodeLine{00031\ \ \ \textcolor{keyword}{struct\ }\_fn;}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00034\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(\ \textcolor{comment}{//}}
+\DoxyCodeLine{00035\ \ \ \ \ \_with\_tag\_invoke\_helper,\ \textcolor{comment}{//}}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \textcolor{keyword}{requires}\ ()\ (0)\ \&\&}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ tag\_invocable<\_fn,\ Scheduler>\ \&\&}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ sender<tag\_invoke\_result\_t<\_fn,\ Scheduler>>);}
+\DoxyCodeLine{00039\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00040\ \ \ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00041\ \ \ \ \ \_with\_tag\_invoke\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(\_schedule::\_with\_tag\_invoke\_helper,\ Scheduler);}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00045\ \ \ \textcolor{keyword}{using\ }\_member\_schedule\_result\_t\ =}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{decltype}(UNIFEX\_DECLVAL(Scheduler).schedule());}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00049\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(\ \textcolor{comment}{//}}
+\DoxyCodeLine{00050\ \ \ \ \ \_has\_member\_schedule\_,\ \textcolor{comment}{//}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \textcolor{keyword}{requires}()\ (0)\ \&\&}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ sender<\_member\_schedule\_result\_t<Scheduler>>);}
+\DoxyCodeLine{00053\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00054\ \ \ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00055\ \ \ \ \ \_with\_member\_schedule\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(\_schedule::\_has\_member\_schedule\_,\ Scheduler);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{struct\ }sender;}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__schedule_1_1__impl}{\_impl}}\ \{}
+\DoxyCodeLine{00061\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{auto}\ \_select()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (\_with\_tag\_invoke<Scheduler>)\ \{}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1meta__quote1___1_1bind__front}{meta\_tag\_invoke\_result<\_fn>}}\{\};}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (\_with\_member\_schedule<Scheduler>)\ \{}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1meta__quote1}{meta\_quote1<\_member\_schedule\_result\_t>}}\{\};}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1type__always}{type\_always<void>}}\{\};}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00071\ \ \ \ \ \}}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{using\ }\_result\_t\ =}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ \textcolor{keyword}{decltype}(\_impl::\_select<Scheduler>())::template\ apply<Scheduler>;}
+\DoxyCodeLine{00075\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Scheduler)}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ \_with\_tag\_invoke<Scheduler>)}
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Scheduler\&\&\ s)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ Scheduler>)}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<Scheduler>\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(schedule,\ \textcolor{keyword}{static\_cast<}Scheduler\&\&\textcolor{keyword}{>}(s));}
+\DoxyCodeLine{00082\ \ \ \ \ \}}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Scheduler)}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!\_with\_tag\_invoke<Scheduler>)\ AND}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \_with\_member\_schedule<Scheduler>)}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(Scheduler\&\&\ s)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{static\_cast<}Scheduler\&\&\textcolor{keyword}{>}(s).schedule()))}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<Scheduler>\ \{}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}Scheduler\&\&\textcolor{keyword}{>}(s).schedule();}
+\DoxyCodeLine{00090\ \ \ \ \ \}}
+\DoxyCodeLine{00091\ \ \ \};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00094\ \ \ \textcolor{keyword}{using\ }\_schedule\_result\_t\ =\ \textcolor{keyword}{decltype}(\mbox{\hyperlink{structunifex_1_1__schedule_1_1__impl}{\_impl}}\{\}(UNIFEX\_DECLVAL(S\&\&)));}
+\DoxyCodeLine{00095\ \}\ \textcolor{comment}{//\ namespace\ \_schedule}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{comment}{//\ Define\ the\ scheduler\ concept\ without\ the\ macros\ for\ better\ diagnostics}}
+\DoxyCodeLine{00098\ \textcolor{preprocessor}{\#if\ UNIFEX\_CXX\_CONCEPTS}}
+\DoxyCodeLine{00099\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00100\ \textcolor{keyword}{concept\ }\textcolor{comment}{//}}
+\DoxyCodeLine{00101\ \ \ scheduler\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keyword}{requires}(S\&\&\ s)\ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \_schedule::\_impl\{\}((S\&\&)\ s);}
+\DoxyCodeLine{00104\ \ \ \ \ \}\ \&\&}
+\DoxyCodeLine{00105\ \ \ \ \ copy\_constructible<remove\_cvref\_t<S>>\ \&\&}
+\DoxyCodeLine{00106\ \ \ \ \ equality\_comparable<remove\_cvref\_t<S>>;}
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00108\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00109\ UNIFEX\_CONCEPT\_FRAGMENT(\ \textcolor{comment}{//}}
+\DoxyCodeLine{00110\ \ \ \_scheduler,}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keyword}{requires}(S\&\&\ s)\ (}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \_schedule::\_impl\{\}((S\&\&)\ s)}
+\DoxyCodeLine{00113\ \ \ \ \ ));}
+\DoxyCodeLine{00114\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00115\ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00116\ \ \ scheduler\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00117\ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_scheduler,\ S)\ \&\&}
+\DoxyCodeLine{00118\ \ \ \ \ copy\_constructible<remove\_cvref\_t<S>>\ \&\&}
+\DoxyCodeLine{00119\ \ \ \ \ equality\_comparable<remove\_cvref\_t<S>>;}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \textcolor{keyword}{namespace\ }\_get\_scheduler\ \{}
+\DoxyCodeLine{00123\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__get__scheduler_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ SchedulerProvider)}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ const\ SchedulerProvider\&>)}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keyword}{auto}\ operator()(\textcolor{keyword}{const}\ SchedulerProvider\&\ context)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ -\/>\ tag\_invoke\_result\_t<\_fn,\ const\ SchedulerProvider\&>\ \{}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(is\_nothrow\_tag\_invocable\_v<\_fn,\ const\ SchedulerProvider\&>);}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ scheduler<tag\_invoke\_result\_t<\_fn,\ const\ SchedulerProvider\&>>);}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(*\textcolor{keyword}{this},\ context);}
+\DoxyCodeLine{00132\ \ \ \ \ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ T)}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!same\_as<\mbox{\hyperlink{structunifex_1_1__get__scheduler_1_1__fn}{\_fn}},\ remove\_cvref\_t<T>>))}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keyword}{constexpr}\ kv<\mbox{\hyperlink{structunifex_1_1__get__scheduler_1_1__fn}{\_fn}},\ remove\_cvref\_t<T>>\ \textcolor{keyword}{operator}=(T\&\&\ t)\ \textcolor{keyword}{const}\ \&}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<remove\_cvref\_t<T>,\ T>)\ \{}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{*\textcolor{keyword}{this},\ (T\&\&)\ t\};}
+\DoxyCodeLine{00139\ \ \ \ \ \}}
+\DoxyCodeLine{00140\ \ \ \};}
+\DoxyCodeLine{00141\ \}\ \textcolor{comment}{//\ namespace\ \_get\_scheduler}}
+\DoxyCodeLine{00142\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__get__scheduler_1_1__fn}{\_get\_scheduler::\_fn}}\ get\_scheduler\ \{\};}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SchedulerProv\textcolor{keywordtype}{id}er>}
+\DoxyCodeLine{00145\ \textcolor{keyword}{using\ }get\_scheduler\_result\_t\ =}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keyword}{decltype}(get\_scheduler(UNIFEX\_DECLVAL(SchedulerProvider\&\&)));}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \textcolor{comment}{//\ Define\ the\ scheduler\ concept\ without\ the\ macros\ for\ better\ diagnostics}}
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\#if\ UNIFEX\_CXX\_CONCEPTS}}
+\DoxyCodeLine{00150\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SP>}
+\DoxyCodeLine{00151\ \textcolor{keyword}{concept\ }\textcolor{comment}{//}}
+\DoxyCodeLine{00152\ \ \ scheduler\_provider\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keyword}{requires}(SP\&\&\ sp)\ \{}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ get\_scheduler((SP\&\&)\ sp);}
+\DoxyCodeLine{00155\ \ \ \ \ \};}
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00157\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SP>}
+\DoxyCodeLine{00158\ UNIFEX\_CONCEPT\_FRAGMENT(\ \textcolor{comment}{//}}
+\DoxyCodeLine{00159\ \ \ \_scheduler\_provider,}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{keyword}{requires}(SP\&\&\ sp)\ (}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ get\_scheduler((SP\&\&)\ sp)}
+\DoxyCodeLine{00162\ \ \ \ \ ));}
+\DoxyCodeLine{00163\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ SP>}
+\DoxyCodeLine{00164\ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00165\ \ \ scheduler\_provider\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00166\ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_scheduler\_provider,\ SP);}
+\DoxyCodeLine{00167\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \textcolor{keyword}{namespace\ }\_schedule}
+\DoxyCodeLine{00170\ \{}
+\DoxyCodeLine{00171\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__schedule_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00172\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{auto}\ impl\_(Scheduler\ sched)}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(make\_sender\_for<schedule>(}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__schedule_1_1__impl}{\_impl}}\{\}((Scheduler\&\&)\ sched),\ get\_scheduler\ =\ Scheduler(sched))))\ \{}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ make\_sender\_for<schedule>(}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__schedule_1_1__impl}{\_impl}}\{\}((Scheduler\&\&)\ sched),\ get\_scheduler\ =\ Scheduler(sched));}
+\DoxyCodeLine{00179\ \ \ \ \ \}}
+\DoxyCodeLine{00180\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Scheduler)}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ scheduler<Scheduler>)}
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keyword}{auto}\ operator()(Scheduler\&\&\ sched)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(\_fn::impl\_((Scheduler\&\&)\ sched)))}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ -\/>\ \textcolor{keyword}{decltype}(\_fn::impl\_((Scheduler\&\&)\ sched))\ \{}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \_fn::impl\_((Scheduler\&\&)\ sched);}
+\DoxyCodeLine{00187\ \ \ \ \ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__schedule_1_1sender}{sender}}\ operator()()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00190\ \ \ \};}
+\DoxyCodeLine{00191\ \}\ \textcolor{comment}{//\ namespace\ \_schedule}}
+\DoxyCodeLine{00192\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__schedule_1_1__fn}{\_schedule::\_fn}}\ schedule\ \{\};}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00195\ \textcolor{keyword}{using\ }schedule\_result\_t\ =\ \textcolor{keyword}{decltype}(schedule(UNIFEX\_DECLVAL(S\&\&)));}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \textcolor{keyword}{namespace\ }\_schedule\ \{}
+\DoxyCodeLine{00198\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__schedule_1_1sender}{sender}}\ \{}
+\DoxyCodeLine{00199\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00200\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00201\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00202\ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00205\ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<std::exception\_ptr>;}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00210\ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver>)}
+\DoxyCodeLine{00211\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<connect>,\ \mbox{\hyperlink{structunifex_1_1__schedule_1_1sender}{sender}},\ Receiver\ \&\&r)}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ -\/>\ connect\_result\_t<}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ schedule\_result\_t<}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ get\_scheduler\_result\_t<const\ remove\_cvref\_t<Receiver>\&>>,}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ \ \ Receiver>\ \{}
+\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keyword}{auto}\ scheduler\ =\ get\_scheduler(std::as\_const(r));}
+\DoxyCodeLine{00217\ \ \ \ \ \textcolor{keywordflow}{return}\ connect(schedule(std::move(scheduler)),\ (Receiver\ \&\&)\ r);}
+\DoxyCodeLine{00218\ \ \ \}}
+\DoxyCodeLine{00219\ \};}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__schedule_1_1sender}{sender}}\ \_fn::operator()()\ const\ noexcept\ \{}
+\DoxyCodeLine{00222\ \ \ \textcolor{keywordflow}{return}\ \{\};}
+\DoxyCodeLine{00223\ \}}
+\DoxyCodeLine{00224\ \}\ \textcolor{comment}{//\ namespace\ \_schedule}}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \textcolor{keyword}{namespace\ }\_schedule\_after\ \{}
+\DoxyCodeLine{00227\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00228\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__schedule__after_1_1__sender}{\_sender}}\ \{}
+\DoxyCodeLine{00229\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__schedule__after_1_1__sender_1_1type}{type}};}
+\DoxyCodeLine{00230\ \ \ \};}
+\DoxyCodeLine{00231\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00232\ \ \ \textcolor{keyword}{using\ }sender\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__schedule__after_1_1__sender_1_1type}{\_sender<Duration>::type}};}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__schedule__after_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00235\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00236\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00237\ \ \ \ \ \textcolor{keyword}{using\ }\_schedule\_after\_member\_result\_t\ =}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \textcolor{keyword}{decltype}(UNIFEX\_DECLVAL(TimeScheduler).schedule\_after(UNIFEX\_DECLVAL(Duration)));}
+\DoxyCodeLine{00239\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{keyword}{using\ }\_result\_t\ =}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ conditional\_t<}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ tag\_invocable<\_fn,\ TimeScheduler,\ Duration>,}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote1___1_1bind__front}{meta\_tag\_invoke\_result<\_fn>}},}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote2}{meta\_quote2<\_schedule\_after\_member\_result\_t>}}>}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \ \ ::template\ apply<TimeScheduler,\ Duration>;}
+\DoxyCodeLine{00246\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ Duration)}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ TimeScheduler,\ Duration>)}
+\DoxyCodeLine{00249\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(TimeScheduler\&\&\ s,\ Duration\&\&\ d)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ TimeScheduler,\ Duration>)}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<TimeScheduler,\ Duration>\ \{}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(*\textcolor{keyword}{this},\ (TimeScheduler\ \&\&)\ s,\ (Duration\ \&\&)\ d);}
+\DoxyCodeLine{00253\ \ \ \ \ \}}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00255\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ Duration)}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_fn,\ TimeScheduler,\ Duration>))}
+\DoxyCodeLine{00257\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(TimeScheduler\&\&\ s,\ Duration\&\&\ d)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{static\_cast<}TimeScheduler\&\&\textcolor{keyword}{>}(s).schedule\_after((Duration\ \&\&)\ d)))}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<TimeScheduler,\ Duration>\ \{}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}TimeScheduler\&\&\textcolor{keyword}{>}(s).schedule\_after((Duration\ \&\&)\ d);}
+\DoxyCodeLine{00261\ \ \ \ \ \}}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00263\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keyword}{constexpr}\ sender<Duration>\ operator()(Duration\ d)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ sender<Duration>\{std::move(d)\};}
+\DoxyCodeLine{00266\ \ \ \ \ \}}
+\DoxyCodeLine{00267\ \ \ \}\ schedule\_after\{\};}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00270\ \ \ \textcolor{keyword}{using\ }schedule\_after\_result\_t\ =}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \textcolor{keyword}{decltype}(schedule\_after(UNIFEX\_DECLVAL(TimeScheduler\&\&),\ UNIFEX\_DECLVAL(Duration\&\&)));}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00274\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__schedule__after_1_1__sender_1_1type}{\_sender<Duration>::type}}\ \{}
+\DoxyCodeLine{00275\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00276\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00277\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00279\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00280\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<std::exception\_ptr>;}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__schedule__after_1_1__sender_1_1type}{type}}(Duration\ d)}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ :\ duration\_(d)}
+\DoxyCodeLine{00286\ \ \ \ \ \{\}}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00289\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{structunifex_1_1__schedule__after_1_1__fn}{\_fn}};}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver>)}
+\DoxyCodeLine{00293\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<connect>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__schedule__after_1_1__sender_1_1type}{type}}\&\ s,\ Receiver\&\&\ r)}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ -\/>\ connect\_result\_t<}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ schedule\_after\_result\_t<std::decay\_t<}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ get\_scheduler\_result\_t<const\ remove\_cvref\_t<Receiver>\&>>\&,}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Duration\&>,}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \ \ \ \ Receiver>\ \{}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ scheduler\ =\ get\_scheduler(std::as\_const(r));}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ connect(schedule\_after(scheduler,\ std::as\_const(s.duration\_)),\ (Receiver\&\&)\ r);}
+\DoxyCodeLine{00301\ \ \ \ \ \}}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00303\ \ \ \ \ Duration\ duration\_;}
+\DoxyCodeLine{00304\ \ \ \};}
+\DoxyCodeLine{00305\ \}\ \textcolor{comment}{//\ namespace\ \_schedule\_after}}
+\DoxyCodeLine{00306\ \textcolor{keyword}{using\ }\_schedule\_after::schedule\_after;}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \textcolor{keyword}{namespace\ }\_schedule\_at\ \{}
+\DoxyCodeLine{00309\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimePo\textcolor{keywordtype}{int}>}
+\DoxyCodeLine{00310\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__schedule__at_1_1__sender}{\_sender}}\ \{}
+\DoxyCodeLine{00311\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__schedule__at_1_1__sender_1_1type}{type}};}
+\DoxyCodeLine{00312\ \ \ \};}
+\DoxyCodeLine{00313\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimePo\textcolor{keywordtype}{int}>}
+\DoxyCodeLine{00314\ \ \ \textcolor{keyword}{using\ }sender\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__schedule__at_1_1__sender_1_1type}{\_sender<TimePoint>::type}};}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__schedule__at_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00317\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00318\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ TimePo\textcolor{keywordtype}{int}>}
+\DoxyCodeLine{00319\ \ \ \ \ \textcolor{keyword}{using\ }\_schedule\_at\_member\_result\_t\ =}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \textcolor{keyword}{decltype}(UNIFEX\_DECLVAL(TimeScheduler).schedule\_at(UNIFEX\_DECLVAL(TimePoint)));}
+\DoxyCodeLine{00321\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ TimePo\textcolor{keywordtype}{int}>}
+\DoxyCodeLine{00322\ \ \ \ \ \textcolor{keyword}{using\ }\_result\_t\ =}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ conditional\_t<}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ tag\_invocable<\_fn,\ TimeScheduler,\ TimePoint>,}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote1___1_1bind__front}{meta\_tag\_invoke\_result<\_fn>}},}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote2}{meta\_quote2<\_schedule\_at\_member\_result\_t>}}>}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \ \ ::template\ apply<TimeScheduler,\ TimePoint>;}
+\DoxyCodeLine{00328\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00329\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ TimePoint)}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ TimeScheduler,\ TimePoint>)}
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(TimeScheduler\&\&\ s,\ TimePoint\&\&\ tp)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ TimeScheduler,\ TimePoint>)}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<TimeScheduler,\ TimePoint>\ \{}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(*\textcolor{keyword}{this},\ (TimeScheduler\ \&\&)\ s,\ (TimePoint\ \&\&)\ tp);}
+\DoxyCodeLine{00335\ \ \ \ \ \}}
+\DoxyCodeLine{00336\ }
+\DoxyCodeLine{00337\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ TimePoint)}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_fn,\ TimeScheduler,\ TimePoint>))}
+\DoxyCodeLine{00339\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(TimeScheduler\&\&\ s,\ TimePoint\&\&\ tp)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{static\_cast<}TimeScheduler\&\&\textcolor{keyword}{>}(s).schedule\_at((TimePoint\ \&\&)\ tp)))}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<TimeScheduler,\ TimePoint>\ \{}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}TimeScheduler\&\&\textcolor{keyword}{>}(s).schedule\_at((TimePoint\ \&\&)\ tp);}
+\DoxyCodeLine{00343\ \ \ \ \ \}}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimePo\textcolor{keywordtype}{int}>}
+\DoxyCodeLine{00346\ \ \ \ \ \textcolor{keyword}{constexpr}\ sender<TimePoint>\ operator()(TimePoint\ tp)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ sender<TimePoint>\{std::move(tp)\};}
+\DoxyCodeLine{00348\ \ \ \ \ \}}
+\DoxyCodeLine{00349\ \ \ \}\ schedule\_at\ \{\};}
+\DoxyCodeLine{00350\ }
+\DoxyCodeLine{00351\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimeScheduler,\ \textcolor{keyword}{typename}\ TimePo\textcolor{keywordtype}{int}>}
+\DoxyCodeLine{00352\ \ \ \textcolor{keyword}{using\ }schedule\_at\_result\_t\ =}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \textcolor{keyword}{decltype}(schedule\_at(}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \ \ UNIFEX\_DECLVAL(TimeScheduler\&\&),}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \ \ UNIFEX\_DECLVAL(TimePoint\&\&)));}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00357\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimePo\textcolor{keywordtype}{int}>}
+\DoxyCodeLine{00358\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__schedule__at_1_1__sender_1_1type}{\_sender<TimePoint>::type}}\ \{}
+\DoxyCodeLine{00359\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00360\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00361\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00363\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00364\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<std::exception\_ptr>;}
+\DoxyCodeLine{00365\ }
+\DoxyCodeLine{00366\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00368\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__schedule__at_1_1__sender_1_1type}{type}}(TimePoint\ tp)}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ :\ time\_point\_(tp)}
+\DoxyCodeLine{00370\ \ \ \ \ \{\}}
+\DoxyCodeLine{00371\ }
+\DoxyCodeLine{00372\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00373\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{structunifex_1_1__schedule__at_1_1__fn}{\_fn}};}
+\DoxyCodeLine{00374\ }
+\DoxyCodeLine{00375\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver>)}
+\DoxyCodeLine{00377\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<connect>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__schedule__at_1_1__sender_1_1type}{type}}\&\ s,\ Receiver\&\&\ r)}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ -\/>\ connect\_result\_t<}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \ \ \ \ schedule\_at\_result\_t<std::decay\_t<}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ get\_scheduler\_result\_t<const\ remove\_cvref\_t<Receiver>\&>>\&,}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ TimePoint\&>,}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \ \ \ \ \ \ Receiver>\ \{}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ scheduler\ =\ get\_scheduler(std::as\_const(r));}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ connect(schedule\_at(scheduler,\ std::as\_const(s.time\_point\_)),\ (Receiver\&\&)\ r);}
+\DoxyCodeLine{00385\ \ \ \ \ \}}
+\DoxyCodeLine{00386\ }
+\DoxyCodeLine{00387\ \ \ \ \ TimePoint\ time\_point\_;}
+\DoxyCodeLine{00388\ \ \ \};}
+\DoxyCodeLine{00389\ \}\ \textcolor{comment}{//\ namespace\ \_schedule\_at}}
+\DoxyCodeLine{00390\ \textcolor{keyword}{using\ }\_schedule\_at::schedule\_at;}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00392\ \textcolor{keyword}{namespace\ }\_now\ \{}
+\DoxyCodeLine{00393\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__now_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00394\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00395\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimeScheduler>}
+\DoxyCodeLine{00396\ \ \ \ \ \textcolor{keyword}{using\ }\_now\_member\_result\_t\ =}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \textcolor{keyword}{decltype}(UNIFEX\_DECLVAL(TimeScheduler).now());}
+\DoxyCodeLine{00398\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimeScheduler>}
+\DoxyCodeLine{00399\ \ \ \ \ \textcolor{keyword}{using\ }\_result\_t\ =}
+\DoxyCodeLine{00400\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ conditional\_t<}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ tag\_invocable<\_fn,\ TimeScheduler>,}
+\DoxyCodeLine{00402\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote1___1_1bind__front}{meta\_tag\_invoke\_result<\_fn>}},}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote1}{meta\_quote1<\_now\_member\_result\_t>}}>::template\ apply<TimeScheduler>;}
+\DoxyCodeLine{00404\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00405\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ TimeScheduler)}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ TimeScheduler>)}
+\DoxyCodeLine{00407\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(TimeScheduler\&\&\ s)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ TimeScheduler>)}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<TimeScheduler>\ \{}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(*\textcolor{keyword}{this},\ (TimeScheduler\ \&\&)\ s);}
+\DoxyCodeLine{00411\ \ \ \ \ \}}
+\DoxyCodeLine{00412\ }
+\DoxyCodeLine{00413\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ TimeScheduler)}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_fn,\ TimeScheduler>))}
+\DoxyCodeLine{00415\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(TimeScheduler\&\&\ s)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{static\_cast<}TimeScheduler\&\&\textcolor{keyword}{>}(s).now()))}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<TimeScheduler>\ \{}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}TimeScheduler\&\&\textcolor{keyword}{>}(s).now();}
+\DoxyCodeLine{00419\ \ \ \ \ \}}
+\DoxyCodeLine{00420\ \ \ \}\ now\ \{\};}
+\DoxyCodeLine{00421\ \}\ \textcolor{comment}{//\ namespace\ \_now}}
+\DoxyCodeLine{00422\ \textcolor{keyword}{using\ }\_now::now;}
+\DoxyCodeLine{00423\ }
+\DoxyCodeLine{00424\ \textcolor{keyword}{namespace\ }\_current\ \{}
+\DoxyCodeLine{00425\ \textcolor{preprocessor}{\#if\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00426\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00427\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__current_1_1__awaiter}{\_awaiter}}\ \{}
+\DoxyCodeLine{00428\ \ \ \ \ Scheduler\ sched\_;}
+\DoxyCodeLine{00429\ }
+\DoxyCodeLine{00430\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ await\_ready()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00432\ \ \ \ \ \}}
+\DoxyCodeLine{00433\ \ \ \ \ \textcolor{keywordtype}{void}\ await\_suspend(coro::coroutine\_handle<>)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00434\ \ \ \ \ \}}
+\DoxyCodeLine{00435\ \ \ \ \ Scheduler\ await\_resume()\ \{}
+\DoxyCodeLine{00436\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (Scheduler\&\&)\ sched\_;}
+\DoxyCodeLine{00437\ \ \ \ \ \}}
+\DoxyCodeLine{00438\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<unifex::blocking>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__current_1_1__awaiter}{\_awaiter}}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::always\_inline;}
+\DoxyCodeLine{00440\ \ \ \ \ \}}
+\DoxyCodeLine{00441\ \ \ \};}
+\DoxyCodeLine{00442\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scheduler>}
+\DoxyCodeLine{00443\ \ \ \mbox{\hyperlink{structunifex_1_1__current_1_1__awaiter}{\_awaiter}}(Scheduler)\ -\/>\ \mbox{\hyperlink{structunifex_1_1__current_1_1__awaiter}{\_awaiter<Scheduler>}};}
+\DoxyCodeLine{00444\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00445\ }
+\DoxyCodeLine{00446\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__current_1_1__scheduler}{\_scheduler}}\ \{}
+\DoxyCodeLine{00447\ \textcolor{preprocessor}{\#if\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00448\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00449\ \ \ \ \ \textcolor{comment}{//\ \`{}co\_await\ current\_scheduler()`\ to\ fetch\ a\ coroutine's\ current\ scheduler.}}
+\DoxyCodeLine{00450\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Tag,\ \textcolor{keyword}{typename}\ Promise)}
+\DoxyCodeLine{00451\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ same\_as<Tag,\ tag\_t<await\_transform>>\ AND\ scheduler\_provider<Promise\&>)}
+\DoxyCodeLine{00452\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(Tag,\ Promise\&\ promise,\ \mbox{\hyperlink{structunifex_1_1__current_1_1__scheduler}{\_scheduler}})\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__current_1_1__awaiter}{\_awaiter}}\{get\_scheduler(promise)\};}
+\DoxyCodeLine{00454\ \ \ \ \ \}}
+\DoxyCodeLine{00455\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00456\ }
+\DoxyCodeLine{00457\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00458\ \ \ \ \ \textcolor{keyword}{auto}\ schedule()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00459\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::schedule();}
+\DoxyCodeLine{00460\ \ \ \ \ \}}
+\DoxyCodeLine{00461\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00462\ \ \ \ \ \textcolor{keyword}{auto}\ schedule\_after(Duration\ d)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00463\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::schedule\_after(std::move(d));}
+\DoxyCodeLine{00464\ \ \ \ \ \}}
+\DoxyCodeLine{00465\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TimePo\textcolor{keywordtype}{int}>}
+\DoxyCodeLine{00466\ \ \ \ \ \textcolor{keyword}{auto}\ schedule\_at(TimePoint\ tp)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00467\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::schedule\_at(std::move(tp));}
+\DoxyCodeLine{00468\ \ \ \ \ \}}
+\DoxyCodeLine{00469\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator==(\mbox{\hyperlink{structunifex_1_1__current_1_1__scheduler}{\_scheduler}},\ \mbox{\hyperlink{structunifex_1_1__current_1_1__scheduler}{\_scheduler}})\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00470\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00471\ \ \ \ \ \}}
+\DoxyCodeLine{00472\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator!=(\mbox{\hyperlink{structunifex_1_1__current_1_1__scheduler}{\_scheduler}},\ \mbox{\hyperlink{structunifex_1_1__current_1_1__scheduler}{\_scheduler}})\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00474\ \ \ \ \ \}}
+\DoxyCodeLine{00475\ \ \ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__current_1_1__scheduler}{\_scheduler}}\ operator()()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00476\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{\};}
+\DoxyCodeLine{00477\ \ \ \ \ \}}
+\DoxyCodeLine{00478\ \ \ \};}
+\DoxyCodeLine{00479\ \}\ \textcolor{comment}{//\ namespace\ \_current}}
+\DoxyCodeLine{00480\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__current_1_1__scheduler}{\_current::\_scheduler}}\ current\_scheduler\ \{\};}
+\DoxyCodeLine{00481\ }
+\DoxyCodeLine{00482\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00483\ }
+\DoxyCodeLine{00484\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

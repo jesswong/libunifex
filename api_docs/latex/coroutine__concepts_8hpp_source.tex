@@ -1,0 +1,108 @@
+\doxysection{coroutine\+\_\+concepts.\+hpp}
+\hypertarget{coroutine__concepts_8hpp_source}{}\label{coroutine__concepts_8hpp_source}\index{include/unifex/coroutine\_concepts.hpp@{include/unifex/coroutine\_concepts.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/coroutine.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#if\ UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#\ error\ "{}Coroutine\ support\ is\ required\ to\ use\ <unifex/coroutine\_concepts.hpp>"{}}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{namespace\ }detail\ \{}
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaitable,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00033\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ has\_member\_operator\_co\_await\_v\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaitable>}
+\DoxyCodeLine{00036\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ has\_member\_operator\_co\_await\_v<}
+\DoxyCodeLine{00037\ \ \ \ \ Awaitable,}
+\DoxyCodeLine{00038\ \ \ \ \ std::void\_t<decltype(std::declval<Awaitable>().operator\ \textcolor{keyword}{co\_await}())>>\ =}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{true};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaitable,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00042\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ has\_free\_operator\_co\_await\_v\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaitable>}
+\DoxyCodeLine{00045\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ has\_free\_operator\_co\_await\_v<}
+\DoxyCodeLine{00046\ \ \ \ \ Awaitable,}
+\DoxyCodeLine{00047\ \ \ \ \ std::void\_t<decltype(operator\ co\_await(std::declval<Awaitable>()))>>\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaiter,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00050\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1detail_1_1await__result__impl}{await\_result\_impl}}\ \{\};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaiter>}
+\DoxyCodeLine{00053\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1detail_1_1await__result__impl}{await\_result\_impl}}<}
+\DoxyCodeLine{00054\ \ \ \ \ Awaiter,}
+\DoxyCodeLine{00055\ \ \ \ \ std::void\_t<}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ decltype(std::declval<Awaiter\&>().await\_ready()\ ?\ (void)0\ :\ (void)0),}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ decltype(std::declval<Awaiter\&>().await\_resume())>>\ \{}
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{using\ }type\ =\ \textcolor{keyword}{decltype}(std::declval<Awaiter\&>().await\_resume());}
+\DoxyCodeLine{00059\ \};}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \}\ \textcolor{comment}{//\ namespace\ detail}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{keyword}{namespace\ }\_get\_awaiter\ \{}
+\DoxyCodeLine{00064\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__get__awaiter_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaitable>}
+\DoxyCodeLine{00066\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ \textcolor{keyword}{operator}()(Awaitable\&\&\ awaitable)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (detail::has\_member\_operator\_co\_await\_v<Awaitable>)\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}Awaitable\&\&\textcolor{keyword}{>}(awaitable).\textcolor{keyword}{operator}\ \textcolor{keyword}{co\_await}();}
+\DoxyCodeLine{00069\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (detail::has\_free\_operator\_co\_await\_v<Awaitable>)\ \{}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{operator}\ \textcolor{keyword}{co\_await}(\textcolor{keyword}{static\_cast<}Awaitable\&\&\textcolor{keyword}{>}(awaitable));}
+\DoxyCodeLine{00071\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}Awaitable\&\&\textcolor{keyword}{>}(awaitable);}
+\DoxyCodeLine{00073\ \ \ \ \ \}}
+\DoxyCodeLine{00074\ \ \ \}}
+\DoxyCodeLine{00075\ \};}
+\DoxyCodeLine{00076\ \}\ \textcolor{comment}{//\ namespace\ \_get\_awaiter}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__get__awaiter_1_1__fn}{\_get\_awaiter::\_fn}}\ get\_awaiter\ \{\};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaitable>}
+\DoxyCodeLine{00081\ \textcolor{keyword}{using\ }awaiter\_type\_t\ =\ \textcolor{keyword}{decltype}(get\_awaiter(std::declval<Awaitable>()));}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaitable>}
+\DoxyCodeLine{00084\ \textcolor{keyword}{using\ }await\_result\_t\ =}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{typename}\ detail::await\_result\_impl<awaiter\_type\_t<Awaitable>>::type;}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{keyword}{namespace\ }detail\ \{}
+\DoxyCodeLine{00088\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaitable>}
+\DoxyCodeLine{00089\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(\ \textcolor{comment}{//}}
+\DoxyCodeLine{00090\ \ \ \ \ \_awaitable\_impl,\ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \textcolor{keyword}{requires}()\ (\ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}(await\_result\_t<Awaitable>)}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00094\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Awaitable>}
+\DoxyCodeLine{00095\ \ \ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00096\ \ \ \ \ \_awaitable\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(detail::\_awaitable\_impl,\ Awaitable);}
+\DoxyCodeLine{00098\ \}\ \textcolor{comment}{//\ namespace\ detail}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

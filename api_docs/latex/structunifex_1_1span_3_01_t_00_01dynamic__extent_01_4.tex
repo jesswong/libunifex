@@ -1,0 +1,82 @@
+\doxysection{span\texorpdfstring{$<$}{<} T, dynamic\+\_\+extent \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4}{}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4}\index{span$<$ T, dynamic\_extent $>$@{span$<$ T, dynamic\_extent $>$}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_afb9ded5f49336ae503bb9f2035ea902b}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_afb9ded5f49336ae503bb9f2035ea902b} 
+using {\bfseries value\+\_\+type} = T
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_af38ce1af42d538f410180c265518d4f0}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_af38ce1af42d538f410180c265518d4f0} 
+using {\bfseries size\+\_\+type} = std\+::size\+\_\+t
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a9afa96cfa6183d6ce50ad2cb77e1f998}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a9afa96cfa6183d6ce50ad2cb77e1f998} 
+using {\bfseries reference} = std\+::add\+\_\+lvalue\+\_\+reference\+\_\+t$<$ T $>$
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_acb145b9b07aeaff085db0be7050c8edb}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_acb145b9b07aeaff085db0be7050c8edb} 
+using {\bfseries pointer} = std\+::add\+\_\+pointer\+\_\+t$<$ T $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a5f89dceb789d886edca82a34c3165308}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a5f89dceb789d886edca82a34c3165308} 
+constexpr {\bfseries span} (T \texorpdfstring{$\ast$}{*}data, std\+::size\+\_\+t size) noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_ab5e776ac4fc6433bb9ad701321b1fe57}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_ab5e776ac4fc6433bb9ad701321b1fe57} 
+{\footnotesize template$<$std\+::size\+\_\+t N$>$ }\\constexpr {\bfseries span} (T(\&arr)\mbox{[}N\mbox{]}) noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a3ebaba195a79b988c87e6a37dbe6ba30}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a3ebaba195a79b988c87e6a37dbe6ba30} 
+{\footnotesize template$<$std\+::size\+\_\+t N$>$ }\\constexpr {\bfseries span} (std\+::array$<$ T, N $>$ \&arr) noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a6ecac091a1d8060c68d5cf73b585d180}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a6ecac091a1d8060c68d5cf73b585d180} 
+{\bfseries template} (typename U, std\+::size\+\_\+t Other\+Extent)() const expr \mbox{\hyperlink{structunifex_1_1span}{span}}(const \mbox{\hyperlink{structunifex_1_1span}{span}}$<$ U
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_acd451130221aa805171194d35880dbfb}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_acd451130221aa805171194d35880dbfb} 
+Other\+Extent \&other {\bfseries size\+\_\+} (other.\+size())
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_ac39e398d0044339b8ae0178ef37bf4d2}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_ac39e398d0044339b8ae0178ef37bf4d2} 
+T \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (std\+::size\+\_\+t index) const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a03af70c3e492a588243370fdfd1087b2}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a03af70c3e492a588243370fdfd1087b2} 
+T \texorpdfstring{$\ast$}{*} {\bfseries data} () const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a3f6fc5de06a318920d84f3c3742db07f}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a3f6fc5de06a318920d84f3c3742db07f} 
+bool {\bfseries empty} () const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a4f7434932a5e343fc55ba86506da43c7}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a4f7434932a5e343fc55ba86506da43c7} 
+std\+::size\+\_\+t {\bfseries size} () const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a3c72b5396528860b50635609310f07ce}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a3c72b5396528860b50635609310f07ce} 
+T \texorpdfstring{$\ast$}{*} {\bfseries begin} () const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_ae1b5a32f7196ec01c4617022d42e53d8}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_ae1b5a32f7196ec01c4617022d42e53d8} 
+T \texorpdfstring{$\ast$}{*} {\bfseries end} () const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a3d54aa0c849b5cec303355a19b57c93d}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a3d54aa0c849b5cec303355a19b57c93d} 
+{\footnotesize template$<$std\+::size\+\_\+t N$>$ }\\\mbox{\hyperlink{structunifex_1_1span}{span}}$<$ T, N $>$ {\bfseries first} () const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a92a2ae9fe214d913b12d5fdbd427f420}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a92a2ae9fe214d913b12d5fdbd427f420} 
+\mbox{\hyperlink{structunifex_1_1span}{span}}$<$ T, dynamic\+\_\+extent $>$ {\bfseries first} (std\+::size\+\_\+t count) const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a36f723cf9fc0485d13e8d603dca9318c}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a36f723cf9fc0485d13e8d603dca9318c} 
+{\footnotesize template$<$std\+::size\+\_\+t N$>$ }\\\mbox{\hyperlink{structunifex_1_1span}{span}}$<$ T, N $>$ {\bfseries last} () const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a9e0b43cc4ba38f0f460c9fed658a5a1e}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a9e0b43cc4ba38f0f460c9fed658a5a1e} 
+\mbox{\hyperlink{structunifex_1_1span}{span}}$<$ T, dynamic\+\_\+extent $>$ {\bfseries last} (std\+::size\+\_\+t count) const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_aa5b61253ccef6d9fd65c66e694a1558b}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_aa5b61253ccef6d9fd65c66e694a1558b} 
+{\footnotesize template$<$std\+::size\+\_\+t N$>$ }\\\mbox{\hyperlink{structunifex_1_1span}{span}}$<$ T, dynamic\+\_\+extent $>$ {\bfseries after} () const noexcept
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a17801055630b3bea2686c9ead30ffab1}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a17801055630b3bea2686c9ead30ffab1} 
+\mbox{\hyperlink{structunifex_1_1span}{span}}$<$ T, dynamic\+\_\+extent $>$ {\bfseries after} (std\+::size\+\_\+t count) const noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a2f083e98f7b7587fd1d10921dbc77adb}\label{structunifex_1_1span_3_01_t_00_01dynamic__extent_01_4_a2f083e98f7b7587fd1d10921dbc77adb} 
+Other\+Extent \&other {\bfseries noexcept}\+: data\+\_\+(other.\+data())
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/span.\+hpp\end{DoxyCompactItemize}

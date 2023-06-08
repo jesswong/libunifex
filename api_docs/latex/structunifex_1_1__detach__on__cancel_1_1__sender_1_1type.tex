@@ -1,0 +1,40 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Sender \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type}{}\label{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type}\index{\_sender$<$ Sender $>$::type@{\_sender$<$ Sender $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_aeb961c1e0be4bf05e19610eb83d9c27d}\label{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_aeb961c1e0be4bf05e19610eb83d9c27d} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Sender, Variant, Tuple $>$
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_a3f4591fa45af81e578276bed5626a51a}\label{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_a3f4591fa45af81e578276bed5626a51a} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ Sender, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_af8e98eeb25a416801bfce9f369753b23}\label{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_af8e98eeb25a416801bfce9f369753b23} 
+{\footnotesize template$<$typename This , typename Receiver $>$ }\\using {\bfseries operation\+\_\+state\+\_\+t} = \mbox{\hyperlink{structunifex_1_1__detach__on__cancel_1_1operation__state}{operation\+\_\+state}}$<$ member\+\_\+t$<$ This, Sender $>$, remove\+\_\+cvref\+\_\+t$<$ Receiver $>$ $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_a128be7d3e5d99c352f5e407c11aa06d4}\label{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_a128be7d3e5d99c352f5e407c11aa06d4} 
+{\bfseries template} (typename This, typename Receiver)(AND receiver$<$ Receiver $>$ AND sender\+\_\+to$<$ member\+\_\+t$<$ This
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_add8e2db9b5679fb06bd7b8aec24179e0}\label{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_add8e2db9b5679fb06bd7b8aec24179e0} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Sender {\bfseries upstream\+Sender\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_a0443219317c3b4775ced0b0d9b77ec4a}\label{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_a0443219317c3b4775ced0b0d9b77ec4a} 
+{\bfseries Sender}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__detach__on__cancel_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = true
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/detach\+\_\+on\+\_\+cancel.\+hpp\end{DoxyCompactItemize}

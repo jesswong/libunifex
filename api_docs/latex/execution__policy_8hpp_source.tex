@@ -1,0 +1,52 @@
+\doxysection{execution\+\_\+policy.\+hpp}
+\hypertarget{execution__policy_8hpp_source}{}\label{execution__policy_8hpp_source}\index{include/unifex/execution\_policy.hpp@{include/unifex/execution\_policy.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}}
+\DoxyCodeLine{00021\ \{}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{comment}{//\ Execution\ policies\ are\ used\ to\ describe\ constraints\ on\ the\ safe\ execution}}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{comment}{//\ of\ bulk\ operations\ with\ respect\ to\ each\ other.}}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{comment}{//\ sequenced\ -\/\ Operations\ must\ be\ sequenced\ with\ respect\ to\ each\ other.}}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ They\ are\ not\ safe\ to\ executed\ concurrently\ on\ differen\ threads\ or\ to}}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ interleaved\ with\ each\ other\ on\ the\ same\ thread.}}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{comment}{//\ unsequenced\ -\/\ Operations\ are\ safe\ to\ be\ interleaved\ with\ each\ other,\ e.g.\ using\ vectorised}}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ SIMD\ instructions,\ but\ may\ not\ be\ executed\ concurrently\ on\ different}}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ threads.\ This\ generally\ implies\ that\ forward\ progress\ of\ one\ operation}}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\ not\ dependent\ on\ forward\ progress\ of\ other\ operations.\ \ \ }}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{comment}{//\ parallel\ -\/\ Operations\ are\ safe\ to\ be\ executed\ concurrently\ with\ each\ other\ on\ different}}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ threads\ but\ operations\ on\ each\ thread\ must\ not\ be\ interleaved.}}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{comment}{//\ parallel\_unsequenced\ -\/\ Operations\ are\ safe\ to\ be\ executed\ concurrently\ on\ different}}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ threads\ and\ may\ be\ interleaved\ with\ each\ other\ on\ the\ same\ thread.}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1sequenced__policy}{sequenced\_policy}}\ \{\}\ seq;}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1unsequenced__policy}{unsequenced\_policy}}\ \{\}\ unseq;}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1parallel__policy}{parallel\_policy}}\ \{\}\ par;}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1parallel__unsequenced__policy}{parallel\_unsequenced\_policy}}\ \{\}\ par\_unseq;}
+\DoxyCodeLine{00044\ \}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

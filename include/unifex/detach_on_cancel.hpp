@@ -27,6 +27,10 @@
 
 #include <unifex/detail/prologue.hpp>
 
+/**
+ * This is test doxygen style documentation for detach_on_cancel
+ */
+
 namespace unifex {
 namespace _detach_on_cancel {
 

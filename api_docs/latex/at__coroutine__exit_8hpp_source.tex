@@ -1,0 +1,325 @@
+\doxysection{at\+\_\+coroutine\+\_\+exit.\+hpp}
+\hypertarget{at__coroutine__exit_8hpp_source}{}\label{at__coroutine__exit_8hpp_source}\index{include/unifex/at\_coroutine\_exit.hpp@{include/unifex/at\_coroutine\_exit.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/coroutine.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/await\_transform.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/continuations.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/scheduler\_concepts.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/stop\_token\_concepts.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/inline\_scheduler.hpp>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <\mbox{\hyperlink{any__scheduler_8hpp}{unifex/any\_scheduler.hpp}}>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <unifex/blocking.hpp>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/unstoppable\_token.hpp>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <unifex/get\_stop\_token.hpp>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#if\ UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#\ error\ "{}Coroutine\ support\ is\ required\ to\ use\ this\ header"{}}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ <tuple>}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{namespace\ }\_xchg\_cont\ \{}
+\DoxyCodeLine{00042\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__xchg__cont_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00043\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ ParentPromise,\ \textcolor{keyword}{typename}\ ChildPromise)}
+\DoxyCodeLine{00044\ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\mbox{\hyperlink{structunifex_1_1__xchg__cont_1_1__fn}{\_fn}},\ ParentPromise\&,\ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<ChildPromise>}}>)}
+\DoxyCodeLine{00045\ \ \ UNIFEX\_ALWAYS\_INLINE}
+\DoxyCodeLine{00046\ \ \ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<>}}\ operator()(ParentPromise\&\ parent,\ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<ChildPromise>}}\ action)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(*\textcolor{keyword}{this},\ parent,\ (\mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<ChildPromise>}}\&\&)\ action);}
+\DoxyCodeLine{00048\ \ \ \}}
+\DoxyCodeLine{00049\ \}\ exchange\_continuation\ \{\};}
+\DoxyCodeLine{00050\ \}\ \textcolor{comment}{//\ \_xchg\_cont}}
+\DoxyCodeLine{00051\ \textcolor{keyword}{using\ }\_xchg\_cont::exchange\_continuation;}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__cleanup__promise__base}{\_cleanup\_promise\_base}}\ \{}
+\DoxyCodeLine{00054\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__cleanup__promise__base_1_1final__awaitable}{final\_awaitable}}\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordtype}{bool}\ await\_ready()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00057\ \ \ \ \ \}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{comment}{//\ Clang\ before\ clang-\/12\ has\ a\ bug\ with\ coroutines\ that\ self-\/destruct\ in\ an}}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{comment}{//\ await\_suspend\ that\ uses\ symmetric\ transfer.\ It\ appears\ that\ MSVC\ has\ the\ same}}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{comment}{//\ bug,\ while\ Emscripten,\ the\ WebAssembly\ compiler\ just\ doesn't\ support\ tail\ calls\ yet.}}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{comment}{//\ So\ instead\ of\ symmetric\ transfer,\ we\ accept\ the\ stack\ growth\ and\ resume}}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{comment}{//\ the\ continuation\ from\ within\ await\_suspend.}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#if\ (defined(\_\_clang\_\_)\ \&\&\ (defined(\_\_apple\_build\_version\_\_)\ ||\ \_\_clang\_major\_\_\ <\ 12))\ ||\ \(\backslash\)}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\ \ \ \ defined(\_MSC\_VER)\ ||\ defined(\_\_EMSCRIPTEN\_\_)}}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CleanupPromise>}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{comment}{//\ Apple-\/clang\ and\ clang-\/10\ and\ prior\ need\ for\ await\_suspend\ to\ be\ noinline.}}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{comment}{//\ MSVC\ and\ clang-\/11\ can\ tolerate\ await\_suspend\ to\ be\ inlined,\ so\ force\ it.}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#if\ defined(\_\_apple\_build\_version\_\_)\ ||\ (defined(\_\_clang\_\_)\ \&\&\ \_\_clang\_major\_\_\ <=\ 10)}}
+\DoxyCodeLine{00070\ \ \ \ \ UNIFEX\_NO\_INLINE}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00072\ \ \ \ \ UNIFEX\_ALWAYS\_INLINE}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordtype}{void}\ await\_suspend(coro::coroutine\_handle<CleanupPromise>\ h)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ continuation\ =\ h.promise().next();}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ h.destroy();\ \textcolor{comment}{//\ The\ cleanup\ action\ has\ finished\ executing.\ Destroy\ it.}}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ continuation.resume();}
+\DoxyCodeLine{00078\ \ \ \ \ \}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{comment}{//\ No\ bugs\ here!\ OK\ to\ use\ symmetric\ transfer.}}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CleanupPromise>}
+\DoxyCodeLine{00082\ \ \ \ \ coro::coroutine\_handle<>\ await\_suspend(coro::coroutine\_handle<CleanupPromise>\ h)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ continuation\ =\ h.promise().next();}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ h.destroy();\ \textcolor{comment}{//\ The\ cleanup\ action\ has\ finished\ executing.\ Destroy\ it.}}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ continuation;}
+\DoxyCodeLine{00086\ \ \ \ \ \}}
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keywordtype}{void}\ await\_resume()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00090\ \ \ \ \ \}}
+\DoxyCodeLine{00091\ \ \ \};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ coro::suspend\_always\ initial\_suspend()\ noexcept\ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordflow}{return}\ \{\};}
+\DoxyCodeLine{00095\ \ \ \}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ final\_awaitable\ final\_suspend()\ noexcept\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keywordflow}{return}\ \{\};}
+\DoxyCodeLine{00099\ \ \ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ [[noreturn]]\ \textcolor{keywordtype}{void}\ unhandled\_exception()\ noexcept\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ UNIFEX\_ASSERT(!\textcolor{stringliteral}{"{}An\ exception\ happened\ in\ an\ async\ cleanup\ action.\ Calling\ terminate..."{}});}
+\DoxyCodeLine{00103\ \ \ \ \ std::terminate();}
+\DoxyCodeLine{00104\ \ \ \}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \textcolor{keywordtype}{void}\ return\_void()\ noexcept\ \{}
+\DoxyCodeLine{00107\ \ \ \}}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ coro::coroutine\_handle<>\ next()\ const\ noexcept\ \{}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordflow}{return}\ isUnhandledDone\_\ ?\ continuation\_.done()\ :\ continuation\_.handle();}
+\DoxyCodeLine{00111\ \ \ \}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{preprocessor}{\#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00114\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00115\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00116\ \ \ tag\_invoke(tag\_t<visit\_continuations>,\ \textcolor{keyword}{const}\ \_cleanup\_promise\_base\&\ p,\ Func\&\&\ func)\ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{comment}{//\ Skip\ cleanup\ actions\ when\ visiting\ continuations:}}
+\DoxyCodeLine{00118\ \ \ \ \ visit\_continuations(p.continuation\_,\ (Func\ \&\&)\ func);}
+\DoxyCodeLine{00119\ \ \ \}}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ \textcolor{keyword}{friend}\ unstoppable\_token}
+\DoxyCodeLine{00123\ \ \ tag\_invoke(tag\_t<get\_stop\_token>,\ \textcolor{keyword}{const}\ \_cleanup\_promise\_base\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keywordflow}{return}\ unstoppable\_token\{\};}
+\DoxyCodeLine{00125\ \ \ \}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{friend}\ any\_scheduler}
+\DoxyCodeLine{00128\ \ \ tag\_invoke(tag\_t<get\_scheduler>,\ \textcolor{keyword}{const}\ \_cleanup\_promise\_base\&\ p)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordflow}{return}\ p.sched\_;}
+\DoxyCodeLine{00130\ \ \ \}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ inline\_scheduler\ \_default\_scheduler\{\};}
+\DoxyCodeLine{00133\ \ \ continuation\_handle<>\ continuation\_\{\};}
+\DoxyCodeLine{00134\ \ \ any\_scheduler\ sched\_\{\_default\_scheduler\};}
+\DoxyCodeLine{00135\ \ \ \textcolor{keywordtype}{bool}\ isUnhandledDone\_\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00136\ \};}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \textcolor{comment}{//\ The\ die\_on\_done\ algorithm\ implemented\ here\ could\ be\ implemented\ in\ terms\ of}}
+\DoxyCodeLine{00139\ \textcolor{comment}{//\ let\_done,\ but\ this\ implementation\ is\ simpler\ since\ it\ doesn't\ instantiate}}
+\DoxyCodeLine{00140\ \textcolor{comment}{//\ a\ bunch\ of\ templates\ that\ will\ never\ be\ needed\ (no\ need\ to\ connect\ or\ start\ a}}
+\DoxyCodeLine{00141\ \textcolor{comment}{//\ sender\ returned\ from\ the\ done\ transform\ function).}}
+\DoxyCodeLine{00142\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00143\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__die__on__done__rec}{\_die\_on\_done\_rec}}\ \{}
+\DoxyCodeLine{00144\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__die__on__done__rec_1_1type}{type}}\ \{}
+\DoxyCodeLine{00145\ \ \ \ \ Receiver\ rec\_;}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}...\ Ts)}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver\_of<Receiver,\ Ts...>)}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_value(Ts\&\&...\ ts)\ \&\&\ \textcolor{keyword}{noexcept}(is\_nothrow\_receiver\_of\_v<Receiver,\ Ts...>)\ \{}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ unifex::set\_value((Receiver\&\&)\ rec\_,\ (Ts\&\&)\ ts...);}
+\DoxyCodeLine{00150\ \ \ \ \ \}}
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ E)}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver,\ E>)}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_error(E\&\&\ e)\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ unifex::set\_error((Receiver\&\&)\ rec\_,\ (E\&\&)\ e);}
+\DoxyCodeLine{00155\ \ \ \ \ \}}
+\DoxyCodeLine{00156\ \ \ \ \ [[noreturn]]\ \textcolor{keywordtype}{void}\ set\_done()\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ UNIFEX\_ASSERT(!\textcolor{stringliteral}{"{}A\ cleanup\ action\ tried\ to\ cancel.\ Calling\ terminate..."{}});}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ std::terminate();}
+\DoxyCodeLine{00159\ \ \ \ \ \}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ CPO)}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ is\_receiver\_query\_cpo\_v<CPO>\ AND}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_callable\_v<CPO,\ const\ Receiver\&>)}
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(CPO\ cpo,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__die__on__done__rec_1_1type}{type}}\&\ p)}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<CPO,\ const\ Receiver\&>)}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ -\/>\ callable\_result\_t<CPO,\ const\ Receiver\&>\ \{}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cpo(p.rec\_);}
+\DoxyCodeLine{00168\ \ \ \ \ \}}
+\DoxyCodeLine{00169\ \ \ \};}
+\DoxyCodeLine{00170\ \};}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00173\ \textcolor{keyword}{using\ }\_die\_on\_done\_rec\_t\ =}
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__die__on__done__rec}{\_die\_on\_done\_rec<remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00177\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__die__on__done}{\_die\_on\_done}}\ \{}
+\DoxyCodeLine{00178\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__die__on__done_1_1type}{type}}\ \{}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\_traits<Sender>::template}}\ value\_types<Variant,\ Tuple>;}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\_traits<Sender>::template}}\ error\_types<Variant>;}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ sender\_to<Sender,\ \_die\_on\_done\_rec\_t<Receiver>>)}
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{keyword}{auto}\ connect(Receiver\&\&\ rec)\ \&\&}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_connectable\_v<Sender,\ \_die\_on\_done\_rec\_t<Receiver>>)}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ -\/>\ connect\_result\_t<Sender,\ \_die\_on\_done\_rec\_t<Receiver>>\ \{}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::connect(}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ (Sender\&\&)\ sender\_,}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \_die\_on\_done\_rec\_t<Receiver>\{(Receiver\&\&)\ rec\});}
+\DoxyCodeLine{00199\ \ \ \ \ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Sender\ sender\_;}
+\DoxyCodeLine{00202\ \ \ \};}
+\DoxyCodeLine{00203\ \};}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00206\ \textcolor{keyword}{using\ }\_die\_on\_done\_t\ =}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__die__on__done}{\_die\_on\_done<remove\_cvref\_t<Sender>}}>::type;}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__die__on__done__fn}{\_die\_on\_done\_fn}}\ \{}
+\DoxyCodeLine{00210\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Value)}
+\DoxyCodeLine{00211\ \ \ \ \ (\textcolor{keyword}{requires}\ (!detail::\_awaitable<Value>)\ AND\ sender<Value>)}
+\DoxyCodeLine{00212\ \ \ \_die\_on\_done\_t<Value>\ \textcolor{keyword}{operator}()(Value\&\&\ value)\ \textcolor{comment}{/*mutable*/}}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<remove\_cvref\_t<Value>,\ Value>)\ \{}
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keywordflow}{return}\ \_die\_on\_done\_t<Value>\{(Value\&\&)\ value\};}
+\DoxyCodeLine{00215\ \ \ \}}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Value>}
+\DoxyCodeLine{00218\ \ \ Value\&\&\ operator()(Value\&\&\ value)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00219\ \ \ \ \ \textcolor{keywordflow}{return}\ (Value\&\&)\ value;}
+\DoxyCodeLine{00220\ \ \ \}}
+\DoxyCodeLine{00221\ \};}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00224\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task}};}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00227\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__cleanup__promise}{\_cleanup\_promise}}\ :\ \mbox{\hyperlink{structunifex_1_1__cleanup__promise__base}{\_cleanup\_promise\_base}}\ \{}
+\DoxyCodeLine{00228\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Action>}
+\DoxyCodeLine{00229\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__cleanup__promise}{\_cleanup\_promise}}(Action\&\&,\ Ts\&...\ ts)\ noexcept}
+\DoxyCodeLine{00230\ \ \ \ \ :\ args\_(ts...)\ \{\}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ \mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task}}<Ts...>\ get\_return\_object()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task}}<Ts...>(}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ coro::coroutine\_handle<\_cleanup\_promise>::from\_promise(*\textcolor{keyword}{this}));}
+\DoxyCodeLine{00235\ \ \ \}}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00237\ \ \ coro::coroutine\_handle<>\ unhandled\_done()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \textcolor{comment}{//\ Record\ that\ we\ are\ processing\ an\ unhandled\ done\ signal.\ This\ is\ checked\ in}}
+\DoxyCodeLine{00239\ \ \ \ \ \textcolor{comment}{//\ the\ final\_suspend\ of\ the\ cleanup\ action\ to\ know\ which\ subsequent\ continuation}}
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{comment}{//\ to\ resume.}}
+\DoxyCodeLine{00241\ \ \ \ \ isUnhandledDone\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00242\ \ \ \ \ \textcolor{comment}{//\ On\ unhandled\_done,\ run\ the\ cleanup\ action:}}
+\DoxyCodeLine{00243\ \ \ \ \ \textcolor{keywordflow}{return}\ coro::coroutine\_handle<\_cleanup\_promise>::from\_promise(*\textcolor{keyword}{this});}
+\DoxyCodeLine{00244\ \ \ \}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Value>}
+\DoxyCodeLine{00247\ \ \ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ await\_transform(Value\&\&\ value)}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ unifex::await\_transform(*\textcolor{keyword}{this},\ \mbox{\hyperlink{structunifex_1_1__die__on__done__fn}{\_die\_on\_done\_fn}}\{\}((Value\&\&)\ value))))\ \{}
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::await\_transform(*\textcolor{keyword}{this},\ \mbox{\hyperlink{structunifex_1_1__die__on__done__fn}{\_die\_on\_done\_fn}}\{\}((Value\&\&)\ value));}
+\DoxyCodeLine{00251\ \ \ \}}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ std::tuple<Ts\&...>\ args\_;}
+\DoxyCodeLine{00254\ \};}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00257\ \textcolor{keyword}{struct\ }[[nodiscard]]\ \mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task}}\ \{}
+\DoxyCodeLine{00258\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__cleanup__promise}{promise\_type}}\ =\ \mbox{\hyperlink{structunifex_1_1__cleanup__promise}{\_cleanup\_promise}}<Ts...>;}
+\DoxyCodeLine{00259\ }
+\DoxyCodeLine{00260\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task}}(coro::coroutine\_handle<promise\_type>\ coro)\ noexcept}
+\DoxyCodeLine{00261\ \ \ \ \ :\ continuation\_(coro)\ \{\}}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00263\ \ \ \mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task}}(\mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task}}\&\&\ that)\ noexcept}
+\DoxyCodeLine{00264\ \ \ \ \ :\ continuation\_(std::exchange(that.continuation\_,\ \{\}))\ \{\}}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \ \ \mbox{\hyperlink{structunifex_1_1__cleanup__task}{\string~\_cleanup\_task}}()\ \{}
+\DoxyCodeLine{00267\ \ \ \ \ UNIFEX\_ASSERT(!continuation\_);}
+\DoxyCodeLine{00268\ \ \ \}}
+\DoxyCodeLine{00269\ }
+\DoxyCodeLine{00270\ \ \ \textcolor{keywordtype}{bool}\ await\_ready()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00271\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00272\ \ \ \}}
+\DoxyCodeLine{00273\ }
+\DoxyCodeLine{00274\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise>}
+\DoxyCodeLine{00275\ \ \ \textcolor{keywordtype}{bool}\ await\_suspend\_impl\_(Promise\&\ parent)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00276\ \ \ \ \ continuation\_.promise().continuation\_\ =}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ exchange\_continuation(parent,\ continuation\_);}
+\DoxyCodeLine{00278\ \ \ \ \ continuation\_.promise().sched\_\ =\ get\_scheduler(parent);}
+\DoxyCodeLine{00279\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00280\ \ \ \}}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise>}
+\DoxyCodeLine{00283\ \ \ \textcolor{keywordtype}{bool}\ await\_suspend(coro::coroutine\_handle<Promise>\ parent)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00284\ \ \ \ \ \textcolor{keywordflow}{return}\ await\_suspend\_impl\_(parent.promise());}
+\DoxyCodeLine{00285\ \ \ \}}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \ \ std::tuple<Ts\&...>\ await\_resume()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00288\ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(std::exchange(continuation\_,\ \{\}).promise().args\_);}
+\DoxyCodeLine{00289\ \ \ \}}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<blocking>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task}}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00292\ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::always\_inline;}
+\DoxyCodeLine{00293\ \ \ \}}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00296\ \ \ \mbox{\hyperlink{structunifex_1_1__ch_1_1continuation__handle}{continuation\_handle<promise\_type>}}\ continuation\_;}
+\DoxyCodeLine{00297\ \};}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \textcolor{keyword}{namespace\ }\_at\_coroutine\_exit\ \{}
+\DoxyCodeLine{00300\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__at__coroutine__exit_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00301\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00302\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Action,\ \textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00303\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task}}<Ts...>\ at\_coroutine\_exit(Action\ action,\ Ts...\ ts)\ \{}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \textcolor{keyword}{co\_await}\ std::move(action)(std::move(ts)...);}
+\DoxyCodeLine{00305\ \ \ \ \ \}}
+\DoxyCodeLine{00306\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00307\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Action,\ \textcolor{keyword}{typename}...\ Ts)}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ callable<std::decay\_t<Action>,\ std::decay\_t<Ts>...>)}
+\DoxyCodeLine{00309\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__cleanup__task}{\_cleanup\_task<std::decay\_t<Ts>}}...>\ operator()(Action\&\&\ action,\ Ts\&\&...\ ts)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \_fn::at\_coroutine\_exit((Action\&\&)\ action,\ (Ts\&\&)\ ts...);}
+\DoxyCodeLine{00311\ \ \ \ \ \}}
+\DoxyCodeLine{00312\ \ \ \}\ at\_coroutine\_exit\{\};}
+\DoxyCodeLine{00313\ \}\ \textcolor{comment}{//\ namespace\ \_at\_coroutine\_exit}}
+\DoxyCodeLine{00314\ }
+\DoxyCodeLine{00315\ \textcolor{keyword}{using\ }\_at\_coroutine\_exit::at\_coroutine\_exit;}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00319\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

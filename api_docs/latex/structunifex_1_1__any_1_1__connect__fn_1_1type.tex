@@ -1,0 +1,67 @@
+\doxysection{\+\_\+connect\+\_\+fn\texorpdfstring{$<$}{<} CPOs, Values \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__any_1_1__connect__fn_1_1type}{}\label{structunifex_1_1__any_1_1__connect__fn_1_1type}\index{\_connect\_fn$<$ CPOs, Values $>$::type@{\_connect\_fn$<$ CPOs, Values $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__any_1_1__connect__fn_1_1type_afecb99ccbe8ab0bbd95256fd2cccb0eb}\label{structunifex_1_1__any_1_1__connect__fn_1_1type_afecb99ccbe8ab0bbd95256fd2cccb0eb} 
+using {\bfseries \+\_\+rec\+\_\+ref\+\_\+t} = \+\_\+receiver\+\_\+ref$<$ CPOs, Values... $>$
+\item 
+\Hypertarget{structunifex_1_1__any_1_1__connect__fn_1_1type_a8f72944997d028968b0f45eeaa4b2a73}\label{structunifex_1_1__any_1_1__connect__fn_1_1type_a8f72944997d028968b0f45eeaa4b2a73} 
+using {\bfseries type\+\_\+erased\+\_\+signature\+\_\+t} = \+\_\+operation\+\_\+state(\mbox{\hyperlink{structunifex_1_1this__}{this\+\_\+}} \&\&, \+\_\+rec\+\_\+ref\+\_\+t)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__any_1_1__connect__fn_1_1type_a1e1a30dd76ef67b928f38834db9603ae}\label{structunifex_1_1__any_1_1__connect__fn_1_1type_a1e1a30dd76ef67b928f38834db9603ae} 
+{\bfseries template} (typename Sender)() friend \+\_\+operation\+\_\+state tag\+\_\+invoke(const \mbox{\hyperlink{structunifex_1_1__any_1_1__connect__fn_1_1type}{type}} \&
+\item 
+\Hypertarget{structunifex_1_1__any_1_1__connect__fn_1_1type_afb11a6d7231da7004e53dfa054bed361}\label{structunifex_1_1__any_1_1__connect__fn_1_1type_afb11a6d7231da7004e53dfa054bed361} 
+{\bfseries template} (typename Self)() \+\_\+operation\+\_\+state operator()(Self \&\&s
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__any_1_1__connect__fn_1_1type_a4bd0d20f25af1ee6d5d4fc2b9e898c87}\label{structunifex_1_1__any_1_1__connect__fn_1_1type_a4bd0d20f25af1ee6d5d4fc2b9e898c87} 
+Sender \&\& {\bfseries s}
+\item 
+Sender \+\_\+rec\+\_\+ref\+\_\+t \mbox{\hyperlink{structunifex_1_1__any_1_1__connect__fn_1_1type_a7686153412a01fe4fff6a15e1ebd262f}{r}}
+\item 
+\Hypertarget{structunifex_1_1__any_1_1__connect__fn_1_1type_a87df6df88e7776d70d5fda8f99c2d4cc}\label{structunifex_1_1__any_1_1__connect__fn_1_1type_a87df6df88e7776d70d5fda8f99c2d4cc} 
+return {\bfseries \+\_\+operation\+\_\+state} \{std\+::in\+\_\+place\+\_\+type\+\_\+t$<$Op$>$\{\}, \mbox{\hyperlink{structunifex_1_1__any_1_1__rvo}{\+\_\+rvo}}\{(Sender \&\&) s, std\+::move(r)\}\}
+\item 
+\+\_\+rec\+\_\+ref\+\_\+t r \mbox{\hyperlink{structunifex_1_1__any_1_1__connect__fn_1_1type_a67775b467c9b47bc15c1289fa98310f7}{const}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__any_1_1__connect__fn_1_1type_a67775b467c9b47bc15c1289fa98310f7}\label{structunifex_1_1__any_1_1__connect__fn_1_1type_a67775b467c9b47bc15c1289fa98310f7} 
+\index{\_connect\_fn$<$ CPOs, Values $>$::type@{\_connect\_fn$<$ CPOs, Values $>$::type}!const@{const}}
+\index{const@{const}!\_connect\_fn$<$ CPOs, Values $>$::type@{\_connect\_fn$<$ CPOs, Values $>$::type}}
+\doxysubsubsection{\texorpdfstring{const}{const}}
+{\footnotesize\ttfamily template$<$typename CPOs , typename... Values$>$ \\
+\+\_\+rec\+\_\+ref\+\_\+t r const}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ tag\_invoke(*\textcolor{keyword}{this},\ (Self\&\&)\ s,\ std::move(r))}
+
+\end{DoxyCode}
+\Hypertarget{structunifex_1_1__any_1_1__connect__fn_1_1type_a7686153412a01fe4fff6a15e1ebd262f}\label{structunifex_1_1__any_1_1__connect__fn_1_1type_a7686153412a01fe4fff6a15e1ebd262f} 
+\index{\_connect\_fn$<$ CPOs, Values $>$::type@{\_connect\_fn$<$ CPOs, Values $>$::type}!r@{r}}
+\index{r@{r}!\_connect\_fn$<$ CPOs, Values $>$::type@{\_connect\_fn$<$ CPOs, Values $>$::type}}
+\doxysubsubsection{\texorpdfstring{r}{r}}
+{\footnotesize\ttfamily template$<$typename CPOs , typename... Values$>$ \\
+Sender \+\_\+rec\+\_\+ref\+\_\+t r}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{using\ }Op\ =\ connect\_result\_t<Sender,\ \_rec\_ref\_t>}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/any\+\_\+sender\+\_\+of.\+hpp\end{DoxyCompactItemize}

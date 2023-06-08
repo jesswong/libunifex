@@ -1,0 +1,110 @@
+\doxysection{range\+\_\+stream.\+hpp}
+\hypertarget{range__stream_8hpp_source}{}\label{range__stream_8hpp_source}\index{include/unifex/range\_stream.hpp@{include/unifex/range\_stream.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/blocking.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/ready\_done\_sender.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/stream\_concepts.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00029\ \textcolor{keyword}{namespace\ }\_range\ \{}
+\DoxyCodeLine{00030\ \textcolor{keyword}{struct\ }stream;}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00033\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__range_1_1__op}{\_op}}\ \{}
+\DoxyCodeLine{00034\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__range_1_1__op_1_1type}{type}};}
+\DoxyCodeLine{00035\ \};}
+\DoxyCodeLine{00036\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00037\ \textcolor{keyword}{using\ }operation\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__range_1_1__op}{\_op<remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00040\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__range_1_1__op}{\_op}}<Receiver>::\mbox{\hyperlink{structunifex_1_1__range_1_1__op_1_1type}{type}}\ \{}
+\DoxyCodeLine{00041\ \ \ \mbox{\hyperlink{structunifex_1_1__range_1_1stream}{stream}}\&\ stream\_;}
+\DoxyCodeLine{00042\ \ \ Receiver\ receiver\_;}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00045\ \};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__range_1_1next__sender}{next\_sender}}\ \{}
+\DoxyCodeLine{00048\ \ \ \mbox{\hyperlink{structunifex_1_1__range_1_1stream}{stream}}\&\ stream\_;}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00053\ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<int>>;}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00056\ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<>;}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ tag\_invoke(}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ tag\_t<blocking>,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__range_1_1stream}{stream}}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordflow}{return}\ blocking\_kind::always\_inline;}
+\DoxyCodeLine{00064\ \ \ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00067\ \ \ operation<Receiver>\ connect(Receiver\&\&\ receiver)\ \&\&\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordflow}{return}\ operation<Receiver>\{stream\_,\ (Receiver\ \&\&)\ receiver\};}
+\DoxyCodeLine{00069\ \ \ \}}
+\DoxyCodeLine{00070\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00071\ \ \ \textcolor{keywordtype}{void}\ connect(Receiver\&\&\ receiver)\ \textcolor{keyword}{const}\&\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00072\ \};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__range_1_1stream}{stream}}\ \{}
+\DoxyCodeLine{00075\ \ \ \textcolor{keywordtype}{int}\ next\_;}
+\DoxyCodeLine{00076\ \ \ \textcolor{keywordtype}{int}\ max\_;}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__range_1_1stream}{stream}}(\textcolor{keywordtype}{int}\ max)\ :\ next\_(0),\ max\_(max)\ \{\}}
+\DoxyCodeLine{00079\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__range_1_1stream}{stream}}(\textcolor{keywordtype}{int}\ start,\ \textcolor{keywordtype}{int}\ max)\ :\ next\_(start),\ max\_(max)\ \{\}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{structunifex_1_1__range_1_1next__sender}{next\_sender}}\ tag\_invoke(tag\_t<next>,\ \mbox{\hyperlink{structunifex_1_1__range_1_1stream}{stream}}\&\ s)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__range_1_1next__sender}{next\_sender}}\{s\};}
+\DoxyCodeLine{00083\ \ \ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{structunifex_1_1__ready__done_1_1sender}{ready\_done\_sender}}\ tag\_invoke(tag\_t<cleanup>,\ \mbox{\hyperlink{structunifex_1_1__range_1_1stream}{stream}}\&)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordflow}{return}\ \{\};}
+\DoxyCodeLine{00087\ \ \ \}}
+\DoxyCodeLine{00088\ \};}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00091\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{structunifex_1_1__range_1_1__op}{\_op<Receiver>::type::start}}()\ noexcept\ \{}
+\DoxyCodeLine{00092\ \ \ \textcolor{keywordflow}{if}\ (stream\_.next\_\ <\ stream\_.max\_)\ \{}
+\DoxyCodeLine{00093\ \ \ \ \ unifex::set\_value(std::move(receiver\_),\ stream\_.next\_++);}
+\DoxyCodeLine{00094\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ unifex::set\_done(std::move(receiver\_));}
+\DoxyCodeLine{00096\ \ \ \}}
+\DoxyCodeLine{00097\ \}}
+\DoxyCodeLine{00098\ \}\ \textcolor{comment}{//\ namespace\ \_range}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{keyword}{using\ }range\_stream\ =\ \_range::stream;}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

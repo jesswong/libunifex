@@ -1,0 +1,47 @@
+\doxysection{\+\_\+fn Struct Reference}
+\hypertarget{structunifex_1_1__for__each_1_1__fn}{}\label{structunifex_1_1__for__each_1_1__fn}\index{\_fn@{\_fn}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__for__each_1_1__fn_ae9da12a9fae0e87aa0b70bc06a664b57}\label{structunifex_1_1__for__each_1_1__fn_ae9da12a9fae0e87aa0b70bc06a664b57} 
+{\bfseries template} (typename Stream, typename Func)() auto operator()(Stream \&\&stream
+\item 
+\Hypertarget{structunifex_1_1__for__each_1_1__fn_ad86041968a601b83c304bdb3991517a8}\label{structunifex_1_1__for__each_1_1__fn_ad86041968a601b83c304bdb3991517a8} 
+Func \&\&func const {\bfseries noexcept} (is\+\_\+nothrow\+\_\+tag\+\_\+invocable\+\_\+v$<$ \mbox{\hyperlink{structunifex_1_1__for__each_1_1__fn}{\+\_\+fn}}, Stream, Func $>$) -\/$>$ \+\_\+result\+\_\+t$<$ Stream, Func $>$
+\item 
+\Hypertarget{structunifex_1_1__for__each_1_1__fn_a81d726c80d57a8240c4a183188b681b8}\label{structunifex_1_1__for__each_1_1__fn_a81d726c80d57a8240c4a183188b681b8} 
+{\bfseries template} (typename Stream, typename Func)() auto operator()(Stream \&\&stream
+\item 
+\Hypertarget{structunifex_1_1__for__each_1_1__fn_a2041134f0251ab2fbd150bc136421cf4}\label{structunifex_1_1__for__each_1_1__fn_a2041134f0251ab2fbd150bc136421cf4} 
+{\footnotesize template$<$typename Func $>$ }\\constexpr auto {\bfseries operator()} (Func \&\&f) const noexcept(is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ tag\+\_\+t$<$ bind\+\_\+back $>$, \mbox{\hyperlink{structunifex_1_1__for__each_1_1__fn}{\+\_\+fn}}, Func $>$) -\/$>$ bind\+\_\+back\+\_\+result\+\_\+t$<$ \mbox{\hyperlink{structunifex_1_1__for__each_1_1__fn}{\+\_\+fn}}, Func $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Func \&\&func const \mbox{\hyperlink{structunifex_1_1__for__each_1_1__fn_a283e47da4d83dd4b2191dd7bdaec05ca}{\+\_\+result\+\_\+t$<$ Stream, Func $>$}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__for__each_1_1__fn_a283e47da4d83dd4b2191dd7bdaec05ca}\label{structunifex_1_1__for__each_1_1__fn_a283e47da4d83dd4b2191dd7bdaec05ca} 
+\index{\_fn@{\_fn}!\_result\_t$<$ Stream, Func $>$@{\_result\_t$<$ Stream, Func $>$}}
+\index{\_result\_t$<$ Stream, Func $>$@{\_result\_t$<$ Stream, Func $>$}!\_fn@{\_fn}}
+\doxysubsubsection{\texorpdfstring{\_result\_t$<$ Stream, Func $>$}{\_result\_t< Stream, Func >}}
+{\footnotesize\ttfamily Func\&\& func const \+\_\+result\+\_\+t$<$ Stream, Func $>$}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keywordflow}{return}\ then(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ reduce\_stream(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ (Stream\ \&\&)\ stream,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ unit\{\},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__for__each_1_1__impl_1_1__map}{\_impl::\_map<remove\_cvref\_t<Func>}}>\{(Func\ \&\&)\ func\}),}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__for__each_1_1__impl_1_1__reduce}{\_impl::\_reduce}}\{\})}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/for\+\_\+each.\+hpp\end{DoxyCompactItemize}

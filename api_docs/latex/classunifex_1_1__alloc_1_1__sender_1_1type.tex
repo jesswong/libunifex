@@ -1,0 +1,58 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Sender \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__alloc_1_1__sender_1_1type}{}\label{classunifex_1_1__alloc_1_1__sender_1_1type}\index{\_sender$<$ Sender $>$::type@{\_sender$<$ Sender $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__alloc_1_1__sender_1_1type_aeb961c1e0be4bf05e19610eb83d9c27d}\label{classunifex_1_1__alloc_1_1__sender_1_1type_aeb961c1e0be4bf05e19610eb83d9c27d} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Sender, Variant, Tuple $>$
+\item 
+\Hypertarget{classunifex_1_1__alloc_1_1__sender_1_1type_aef07c0d33d9cfba147b6f2525a97f650}\label{classunifex_1_1__alloc_1_1__sender_1_1type_aef07c0d33d9cfba147b6f2525a97f650} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = sender\+\_\+error\+\_\+types\+\_\+t$<$ Sender, Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__alloc_1_1__sender_1_1type_a2762bbe60ec8990626d469254ff40c37}\label{classunifex_1_1__alloc_1_1__sender_1_1type_a2762bbe60ec8990626d469254ff40c37} 
+{\bfseries template} (typename Self, typename Receiver)(AND receiver$<$ Receiver $>$) friend auto tag\+\_\+invoke(tag\+\_\+t$<$ connect $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__alloc_1_1__sender_1_1type_ab8b00c1d621fc5b0e30957a912e567da}\label{classunifex_1_1__alloc_1_1__sender_1_1type_ab8b00c1d621fc5b0e30957a912e567da} 
+Self \&\& {\bfseries s}
+\item 
+Self Receiver \&\&r \mbox{\hyperlink{classunifex_1_1__alloc_1_1__sender_1_1type_a881a4fd88ef9f9774b5ff5a6cfe22427}{operation$<$ connect\+\_\+result\+\_\+t$<$ member\+\_\+t$<$ Self, Sender $>$, Receiver $>$, remove\+\_\+cvref\+\_\+t$<$ get\+\_\+allocator\+\_\+t$<$ Receiver $>$ $>$ $>$}}
+\item 
+\Hypertarget{classunifex_1_1__alloc_1_1__sender_1_1type_a6f920779b1fc9ef83458e7882ef0ff9f}\label{classunifex_1_1__alloc_1_1__sender_1_1type_a6f920779b1fc9ef83458e7882ef0ff9f} 
+Sender {\bfseries sender\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__alloc_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__alloc_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$Sender$>$\+::sends\+\_\+done
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classunifex_1_1__alloc_1_1__sender_1_1type_a881a4fd88ef9f9774b5ff5a6cfe22427}\label{classunifex_1_1__alloc_1_1__sender_1_1type_a881a4fd88ef9f9774b5ff5a6cfe22427} 
+\index{\_sender$<$ Sender $>$::type@{\_sender$<$ Sender $>$::type}!operation$<$ connect\_result\_t$<$ member\_t$<$ Self, Sender $>$, Receiver $>$, remove\_cvref\_t$<$ get\_allocator\_t$<$ Receiver $>$ $>$ $>$@{operation$<$ connect\_result\_t$<$ member\_t$<$ Self, Sender $>$, Receiver $>$, remove\_cvref\_t$<$ get\_allocator\_t$<$ Receiver $>$ $>$ $>$}}
+\index{operation$<$ connect\_result\_t$<$ member\_t$<$ Self, Sender $>$, Receiver $>$, remove\_cvref\_t$<$ get\_allocator\_t$<$ Receiver $>$ $>$ $>$@{operation$<$ connect\_result\_t$<$ member\_t$<$ Self, Sender $>$, Receiver $>$, remove\_cvref\_t$<$ get\_allocator\_t$<$ Receiver $>$ $>$ $>$}!\_sender$<$ Sender $>$::type@{\_sender$<$ Sender $>$::type}}
+\doxysubsubsection{\texorpdfstring{operation$<$ connect\_result\_t$<$ member\_t$<$ Self, Sender $>$, Receiver $>$, remove\_cvref\_t$<$ get\_allocator\_t$<$ Receiver $>$ $>$ $>$}{operation< connect\_result\_t< member\_t< Self, Sender >, Receiver >, remove\_cvref\_t< get\_allocator\_t< Receiver > > >}}
+{\footnotesize\ttfamily template$<$typename Sender $>$ \\
+Self Receiver\&\& r operation$<$ connect\+\_\+result\+\_\+t$<$ member\+\_\+t$<$ Self, Sender $>$, Receiver $>$, remove\+\_\+cvref\+\_\+t$<$ get\+\_\+allocator\+\_\+t$<$ Receiver $>$ $>$ $>$}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keywordflow}{return}\ operation<}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ connect\_result\_t<member\_t<Self,\ Sender>,\ Receiver>,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ remove\_cvref\_t<get\_allocator\_t<Receiver>>>\{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Self\&\&\textcolor{keyword}{>}(s).sender\_,\ (Receiver\ \&\&)\ r\}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/allocate.\+hpp\end{DoxyCompactItemize}

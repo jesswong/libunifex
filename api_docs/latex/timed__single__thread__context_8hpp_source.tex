@@ -1,0 +1,317 @@
+\doxysection{timed\+\_\+single\+\_\+thread\+\_\+context.\+hpp}
+\hypertarget{timed__single__thread__context_8hpp_source}{}\label{timed__single__thread__context_8hpp_source}\index{include/unifex/timed\_single\_thread\_context.hpp@{include/unifex/timed\_single\_thread\_context.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/get\_stop\_token.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/manual\_lifetime.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/stop\_token\_concepts.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <condition\_variable>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00033\ \textcolor{keyword}{class\ }timed\_single\_thread\_context;}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{namespace\ }\_timed\_single\_thread\_context\ \{}
+\DoxyCodeLine{00036\ \ \ \textcolor{keyword}{using\ }clock\_t\ =\ std::chrono::steady\_clock;}
+\DoxyCodeLine{00037\ \ \ \textcolor{keyword}{using\ }time\_point\ =\ \textcolor{keyword}{typename}\ clock\_t::time\_point;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}\ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{using\ }execute\_fn\ =\ void(\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}*)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}(\mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}\&\ context,\ execute\_fn*\ execute)\ noexcept}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ :\ context\_(\&context),\ execute\_(execute)\ \{\}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}*\ \textcolor{keyword}{const}\ context\_;}
+\DoxyCodeLine{00046\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}*\ next\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00047\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}**\ prevNextPtr\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00048\ \ \ \ \ execute\_fn*\ execute\_;}
+\DoxyCodeLine{00049\ \ \ \ \ time\_point\ dueTime\_;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{void}\ execute()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ execute\_(\textcolor{keyword}{this});}
+\DoxyCodeLine{00053\ \ \ \ \ \}}
+\DoxyCodeLine{00054\ \ \ \};}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1cancel__callback}{cancel\_callback}}\ \{}
+\DoxyCodeLine{00057\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}*\ \textcolor{keyword}{const}\ task\_;}
+\DoxyCodeLine{00058\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1cancel__callback}{cancel\_callback}}(\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}*\ task)\ noexcept}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ :\ task\_(task)\ \{\}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keywordtype}{void}\ operator()()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00063\ \ \ \};}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00068\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__schedule__after__sender}{\_schedule\_after\_sender}}\ \{}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__schedule__after__sender_1_1type}{type}};}
+\DoxyCodeLine{00070\ \ \ \};}
+\DoxyCodeLine{00071\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00072\ \ \ \textcolor{keyword}{using\ }schedule\_after\_sender\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__schedule__after__sender_1_1type}{\_schedule\_after\_sender<Duration>::type}};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00075\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__after__op}{\_after\_op}}\ \{}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__after__op_1_1type}{type}};}
+\DoxyCodeLine{00077\ \ \ \};}
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00079\ \ \ \textcolor{keyword}{using\ }after\_operation\ =}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__after__op}{\_after\_op<Duration,\ remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00083\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__after__op}{\_after\_op}}<Duration,\ Receiver>::\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__after__op_1_1type}{type}}\ final\ :\ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}\ \{}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keyword}{friend}\ schedule\_after\_sender<Duration>;}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__after__op_1_1type}{type}}(}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}\&\ context,}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ Duration\ duration,}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ Receiver2\&\&\ receiver)}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ :\ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}(context,\ \&type::execute\_impl),}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ duration\_(duration),}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ receiver\_((Receiver2\ \&\&)\ receiver)\ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ UNIFEX\_ASSERT(context\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00095\ \ \ \ \ \}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ execute\_impl(\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}*\ t)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ self\ =\ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__after__op_1_1type}{type}}*\textcolor{keyword}{>}(t);}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ self.cancelCallback\_.destruct();}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (is\_stop\_never\_possible\_v<}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ stop\_token\_type\_t<Receiver\&>>)\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ unifex::set\_value(\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(self.receiver\_));}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (get\_stop\_token(self.receiver\_).stop\_requested())\ \{}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ unifex::set\_done(\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(self.receiver\_));}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ unifex::set\_value(\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(self.receiver\_));}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00110\ \ \ \ \ \}}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ Duration\ duration\_;}
+\DoxyCodeLine{00113\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00114\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime}}<\textcolor{keyword}{typename}\ stop\_token\_type\_t<}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ Receiver\&>::template\ callback\_type<cancel\_callback>>}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ cancelCallback\_;}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00120\ \ \ \};}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration>}
+\DoxyCodeLine{00123\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__schedule__after__sender}{\_schedule\_after\_sender}}<Duration>::\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__schedule__after__sender_1_1type}{type}}\ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}};}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__schedule__after__sender_1_1type}{type}}(}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}\&\ context,}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ Duration\ duration)\ noexcept}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ :\ context\_(\&context),\ duration\_(duration)\ \{\}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}*\ context\_;}
+\DoxyCodeLine{00132\ \ \ \ \ Duration\ duration\_;}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<>;}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00146\ \ \ \ \ after\_operation<Duration,\ Receiver>\ connect(Receiver\&\&\ receiver)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ after\_operation<Duration,\ Receiver>\{}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ *context\_,\ duration\_,\ (Receiver\ \&\&)\ receiver\};}
+\DoxyCodeLine{00149\ \ \ \ \ \}}
+\DoxyCodeLine{00150\ \ \ \};}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00153\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__at__op}{\_at\_op}}\ \{}
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__at__op_1_1type}{type}};}
+\DoxyCodeLine{00155\ \ \ \};}
+\DoxyCodeLine{00156\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00157\ \ \ \textcolor{keyword}{using\ }at\_operation\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__at__op}{\_at\_op<remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00160\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__at__op}{\_at\_op}}<Receiver>::\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__at__op_1_1type}{type}}\ final\ :\ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}\ \{}
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ execute\_impl(\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}*\ p)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ self\ =\ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__at__op_1_1type}{type}}*\textcolor{keyword}{>}(p);}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ self.cancelCallback\_.destruct();}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (is\_stop\_never\_possible\_v<}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ stop\_token\_type\_t<Receiver\&>>)\ \{}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ unifex::set\_value(\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(self.receiver\_));}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (get\_stop\_token(self.receiver\_).stop\_requested())\ \{}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ unifex::set\_done(\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(self.receiver\_));}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ unifex::set\_value(\textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(self.receiver\_));}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00174\ \ \ \ \ \}}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Receiver\ receiver\_;}
+\DoxyCodeLine{00177\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime}}<\textcolor{keyword}{typename}\ stop\_token\_type\_t<}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ Receiver\&>::template\ callback\_type<cancel\_callback>>}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ cancelCallback\_;}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1__at__op_1_1type}{type}}(}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}\&\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}},}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ clock\_t::time\_point\ dueTime,}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ Receiver2\&\&\ receiver)}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ :\ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}(\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}},\ \&type::execute\_impl)}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ ,\ receiver\_((Receiver2\ \&\&)\ receiver)\ \{}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ this-\/>dueTime\_\ =\ dueTime;}
+\DoxyCodeLine{00190\ \ \ \ \ \}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keywordtype}{void}\ start()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00193\ \ \ \};}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1schedule__at__sender}{schedule\_at\_sender}}\ \{}
+\DoxyCodeLine{00196\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}};}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1schedule__at__sender}{schedule\_at\_sender}}(}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}\&\ context,}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ time\_point\ dueTime)}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ :\ context\_(\&context),\ dueTime\_(dueTime)\ \{\}}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}*\ context\_;}
+\DoxyCodeLine{00204\ \ \ \ \ time\_point\ dueTime\_;}
+\DoxyCodeLine{00205\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00209\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<>;}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00217\ \ \ \ \ at\_operation<remove\_cvref\_t<Receiver>>\ connect(Receiver\&\&\ receiver)\ \{}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ at\_operation<remove\_cvref\_t<Receiver>>\{}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ *context\_,\ dueTime\_,\ (Receiver\ \&\&)\ receiver\};}
+\DoxyCodeLine{00220\ \ \ \ \ \}}
+\DoxyCodeLine{00221\ \ \ \};}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}}\ \{}
+\DoxyCodeLine{00224\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}};}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}}(\mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}\&\ context)\ noexcept}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ :\ context\_(\&context)\ \{\}}
+\DoxyCodeLine{00228\ }
+\DoxyCodeLine{00229\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator==(\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}}\ a,\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}}\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ a.context\_\ ==\ b.context\_;}
+\DoxyCodeLine{00231\ \ \ \ \ \}}
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator!=(\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}}\ a,\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}}\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ a.context\_\ !=\ b.context\_;}
+\DoxyCodeLine{00234\ \ \ \ \ \}}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}*\ context\_;}
+\DoxyCodeLine{00237\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00238\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rep,\ \textcolor{keyword}{typename}\ Ratio>}
+\DoxyCodeLine{00239\ \ \ \ \ \textcolor{keyword}{auto}\ schedule\_after(std::chrono::duration<Rep,\ Ratio>\ delay)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ -\/>\ schedule\_after\_sender<std::chrono::duration<Rep,\ Ratio>>\ \{}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ schedule\_after\_sender<std::chrono::duration<Rep,\ Ratio>>\{}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ *context\_,\ delay\};}
+\DoxyCodeLine{00243\ \ \ \ \ \}}
+\DoxyCodeLine{00244\ }
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{keyword}{auto}\ schedule\_at(clock\_t::time\_point\ dueTime)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1schedule__at__sender}{schedule\_at\_sender}}\{*context\_,\ dueTime\};}
+\DoxyCodeLine{00247\ \ \ \ \ \}}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \ \ \ \ \textcolor{keyword}{auto}\ schedule()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ schedule\_after(std::chrono::milliseconds\{0\});}
+\DoxyCodeLine{00251\ \ \ \ \ \}}
+\DoxyCodeLine{00252\ \ \ \};}
+\DoxyCodeLine{00253\ \}\ \textcolor{comment}{//\ namespace\ \_timed\_single\_thread\_context}}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00255\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}\ \{}
+\DoxyCodeLine{00256\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}}\ =\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{\_timed\_single\_thread\_context::scheduler}};}
+\DoxyCodeLine{00257\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}\ =\ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{\_timed\_single\_thread\_context::task\_base}};}
+\DoxyCodeLine{00258\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1cancel__callback}{cancel\_callback}}\ =\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1cancel__callback}{\_timed\_single\_thread\_context::cancel\_callback}};}
+\DoxyCodeLine{00259\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1cancel__callback}{cancel\_callback}};}
+\DoxyCodeLine{00260\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}};}
+\DoxyCodeLine{00261\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00262\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__after__op}{\_timed\_single\_thread\_context::\_after\_op}};}
+\DoxyCodeLine{00263\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00264\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1__at__op}{\_timed\_single\_thread\_context::\_at\_op}};}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \ \ \textcolor{keywordtype}{void}\ enqueue(\mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}*\ task)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00267\ \ \ \textcolor{keywordtype}{void}\ run();}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ \ \ std::mutex\ mutex\_;}
+\DoxyCodeLine{00270\ \ \ std::condition\_variable\ cv\_;}
+\DoxyCodeLine{00271\ }
+\DoxyCodeLine{00272\ \ \ \textcolor{comment}{//\ Head\ of\ a\ linked-\/list\ in\ ascending\ order\ of\ due-\/time.}}
+\DoxyCodeLine{00273\ \ \ \mbox{\hyperlink{structunifex_1_1__timed__single__thread__context_1_1task__base}{task\_base}}*\ head\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00274\ \ \ \textcolor{keywordtype}{bool}\ stop\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \ \ std::thread\ thread\_;}
+\DoxyCodeLine{00277\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00278\ \ \ \textcolor{keyword}{using\ }clock\_t\ =\ \_timed\_single\_thread\_context::clock\_t;}
+\DoxyCodeLine{00279\ \ \ \textcolor{keyword}{using\ }time\_point\ =\ \_timed\_single\_thread\_context::time\_point;}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{timed\_single\_thread\_context}}();}
+\DoxyCodeLine{00282\ \ \ \mbox{\hyperlink{classunifex_1_1timed__single__thread__context}{\string~timed\_single\_thread\_context}}();}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ \ \ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}}\ get\_scheduler()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00285\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classunifex_1_1__timed__single__thread__context_1_1scheduler}{scheduler}}\{*\textcolor{keyword}{this}\};}
+\DoxyCodeLine{00286\ \ \ \}}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \ \ std::thread::id\ get\_thread\_id()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00289\ \ \ \ \ \textcolor{keywordflow}{return}\ thread\_.get\_id();}
+\DoxyCodeLine{00290\ \ \ \}}
+\DoxyCodeLine{00291\ \};}
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \textcolor{keyword}{namespace\ }\_timed\_single\_thread\_context\ \{}
+\DoxyCodeLine{00294\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Duration,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00295\ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \_after\_op<Duration,\ Receiver>::type::start()\ noexcept\ \{}
+\DoxyCodeLine{00296\ \ \ \ \ this-\/>dueTime\_\ =\ clock\_t::now()\ +\ duration\_;}
+\DoxyCodeLine{00297\ \ \ \ \ cancelCallback\_.construct(}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ get\_stop\_token(receiver\_),\ cancel\_callback\{\textcolor{keyword}{this}\});}
+\DoxyCodeLine{00299\ \ \ \ \ context\_-\/>enqueue(\textcolor{keyword}{this});}
+\DoxyCodeLine{00300\ \ \ \}}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00303\ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \_at\_op<Receiver>::type::start()\ noexcept\ \{}
+\DoxyCodeLine{00304\ \ \ \ \ cancelCallback\_.construct(}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ get\_stop\_token(receiver\_),\ cancel\_callback\{\textcolor{keyword}{this}\});}
+\DoxyCodeLine{00306\ \ \ \ \ this-\/>context\_-\/>enqueue(\textcolor{keyword}{this});}
+\DoxyCodeLine{00307\ \ \ \}}
+\DoxyCodeLine{00308\ \}\ \textcolor{comment}{//\ namespace\ \_timed\_single\_thread\_context}}
+\DoxyCodeLine{00309\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00310\ }
+\DoxyCodeLine{00311\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

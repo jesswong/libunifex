@@ -1,0 +1,292 @@
+\doxysection{inplace\+\_\+stop\+\_\+token.\+hpp}
+\hypertarget{inplace__stop__token_8hpp_source}{}\label{inplace__stop__token_8hpp_source}\index{include/unifex/inplace\_stop\_token.hpp@{include/unifex/inplace\_stop\_token.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/manual\_lifetime.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/spin\_wait.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/std\_concepts.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/stop\_token\_concepts.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/type\_index.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{class\ }inplace\_stop\_source;}
+\DoxyCodeLine{00035\ \textcolor{keyword}{class\ }inplace\_stop\_token;}
+\DoxyCodeLine{00036\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00037\ \textcolor{keyword}{class\ }inplace\_stop\_callback;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}\ \{}
+\DoxyCodeLine{00040\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00041\ \ \ \textcolor{keywordtype}{void}\ execute()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ this-\/>execute\_(\textcolor{keyword}{this});}
+\DoxyCodeLine{00043\ \ \ \}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#ifndef\ NDEBUG}}
+\DoxyCodeLine{00046\ \ \ \textcolor{keywordtype}{char}\ \textcolor{keyword}{const}*\ type\_name()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordflow}{return}\ type\_name\_;}
+\DoxyCodeLine{00048\ \ \ \}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{using\ }execute\_fn\ =\ void(\mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}*\ cb)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#ifndef\ NDEBUG}}
+\DoxyCodeLine{00055\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}(\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}*\ source,\ execute\_fn*\ execute,\ \textcolor{keywordtype}{char}\ \textcolor{keyword}{const}*\ type\_name)\ noexcept}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ :\ source\_(source),\ execute\_(execute),\ type\_name\_(type\_name)\ \{\}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}(\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}*\ source,\ execute\_fn*\ execute)\ noexcept}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ :\ source\_(source),\ execute\_(execute)\ \{\}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \textcolor{keywordtype}{void}\ register\_callback()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}};}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}*\ source\_;}
+\DoxyCodeLine{00067\ \ \ execute\_fn*\ execute\_;}
+\DoxyCodeLine{00068\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}*\ next\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00069\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}**\ prevPtr\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00070\ \ \ \textcolor{keywordtype}{bool}*\ removedDuringCallback\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00071\ \ \ std::atomic<bool>\ callbackCompleted\_\{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#ifndef\ NDEBUG}}
+\DoxyCodeLine{00073\ \ \ \textcolor{keywordtype}{char}\ \textcolor{keyword}{const}*\ type\_name\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00075\ \};}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\ \{}
+\DoxyCodeLine{00078\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00079\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}()\ \textcolor{keyword}{noexcept}\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{\string~inplace\_stop\_source}}();}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00084\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}(\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00085\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\&\ operator=(\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00086\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \textcolor{keywordtype}{bool}\ request\_stop()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ get\_token()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \textcolor{keywordtype}{bool}\ stop\_requested()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordflow}{return}\ (state\_.load(std::memory\_order\_acquire)\ \&\ stop\_requested\_flag)\ !=\ 0;}
+\DoxyCodeLine{00094\ \ \ \}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00097\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}};}
+\DoxyCodeLine{00098\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}};}
+\DoxyCodeLine{00099\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00100\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__callback}{inplace\_stop\_callback}};}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ std::uint8\_t\ lock()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00103\ \ \ \textcolor{keywordtype}{void}\ unlock(std::uint8\_t\ oldState)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \textcolor{keywordtype}{bool}\ try\_lock\_unless\_stop\_requested(\textcolor{keywordtype}{bool}\ setStopRequested)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \textcolor{keywordtype}{bool}\ try\_add\_callback(\mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}*\ callback)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \textcolor{keywordtype}{void}\ remove\_callback(\mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}*\ callback)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ std::uint8\_t\ stop\_requested\_flag\ =\ 1;}
+\DoxyCodeLine{00112\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ std::uint8\_t\ locked\_flag\ =\ 2;}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ std::atomic<std::uint8\_t>\ state\_\{0\};}
+\DoxyCodeLine{00115\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}*\ callbacks\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00116\ \ \ std::thread::id\ notifyingThreadId\_;}
+\DoxyCodeLine{00117\ \};}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ \{}
+\DoxyCodeLine{00120\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00121\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00122\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__callback}{callback\_type}}\ =\ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback}{inplace\_stop\_callback<F>}};}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}()\ noexcept\ :\ source\_(\textcolor{keyword}{nullptr})\ \{\}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\&\ other)\ \textcolor{keyword}{noexcept}\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\&\ other)\ \textcolor{keyword}{noexcept}\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \ \ \textcolor{keywordtype}{bool}\ stop\_requested()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keywordflow}{return}\ source\_\ !=\ \textcolor{keyword}{nullptr}\ \&\&\ source\_-\/>stop\_requested();}
+\DoxyCodeLine{00132\ \ \ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \textcolor{keywordtype}{bool}\ stop\_possible()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keywordflow}{return}\ source\_\ !=\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00136\ \ \ \}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \textcolor{keywordtype}{void}\ swap(\mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\&\ other)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00139\ \ \ \ \ std::swap(source\_,\ other.source\_);}
+\DoxyCodeLine{00140\ \ \ \}}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\&\ a,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\&\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keywordflow}{return}\ a.source\_\ ==\ b.source\_;}
+\DoxyCodeLine{00144\ \ \ \}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\&\ a,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\&\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keywordflow}{return}\ !(a\ ==\ b);}
+\DoxyCodeLine{00148\ \ \ \}}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00151\ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}};}
+\DoxyCodeLine{00152\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00153\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__callback}{inplace\_stop\_callback}};}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}(\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}*\ source)\ noexcept}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ :\ source\_(source)\ \{\}}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}*\ source\_;}
+\DoxyCodeLine{00159\ \};}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \textcolor{keyword}{inline}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ inplace\_stop\_source::get\_token()\ noexcept\ \{}
+\DoxyCodeLine{00162\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\{\textcolor{keyword}{this}\};}
+\DoxyCodeLine{00163\ \}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00166\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__callback}{inplace\_stop\_callback}}\ final\ :\ \textcolor{keyword}{private}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}\ \{}
+\DoxyCodeLine{00167\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00168\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ T\ =\ F)}
+\DoxyCodeLine{00169\ \ \ \ \ (\textcolor{keyword}{requires}\ convertible\_to<T,\ F>)}
+\DoxyCodeLine{00170\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback}{inplace\_stop\_callback}}(\mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ token,\ T\&\&\ func)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<F,\ T>)}
+\DoxyCodeLine{00172\ \#ifndef\ NDEBUG}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ :\ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}(token.source\_,\ \&inplace\_stop\_callback::execute\_impl,\ unifex::type\_id<F>().name())}
+\DoxyCodeLine{00174\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ :\ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}(token.source\_,\ \&inplace\_stop\_callback::execute\_impl)}
+\DoxyCodeLine{00176\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ ,\ func\_((T\&\&)\ func)\ \{}
+\DoxyCodeLine{00178\ \ \ \ \ this-\/>register\_callback();}
+\DoxyCodeLine{00179\ \ \ \}}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__callback}{\string~inplace\_stop\_callback}}()\ \{}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keywordflow}{if}\ (source\_\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ source\_-\/>remove\_callback(\textcolor{keyword}{this});}
+\DoxyCodeLine{00184\ \ \ \ \ \}}
+\DoxyCodeLine{00185\ \ \ \}}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00188\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ execute\_impl(\mbox{\hyperlink{classunifex_1_1inplace__stop__callback__base}{inplace\_stop\_callback\_base}}*\ cb)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keyword}{auto}\&\ self\ =\ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1inplace__stop__callback}{inplace\_stop\_callback}}*\textcolor{keyword}{>}(cb);}
+\DoxyCodeLine{00190\ \ \ \ \ self.func\_();}
+\DoxyCodeLine{00191\ \ \ \}}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ F\ func\_;}
+\DoxyCodeLine{00194\ \};}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ inplace\_stop\_callback\_base::register\_callback()\ noexcept\ \{}
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keywordflow}{if}\ (source\_\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!source\_-\/>try\_add\_callback(\textcolor{keyword}{this}))\ \{}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ source\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Callback\ not\ registered\ because\ stop\_requested()\ was\ true.}}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Execute\ inline\ here.}}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ execute();}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00204\ \ \ \ \ \}}
+\DoxyCodeLine{00205\ \}}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \textcolor{keyword}{namespace\ }detail\ \{}
+\DoxyCodeLine{00208\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1detail_1_1forward__stop__request__to__inplace__stop__source}{forward\_stop\_request\_to\_inplace\_stop\_source}}\ \{}
+\DoxyCodeLine{00209\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\&\ source;}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1detail_1_1forward__stop__request__to__inplace__stop__source}{forward\_stop\_request\_to\_inplace\_stop\_source}}(\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\&\ s)\ noexcept}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ :\ source(s)\ \{\}}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keywordtype}{void}\ operator()()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ source.request\_stop();}
+\DoxyCodeLine{00216\ \ \ \ \ \}}
+\DoxyCodeLine{00217\ \ \ \};}
+\DoxyCodeLine{00218\ \}\ \textcolor{comment}{//\ namespace\ detail}}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \textcolor{comment}{//\ Helper\ class\ for\ adapting\ an\ incoming\ StopToken\ type\ to\ an}}
+\DoxyCodeLine{00221\ \textcolor{comment}{//\ inplace\_stop\_token.}}
+\DoxyCodeLine{00222\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ StopToken,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00223\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__token__adapter}{inplace\_stop\_token\_adapter}}\ \{}
+\DoxyCodeLine{00224\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00225\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ subscribe(StopToken\ stoken)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00226\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ stopPossible\ =\ stoken.stop\_possible();}
+\DoxyCodeLine{00227\ \ \ \ \ callback\_.construct(std::move(stoken),\ source\_);}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keywordflow}{return}\ stopPossible\ ?\ source\_.get\_token()\ :\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\{\};}
+\DoxyCodeLine{00229\ \ \ \}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \ \ \textcolor{keywordtype}{void}\ unsubscribe()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00232\ \ \ \ \ callback\_.destruct();}
+\DoxyCodeLine{00233\ \ \ \}}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00236\ \ \ \textcolor{keyword}{using\ }stop\_callback\ =\ \textcolor{keyword}{typename}\ StopToken::template\ callback\_type<detail::forward\_stop\_request\_to\_inplace\_stop\_source>;}
+\DoxyCodeLine{00237\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{inplace\_stop\_source}}\ source\_;}
+\DoxyCodeLine{00238\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<stop\_callback>}}\ callback\_;}
+\DoxyCodeLine{00239\ \};}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00241\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00242\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__token__adapter}{inplace\_stop\_token\_adapter<inplace\_stop\_token,\ void>}}\ \{}
+\DoxyCodeLine{00243\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00244\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ subscribe(\mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ stoken)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{keywordflow}{return}\ stoken;}
+\DoxyCodeLine{00246\ \ \ \}}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \ \ \textcolor{keywordtype}{void}\ unsubscribe()\ \textcolor{keyword}{noexcept}\ \{\}}
+\DoxyCodeLine{00249\ \};}
+\DoxyCodeLine{00250\ }
+\DoxyCodeLine{00251\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ StopToken>}
+\DoxyCodeLine{00252\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1inplace__stop__token__adapter}{inplace\_stop\_token\_adapter<StopToken,\ std::enable\_if\_t<is\_stop\_never\_possible\_v<StopToken>}}>>\ \{}
+\DoxyCodeLine{00253\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00254\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ subscribe(StopToken)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00255\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\{\};}
+\DoxyCodeLine{00256\ \ \ \}}
+\DoxyCodeLine{00257\ }
+\DoxyCodeLine{00258\ \ \ \textcolor{keywordtype}{void}\ unsubscribe()\ \textcolor{keyword}{noexcept}\ \{\}}
+\DoxyCodeLine{00259\ \};}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00262\ \textcolor{keyword}{namespace\ }detail\ \{}
+\DoxyCodeLine{00263\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ StopToken>}
+\DoxyCodeLine{00264\ \textcolor{keyword}{struct\ }inplace\_stop\_token\_adapter\_subscription\ \{}
+\DoxyCodeLine{00265\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__token}{inplace\_stop\_token}}\ subscribe(StopToken\ stoken)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00266\ \ \ \ \ isSubscribed\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00267\ \ \ \ \ \textcolor{keywordflow}{return}\ stopTokenAdapter\_.subscribe(std::move(stoken));}
+\DoxyCodeLine{00268\ \ \ \}}
+\DoxyCodeLine{00269\ \ \ \textcolor{keywordtype}{void}\ unsubscribe()\ noexcept\ \{}
+\DoxyCodeLine{00270\ \ \ \ \ \textcolor{keywordflow}{if}\ (isSubscribed\_)\ \{}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ isSubscribed\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ stopTokenAdapter\_.unsubscribe();}
+\DoxyCodeLine{00273\ \ \ \ \ \}}
+\DoxyCodeLine{00274\ \ \ \}}
+\DoxyCodeLine{00275\ \ \ \string~inplace\_stop\_token\_adapter\_subscription()\ \{}
+\DoxyCodeLine{00276\ \ \ \ \ unsubscribe();}
+\DoxyCodeLine{00277\ \ \ \}}
+\DoxyCodeLine{00278\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00279\ \ \ \textcolor{keywordtype}{bool}\ isSubscribed\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00280\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS}
+\DoxyCodeLine{00281\ \ \ inplace\_stop\_token\_adapter<StopToken>\ stopTokenAdapter\_\{\};}
+\DoxyCodeLine{00282\ \};}
+\DoxyCodeLine{00283\ \}\ \textcolor{comment}{//\ namespace\ detail}}
+\DoxyCodeLine{00285\ \textcolor{comment}{}}
+\DoxyCodeLine{00286\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

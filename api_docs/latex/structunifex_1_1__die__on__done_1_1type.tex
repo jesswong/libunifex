@@ -1,0 +1,34 @@
+\doxysection{\+\_\+die\+\_\+on\+\_\+done\texorpdfstring{$<$}{<} Sender \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__die__on__done_1_1type}{}\label{structunifex_1_1__die__on__done_1_1type}\index{\_die\_on\_done$<$ Sender $>$::type@{\_die\_on\_done$<$ Sender $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__die__on__done_1_1type_a01e2fffc518d4d4909ed7c5c79d4fae0}\label{structunifex_1_1__die__on__done_1_1type_a01e2fffc518d4d4909ed7c5c79d4fae0} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = typename \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$ Sender $>$\+::template value\+\_\+types$<$ Variant, Tuple $>$
+\item 
+\Hypertarget{structunifex_1_1__die__on__done_1_1type_a5941a0b4103dbafa48faeb060040cc0a}\label{structunifex_1_1__die__on__done_1_1type_a5941a0b4103dbafa48faeb060040cc0a} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$ Sender $>$\+::template error\+\_\+types$<$ Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__die__on__done_1_1type_ad1e238938d684e0b36edeb7412bb7a21}\label{structunifex_1_1__die__on__done_1_1type_ad1e238938d684e0b36edeb7412bb7a21} 
+{\bfseries template} (typename Receiver)() auto connect(Receiver \&\&rec) \&\&noexcept(is\+\_\+nothrow\+\_\+connectable\+\_\+v$<$ Sender, \+\_\+die\+\_\+on\+\_\+done\+\_\+rec\+\_\+t$<$ Receiver $>$ $>$) -\/$>$ connect\+\_\+result\+\_\+t$<$ Sender, \+\_\+die\+\_\+on\+\_\+done\+\_\+rec\+\_\+t$<$ Receiver $>$ $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__die__on__done_1_1type_a2a52dc94d8f3e9d9e9d41de17f1934c3}\label{structunifex_1_1__die__on__done_1_1type_a2a52dc94d8f3e9d9e9d41de17f1934c3} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Sender {\bfseries sender\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__die__on__done_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__die__on__done_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = false
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/at\+\_\+coroutine\+\_\+exit.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,119 @@
+\doxysection{manual\+\_\+lifetime\+\_\+union.\+hpp}
+\hypertarget{manual__lifetime__union_8hpp_source}{}\label{manual__lifetime__union_8hpp_source}\index{include/unifex/manual\_lifetime\_union.hpp@{include/unifex/manual\_lifetime\_union.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/manual\_lifetime.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/scope\_guard.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00029\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1manual__lifetime__union}{manual\_lifetime\_union}}\ \{}
+\DoxyCodeLine{00030\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00031\ \ \ \mbox{\hyperlink{classunifex_1_1manual__lifetime__union}{manual\_lifetime\_union}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00034\ \ \ [[maybe\_unused]]\ T\&\ construct(Args\&\&...\ args)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<T,\ Args...>)\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::activate\_union\_member(}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<T>}}*\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(\&storage\_)),}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Args\&\&\textcolor{keyword}{>}(args)...);}
+\DoxyCodeLine{00039\ \ \ \}}
+\DoxyCodeLine{00040\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00041\ \ \ [[maybe\_unused]]\ T\&\ construct\_with(Func\&\&\ func)\ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<Func>)\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::activate\_union\_member\_with(}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<T>}}*\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(\&storage\_)),}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Func\&\&\textcolor{keyword}{>}(func));}
+\DoxyCodeLine{00045\ \ \ \}}
+\DoxyCodeLine{00046\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00047\ \ \ \textcolor{keywordtype}{void}\ destruct()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ unifex::deactivate\_union\_member(}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<T>}}*\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(\&storage\_)));}
+\DoxyCodeLine{00050\ \ \ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00053\ \ \ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ get()\ \&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{static\_assert}(is\_one\_of\_v<T,\ Ts...>);}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<T>}}*\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(\&storage\_))}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ -\/>get();}
+\DoxyCodeLine{00057\ \ \ \}}
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00059\ \ \ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ get()\ \textcolor{keyword}{const}\ \&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{static\_assert}(is\_one\_of\_v<T,\ Ts...>);}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<T>}}\ const*\textcolor{keyword}{>}(}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}\ const*\textcolor{keyword}{>}(\&storage\_))-\/>get();}
+\DoxyCodeLine{00063\ \ \ \}}
+\DoxyCodeLine{00064\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ get()\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keyword}{static\_assert}(is\_one\_of\_v<T,\ Ts...>);}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<T>}}*\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(\&storage\_))).get();}
+\DoxyCodeLine{00069\ \ \ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00072\ \ \ std::aligned\_union\_t<0,\ manual\_lifetime<Ts>...>\ storage\_;}
+\DoxyCodeLine{00073\ \};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00076\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1manual__lifetime__union}{manual\_lifetime\_union}}<>\ \{\};}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{comment}{//\ For\ activating\ a\ manual\_lifetime\_union\ when\ it\ is\ in\ a\ union\ and\ initializing}}
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ its\ value\ from\ arguments\ to\ its\ constructor.}}
+\DoxyCodeLine{00080\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}...\ Ts,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00081\ [[maybe\_unused]]\ \textcolor{comment}{//}}
+\DoxyCodeLine{00082\ T\&\ activate\_union\_member(\mbox{\hyperlink{classunifex_1_1manual__lifetime__union}{manual\_lifetime\_union<Ts...>}}\&\ box,\ Args\&\&...\ args)\ \textcolor{comment}{//}}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<T,\ Args...>)\ \{}
+\DoxyCodeLine{00084\ \ \ \textcolor{keyword}{auto}*\ p\ =\ ::new\ (\&box)\ \mbox{\hyperlink{classunifex_1_1manual__lifetime__union}{manual\_lifetime\_union}}<Ts...>\{\};}
+\DoxyCodeLine{00085\ \ \ scope\_guard\ guard\ =\ [=]()\ \textcolor{keyword}{noexcept}\ \{\ p-\/>\string~manual\_lifetime\_union();\ \};}
+\DoxyCodeLine{00086\ \ \ \textcolor{keyword}{auto}\&\ t\ =\ p-\/>template\ construct<T>(\textcolor{keyword}{static\_cast<}Args\&\&\textcolor{keyword}{>}(args)...);}
+\DoxyCodeLine{00087\ \ \ guard.release();}
+\DoxyCodeLine{00088\ \ \ \textcolor{keywordflow}{return}\ t;}
+\DoxyCodeLine{00089\ \}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ For\ activating\ a\ manual\_lifetime\_union\ when\ it\ is\ in\ a\ union\ and\ initializing}}
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ its\ value\ from\ the\ result\ of\ calling\ a\ function.}}
+\DoxyCodeLine{00093\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}...\ Ts,\ \textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00094\ [[maybe\_unused]]\ \textcolor{comment}{//}}
+\DoxyCodeLine{00095\ T\&\ activate\_union\_member\_with(manual\_lifetime\_union<Ts...>\&\ box,\ Func\&\&\ func)}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<Func>)\ \{}
+\DoxyCodeLine{00097\ \ \ \textcolor{keyword}{auto}*\ p\ =\ ::new\ (\&box)\ manual\_lifetime\_union<Ts...>\{\};}
+\DoxyCodeLine{00098\ \ \ scope\_guard\ guard\ =\ [=]()\ \textcolor{keyword}{noexcept}\ \{\ p-\/>\string~manual\_lifetime\_union();\ \};}
+\DoxyCodeLine{00099\ \ \ \textcolor{keyword}{auto}\&\ t\ =\ p-\/>template\ construct\_with<T>(\textcolor{keyword}{static\_cast<}Func\&\&\textcolor{keyword}{>}(func));}
+\DoxyCodeLine{00100\ \ \ guard.release();}
+\DoxyCodeLine{00101\ \ \ \textcolor{keywordflow}{return}\ t;}
+\DoxyCodeLine{00102\ \}}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \textcolor{comment}{//\ For\ deactivating\ a\ manual\_lifetime\_union\ when\ it\ is\ in\ a\ union}}
+\DoxyCodeLine{00105\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00106\ \textcolor{keywordtype}{void}\ deactivate\_union\_member(manual\_lifetime\_union<Ts...>\&\ box)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00107\ \ \ box.template\ destruct<T>();}
+\DoxyCodeLine{00108\ \ \ box.\string~manual\_lifetime\_union();}
+\DoxyCodeLine{00109\ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

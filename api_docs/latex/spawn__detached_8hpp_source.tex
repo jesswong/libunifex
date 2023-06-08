@@ -1,0 +1,201 @@
+\doxysection{spawn\+\_\+detached.\+hpp}
+\hypertarget{spawn__detached_8hpp_source}{}\label{spawn__detached_8hpp_source}\index{include/unifex/spawn\_detached.hpp@{include/unifex/spawn\_detached.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/get\_allocator.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/nest.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/scope\_guard.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00033\ \textcolor{keyword}{namespace\ }\_spawn\_detached\ \{}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00036\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__receiver}{\_spawn\_detached\_receiver}}\ final\ \{}
+\DoxyCodeLine{00037\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__receiver_1_1type}{type}};}
+\DoxyCodeLine{00038\ \};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00041\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__receiver}{\_spawn\_detached\_receiver}}<Alloc>::\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__receiver_1_1type}{type}}\ final\ \{}
+\DoxyCodeLine{00042\ \ \ \textcolor{keyword}{static\_assert}(same\_as<std::byte,\ typename\ Alloc::value\_type>);}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \textcolor{keywordtype}{void}\ set\_value()\ \textcolor{keyword}{noexcept}\ \{\ deleter\_(std::move(alloc\_),\ op\_);\ \}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ [[noreturn]]\ \textcolor{keywordtype}{void}\ set\_error(std::exception\_ptr)\ \textcolor{keyword}{noexcept}\ \{\ std::terminate();\ \}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \textcolor{keywordtype}{void}\ set\_done()\ \textcolor{keyword}{noexcept}\ \{\ set\_value();\ \}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \textcolor{keyword}{friend}\ Alloc\ tag\_invoke(tag\_t<get\_allocator>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__receiver_1_1type}{type}}\&\ receiver)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ std::is\_nothrow\_copy\_constructible\_v<Alloc>)\ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordflow}{return}\ receiver.alloc\_;}
+\DoxyCodeLine{00053\ \ \ \}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \textcolor{keywordtype}{void}*\ op\_;}
+\DoxyCodeLine{00056\ \ \ void\ (*deleter\_)(Alloc,\ \textcolor{keywordtype}{void}*)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00057\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Alloc\ alloc\_;}
+\DoxyCodeLine{00058\ \};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00061\ \textcolor{keyword}{using\ }spawn\_detached\_receiver\_t\ =}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__receiver}{\_spawn\_detached\_receiver}}<\textcolor{keyword}{typename}\ std::allocator\_traits<}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ Alloc>::template\ rebind\_alloc<std::byte>>::type;}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00066\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op}{\_spawn\_detached\_op}}\ final\ \{}
+\DoxyCodeLine{00067\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op_1_1type}{type}};}
+\DoxyCodeLine{00068\ \};}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00071\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op}{\_spawn\_detached\_op}}<Sender,\ Alloc>::\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op_1_1type}{type}}\ final\ \{}
+\DoxyCodeLine{00072\ \ \ \textcolor{keyword}{static\_assert}(same\_as<std::byte,\ typename\ Alloc::value\_type>);}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op_1_1type}{type}}(Sender\&\&\ sender,\ \textcolor{keyword}{const}\ Alloc\&\ alloc)\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ is\_nothrow\_connectable\_v<Sender,\ spawn\_detached\_receiver\_t<Alloc>>)}
+\DoxyCodeLine{00076\ \ \ \ \ :\ op\_\{connect(}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ std::move(sender),}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ spawn\_detached\_receiver\_t<Alloc>\{\textcolor{keyword}{this},\ destroy,\ alloc\})\}\ \{\}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op_1_1type}{type}}(\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op_1_1type}{type}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op_1_1type}{\string~type}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ tag\_invoke(tag\_t<start>,\ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op_1_1type}{type}}\&\ op)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00085\ \ \ \ \ unifex::start(op.op\_);}
+\DoxyCodeLine{00086\ \ \ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00089\ \ \ \textcolor{keyword}{using\ }op\_t\ =\ connect\_result\_t<Sender,\ spawn\_detached\_receiver\_t<Alloc>>;}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ op\_t\ op\_;}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ destroy(Alloc\ alloc,\ \textcolor{keywordtype}{void}*\ p)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{using\ }allocator\_t\ =}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::allocator\_traits<Alloc>::template\ rebind\_alloc<type>;}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{using\ }traits\_t\ =\ \textcolor{keyword}{typename}\ std::allocator\_traits<allocator\_t>;}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{auto}\ typed\ =\ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op_1_1type}{type}}*\textcolor{keyword}{>}(p);}
+\DoxyCodeLine{00099\ \ \ \ \ allocator\_t\ allocator\{std::move(alloc)\};}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ traits\_t::destroy(allocator,\ typed);}
+\DoxyCodeLine{00102\ \ \ \ \ traits\_t::deallocate(allocator,\ typed,\ 1);}
+\DoxyCodeLine{00103\ \ \ \}}
+\DoxyCodeLine{00104\ \};}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00107\ \textcolor{keyword}{using\ }spawn\_detached\_op\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__op}{\_spawn\_detached\_op}}<}
+\DoxyCodeLine{00108\ \ \ \ \ Sender,}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{comment}{//\ standardize\ on\ a\ std::byte\ allocator\ to\ minimize\ template\ instantiations}}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{typename}\ std::allocator\_traits<Alloc>::template\ rebind\_alloc<std::byte>>::}
+\DoxyCodeLine{00111\ \ \ \ \ type;}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__fn}{\_spawn\_detached\_fn}}\ \{}
+\DoxyCodeLine{00114\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00115\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__fn_1_1deref}{deref}};}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00118\ \ \ \textcolor{keyword}{template}(}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ Sender,}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ Scope,}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ Alloc\ =\ std::allocator<std::byte>)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ sender<Sender>\ AND\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ is\_allocator\_v<Alloc>\ AND\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sender\_to<}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{decltype}(nest(}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ UNIFEX\_DECLVAL(Sender),\ UNIFEX\_DECLVAL(Scope\&))),}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ spawn\_detached\_receiver\_t<Alloc>>)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \textcolor{keyword}{operator}()(Sender\&\&\ sender,\ Scope\&\ scope,\ \textcolor{keyword}{const}\ Alloc\&\ alloc\ =\ \{\})\ \textcolor{keyword}{const}\ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keyword}{using\ }sender\_t\ =\ \textcolor{keyword}{decltype}(nest(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ scope));}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{using\ }op\_t\ =\ spawn\_detached\_op\_t<sender\_t,\ Alloc>;}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keyword}{using\ }allocator\_t\ =}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::allocator\_traits<Alloc>::template\ rebind\_alloc<op\_t>;}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keyword}{using\ }traits\ =\ std::allocator\_traits<allocator\_t>;}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ allocator\_t\ allocator\{alloc\};}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{comment}{//\ this\ could\ throw\ std::bad\_alloc,\ in\ which\ case\ we\ can\ let\ the\ exception}}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{comment}{//\ bubble\ out}}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{auto}\ op\ =\ traits::allocate(allocator,\ 1);}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{comment}{//\ prepare\ to\ deallocate\ what\ we\ just\ allocated\ in\ case\ of\ an\ exception\ in}}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{comment}{//\ the\ operation\ state\ constructor}}
+\DoxyCodeLine{00146\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1scope__guard}{scope\_guard}}\ g\ =\ [\&]()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ traits::deallocate(allocator,\ op,\ 1);}
+\DoxyCodeLine{00148\ \ \ \ \ \};}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{comment}{//\ once\ this\ succeeds,\ the\ operation\ owns\ itself;\ the\ allocate\ is\ balanced}}
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{comment}{//\ by\ the\ deallocate\ in\ op\_t::destroy}}
+\DoxyCodeLine{00152\ \ \ \ \ traits::construct(}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ allocator,\ op,\ nest(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ scope),\ allocator);}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{comment}{//\ since\ construction\ succeeded,\ don't\ deallocate\ the\ memory}}
+\DoxyCodeLine{00156\ \ \ \ \ g.release();}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ unifex::start(*op);}
+\DoxyCodeLine{00159\ \ \ \}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Alloc\ =\ std::allocator<std::\textcolor{keywordtype}{byte}>>}
+\DoxyCodeLine{00162\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ operator()(Scope\&\ scope,\ \textcolor{keyword}{const}\ Alloc\&\ alloc\ =\ \{\})\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_callable\_v<tag\_t<bind\_back>,\ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__fn_1_1deref}{deref}},\ Scope*,\ \textcolor{keyword}{const}\ Alloc\&>)}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ -\/>\ std::enable\_if\_t<}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_allocator\_v<Alloc>,}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bind\_back\_result\_t<deref,\ Scope*,\ const\ Alloc\&>>;}
+\DoxyCodeLine{00168\ \};}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__fn_1_1deref}{\_spawn\_detached\_fn::deref}}\ final\ \{}
+\DoxyCodeLine{00171\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00172\ \ \ \textcolor{keyword}{auto}\ operator()(Sender\&\&\ sender,\ Scope*\ scope,\ \textcolor{keyword}{const}\ Alloc\&\ alloc)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ -\/>\ \textcolor{keyword}{decltype}(}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__fn}{\_spawn\_detached\_fn}}\{\}(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ *scope,\ alloc))\ \{}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__fn}{\_spawn\_detached\_fn}}\{\}(\textcolor{keyword}{static\_cast<}Sender\&\&\textcolor{keyword}{>}(sender),\ *scope,\ alloc);}
+\DoxyCodeLine{00176\ \ \ \}}
+\DoxyCodeLine{00177\ \};}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Scope,\ \textcolor{keyword}{typename}\ Alloc>}
+\DoxyCodeLine{00180\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}}
+\DoxyCodeLine{00181\ \_spawn\_detached\_fn::operator()(Scope\&\ scope,\ \textcolor{keyword}{const}\ Alloc\&\ alloc)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00182\ \ \ \ \ is\_nothrow\_callable\_v<tag\_t<bind\_back>,\ \mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__fn_1_1deref}{deref}},\ Scope*,\ \textcolor{keyword}{const}\ Alloc\&>)}
+\DoxyCodeLine{00183\ \ \ \ \ -\/>\ std::enable\_if\_t<}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ is\_allocator\_v<Alloc>,}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ bind\_back\_result\_t<deref,\ Scope*,\ const\ Alloc\&>>\ \{}
+\DoxyCodeLine{00186\ \ \ \textcolor{keywordflow}{return}\ bind\_back(\mbox{\hyperlink{structunifex_1_1__spawn__detached_1_1__spawn__detached__fn_1_1deref}{deref}}\{\},\ \&scope,\ alloc);}
+\DoxyCodeLine{00187\ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \}\ \ \textcolor{comment}{//\ namespace\ \_spawn\_detached}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \_spawn\_detached::\_spawn\_detached\_fn\ spawn\_detached\{\};}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \}\ \ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

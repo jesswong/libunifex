@@ -1,0 +1,51 @@
+\doxysection{sender Struct Reference}
+\hypertarget{structunifex_1_1__schedule_1_1sender}{}\label{structunifex_1_1__schedule_1_1sender}\index{sender@{sender}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__schedule_1_1sender_ad0993cef3b28159db0c3c9f30151fdca}\label{structunifex_1_1__schedule_1_1sender_ad0993cef3b28159db0c3c9f30151fdca} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = Variant$<$ Tuple$<$$>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__schedule_1_1sender_a8b4b8139220ba100d4ae08b62fb1177b}\label{structunifex_1_1__schedule_1_1sender_a8b4b8139220ba100d4ae08b62fb1177b} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = Variant$<$ std\+::exception\+\_\+ptr $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__schedule_1_1sender_a17ebe4e900cc00ee4848b9c8b5beea91}\label{structunifex_1_1__schedule_1_1sender_a17ebe4e900cc00ee4848b9c8b5beea91} 
+{\bfseries template} (typename Receiver)() friend auto tag\+\_\+invoke(tag\+\_\+t$<$ connect $>$
+\item 
+\Hypertarget{structunifex_1_1__schedule_1_1sender_a19048adae8c7158718a9c1f01eacd8aa}\label{structunifex_1_1__schedule_1_1sender_a19048adae8c7158718a9c1f01eacd8aa} 
+return {\bfseries connect} (schedule(std\+::move(scheduler)),(Receiver \&\&) r)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Receiver \&\&r \mbox{\hyperlink{structunifex_1_1__schedule_1_1sender_ac23b836f755b29b9c2df3c4fa32819ac}{connect\+\_\+result\+\_\+t$<$ schedule\+\_\+result\+\_\+t$<$ get\+\_\+scheduler\+\_\+result\+\_\+t$<$ const remove\+\_\+cvref\+\_\+t$<$ Receiver $>$ \& $>$ $>$, Receiver $>$}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__schedule_1_1sender_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__schedule_1_1sender_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = true
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structunifex_1_1__schedule_1_1sender_ac23b836f755b29b9c2df3c4fa32819ac}\label{structunifex_1_1__schedule_1_1sender_ac23b836f755b29b9c2df3c4fa32819ac} 
+\index{sender@{sender}!connect\_result\_t$<$ schedule\_result\_t$<$ get\_scheduler\_result\_t$<$ const remove\_cvref\_t$<$ Receiver $>$ \& $>$ $>$, Receiver $>$@{connect\_result\_t$<$ schedule\_result\_t$<$ get\_scheduler\_result\_t$<$ const remove\_cvref\_t$<$ Receiver $>$ \& $>$ $>$, Receiver $>$}}
+\index{connect\_result\_t$<$ schedule\_result\_t$<$ get\_scheduler\_result\_t$<$ const remove\_cvref\_t$<$ Receiver $>$ \& $>$ $>$, Receiver $>$@{connect\_result\_t$<$ schedule\_result\_t$<$ get\_scheduler\_result\_t$<$ const remove\_cvref\_t$<$ Receiver $>$ \& $>$ $>$, Receiver $>$}!sender@{sender}}
+\doxysubsubsection{\texorpdfstring{connect\_result\_t$<$ schedule\_result\_t$<$ get\_scheduler\_result\_t$<$ const remove\_cvref\_t$<$ Receiver $>$ \& $>$ $>$, Receiver $>$}{connect\_result\_t< schedule\_result\_t< get\_scheduler\_result\_t< const remove\_cvref\_t< Receiver > \& > >, Receiver >}}
+{\footnotesize\ttfamily Receiver\&\& r connect\+\_\+result\+\_\+t$<$ schedule\+\_\+result\+\_\+t$<$ get\+\_\+scheduler\+\_\+result\+\_\+t$<$ const remove\+\_\+cvref\+\_\+t$<$ Receiver $>$ \& $>$ $>$, Receiver $>$}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{auto}\ scheduler\ =\ get\_scheduler(std::as\_const(r))}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/scheduler\+\_\+concepts.\+hpp\end{DoxyCompactItemize}

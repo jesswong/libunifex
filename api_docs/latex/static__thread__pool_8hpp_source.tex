@@ -1,0 +1,190 @@
+\doxysection{static\+\_\+thread\+\_\+pool.\+hpp}
+\hypertarget{static__thread__pool_8hpp_source}{}\label{static__thread__pool_8hpp_source}\index{include/unifex/static\_thread\_pool.hpp@{include/unifex/static\_thread\_pool.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/get\_stop\_token.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/scheduler\_concepts.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/stop\_token\_concepts.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/detail/intrusive\_queue.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <condition\_variable>}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00035\ \textcolor{keyword}{namespace\ }\_static\_thread\_pool\ \{}
+\DoxyCodeLine{00036\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1task__base}{task\_base}}\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1task__base}{task\_base}}*\ next;}
+\DoxyCodeLine{00038\ \ \ \ \ void\ (*execute)(\mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1task__base}{task\_base}}*)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00039\ \ \ \};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00042\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1__op}{\_op}}\ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1__op_1_1type}{type}};}
+\DoxyCodeLine{00044\ \ \ \};}
+\DoxyCodeLine{00045\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00046\ \ \ \textcolor{keyword}{using\ }operation\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1__op}{\_op<remove\_cvref\_t<Receiver>}}>::type;}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}}\ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1__op}{\_op}};}
+\DoxyCodeLine{00051\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00052\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}}();}
+\DoxyCodeLine{00053\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}}(std::uint32\_t\ threadCount);}
+\DoxyCodeLine{00054\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{\string~context}}();}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{scheduler}}\ \{}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1__op}{\_op}};}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \textcolor{keyword}{class\ }schedule\_sender\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<>;}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ operation<Receiver>\ make\_operation\_(Receiver\&\&\ r)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ operation<Receiver>\{pool\_,\ (Receiver\ \&\&)\ r\};}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver\_of<Receiver>)}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ operation<Receiver>}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ tag\_invoke(tag\_t<connect>,\ schedule\_sender\ s,\ Receiver\&\&\ r)\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ s.make\_operation\_((Receiver\ \&\&)\ r);}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{context::scheduler}};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ schedule\_sender(\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}}\&\ pool)\ noexcept}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ :\ pool\_(pool)\ \{\}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}}\&\ pool\_;}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ schedule\_sender\ make\_sender\_()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ schedule\_sender\{pool\_\};}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ schedule\_sender}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ tag\_invoke(tag\_t<schedule>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{scheduler}}\&\ s)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ s.make\_sender\_();}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}};}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{scheduler}}(\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}}\&\ pool)\ noexcept}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ :\ pool\_(pool)\ \{\}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator==(\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{scheduler}}\ a,\ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{scheduler}}\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&a.pool\_\ ==\ \&b.pool\_;}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator!=(\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{scheduler}}\ a,\ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{scheduler}}\ b)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&a.pool\_\ !=\ \&b.pool\_;}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}}\&\ pool\_;}
+\DoxyCodeLine{00113\ \ \ \ \ \};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{scheduler}}\ get\_scheduler()\ noexcept\ \{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context_1_1scheduler}{scheduler}}\{*\textcolor{keyword}{this}\};\ \}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordtype}{void}\ request\_stop()\ noexcept;}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \ \ private:}
+\DoxyCodeLine{00120\ \ \ \ \ class\ thread\_state\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ task\_base*\ try\_pop();}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ task\_base*\ pop();}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ try\_push(task\_base*\ task);}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ push(task\_base*\ task);}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ request\_stop();}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ std::mutex\ mut\_;}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ std::condition\_variable\ cv\_;}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ intrusive\_queue<task\_base,\ \&task\_base::next>\ queue\_;}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ stopRequested\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00133\ \ \ \ \ \};}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keywordtype}{void}\ run(std::uint32\_t\ index)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keywordtype}{void}\ join()\ noexcept;}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keywordtype}{void}\ enqueue(task\_base*\ task)\ noexcept;}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \ \ std::uint32\_t\ threadCount\_;}
+\DoxyCodeLine{00141\ \ \ \ \ std::vector<std::thread>\ threads\_;}
+\DoxyCodeLine{00142\ \ \ \ \ std::vector<thread\_state>\ threadStates\_;}
+\DoxyCodeLine{00143\ \ \ \ \ std::atomic<std::uint32\_t>\ nextThread\_;}
+\DoxyCodeLine{00144\ \ \ \};}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ template\ <typename\ Receiver>}
+\DoxyCodeLine{00147\ \ \ class\ \mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1__op}{\_op}}<Receiver>::\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1__op_1_1type}{type}}\ :\ \mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1task__base}{task\_base}}\ \{}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keyword}{friend}\ context::scheduler::schedule\_sender;}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}}\&\ pool\_;}
+\DoxyCodeLine{00151\ \ \ \ \ Receiver\ receiver\_;}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1__op_1_1type}{type}}(\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{context}}\&\ pool,\ Receiver\&\&\ r)}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ :\ pool\_(pool)}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ ,\ receiver\_((Receiver\ \&\&)\ r)\ \{}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ this-\/>execute\ =\ [](\mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1task__base}{task\_base}}*\ t)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ op\ =\ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1__op_1_1type}{type}}*\textcolor{keyword}{>}(t);}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (!is\_stop\_never\_possible\_v<}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ stop\_token\_type\_t<Receiver>>)\ \{}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (get\_stop\_token(op.receiver\_).stop\_requested())\ \{}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ unifex::set\_done((Receiver\ \&\&)\ op.receiver\_);}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ unifex::set\_value((Receiver\ \&\&)\ op.receiver\_);}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00167\ \ \ \ \ \}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \ \ \ \ \textcolor{keywordtype}{void}\ enqueue\_(\mbox{\hyperlink{structunifex_1_1__static__thread__pool_1_1task__base}{task\_base}}*\ op)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ pool\_.enqueue(op);}
+\DoxyCodeLine{00171\ \ \ \ \ \}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ tag\_invoke(tag\_t<start>,\ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1__op_1_1type}{type}}\&\ op)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ op.enqueue\_(\&op);}
+\DoxyCodeLine{00175\ \ \ \ \ \}}
+\DoxyCodeLine{00176\ \ \ \};}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \}\ \textcolor{comment}{//\ \_static\_thread\_pool}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \textcolor{keyword}{using\ }\mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{static\_thread\_pool}}\ =\ \mbox{\hyperlink{classunifex_1_1__static__thread__pool_1_1context}{\_static\_thread\_pool::context}};}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

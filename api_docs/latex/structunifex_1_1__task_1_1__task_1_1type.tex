@@ -1,0 +1,65 @@
+\doxysection{\+\_\+task\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__task_1_1__task_1_1type}{}\label{structunifex_1_1__task_1_1__task_1_1type}\index{\_task$<$ T $>$::type@{\_task$<$ T $>$::type}}
+Inheritance diagram for \+\_\+task\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+::type\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structunifex_1_1__task_1_1__task_1_1type}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__task_1_1type_aa85935ffd68a06ae9e9894a6821bd463}\label{structunifex_1_1__task_1_1__task_1_1type_aa85935ffd68a06ae9e9894a6821bd463} 
+using {\bfseries promise\+\_\+type} = typename \mbox{\hyperlink{structunifex_1_1__task_1_1__promise}{\+\_\+promise}}$<$ T $>$\+::type
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__task_1_1type_a589e15d6d4e38f09ec9fcbde02b4ee66}\label{structunifex_1_1__task_1_1__task_1_1type_a589e15d6d4e38f09ec9fcbde02b4ee66} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = Variant$<$ typename std\+::conditional\+\_\+t$<$ std\+::is\+\_\+void\+\_\+v$<$ T $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$$>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ T $>$ $>$ \+::template apply$<$ Tuple $>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__task_1_1type_a8b4b8139220ba100d4ae08b62fb1177b}\label{structunifex_1_1__task_1_1__task_1_1type_a8b4b8139220ba100d4ae08b62fb1177b} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = Variant$<$ std\+::exception\+\_\+ptr $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__task_1_1type_ab922124c25f62b79dd77a64b5f31be61}\label{structunifex_1_1__task_1_1__task_1_1type_ab922124c25f62b79dd77a64b5f31be61} 
+{\bfseries type} (\mbox{\hyperlink{structunifex_1_1__task_1_1__task_1_1type}{type}} \&\&t) noexcept=default
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__task_1_1type_abc40e59dff8a8e578d681c878f9b43ce}\label{structunifex_1_1__task_1_1__task_1_1type_abc40e59dff8a8e578d681c878f9b43ce} 
+\mbox{\hyperlink{structunifex_1_1__task_1_1__task_1_1type}{type}} \& {\bfseries operator=} (\mbox{\hyperlink{structunifex_1_1__task_1_1__task_1_1type}{type}} \&\&t) noexcept=default
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{structunifex_1_1__task_1_1coro__holder}{coro\+\_\+holder}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1coro__holder_abe11771fcd4dd062b8c607ae1b7bd26e}\label{structunifex_1_1__task_1_1coro__holder_abe11771fcd4dd062b8c607ae1b7bd26e} 
+{\bfseries coro\+\_\+holder} (coro\+::coroutine\+\_\+handle$<$$>$ h) noexcept
+\item 
+\Hypertarget{structunifex_1_1__task_1_1coro__holder_a2250c997c59a96095ef47b5e7c410f25}\label{structunifex_1_1__task_1_1coro__holder_a2250c997c59a96095ef47b5e7c410f25} 
+{\bfseries coro\+\_\+holder} (\mbox{\hyperlink{structunifex_1_1__task_1_1coro__holder}{coro\+\_\+holder}} \&\&other) noexcept
+\item 
+\Hypertarget{structunifex_1_1__task_1_1coro__holder_ac7e4cb77137a2de48eda6ed8e9083f07}\label{structunifex_1_1__task_1_1coro__holder_ac7e4cb77137a2de48eda6ed8e9083f07} 
+\mbox{\hyperlink{structunifex_1_1__task_1_1coro__holder}{coro\+\_\+holder}} \& {\bfseries operator=} (\mbox{\hyperlink{structunifex_1_1__task_1_1coro__holder}{coro\+\_\+holder}} rhs) noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__task_1_1type_aaf1340406a43abc5f13aa6a17ea79281}\label{structunifex_1_1__task_1_1__task_1_1type_aaf1340406a43abc5f13aa6a17ea79281} 
+friend {\bfseries promise\+\_\+type}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1__task_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__task_1_1__task_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = true
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{structunifex_1_1__task_1_1coro__holder}{coro\+\_\+holder}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__task_1_1coro__holder_a80c8b573855c77ce2baea67fe5724f73}\label{structunifex_1_1__task_1_1coro__holder_a80c8b573855c77ce2baea67fe5724f73} 
+coro\+::coroutine\+\_\+handle {\bfseries coro\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/task.\+hpp\end{DoxyCompactItemize}

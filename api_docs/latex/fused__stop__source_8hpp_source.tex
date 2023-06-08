@@ -1,0 +1,91 @@
+\doxysection{fused\+\_\+stop\+\_\+source.\+hpp}
+\hypertarget{fused__stop__source_8hpp_source}{}\label{fused__stop__source_8hpp_source}\index{include/unifex/fused\_stop\_source.hpp@{include/unifex/fused\_stop\_source.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/inplace\_stop\_token.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <optional>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{namespace\ }\_fss\ \{}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__fss_1_1stop__callback}{stop\_callback}}\ \{}
+\DoxyCodeLine{00029\ \ \ \textcolor{keywordtype}{void}\ operator()()\ \textcolor{keyword}{noexcept}\ \{\ source\_.request\_stop();\ \}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{unifex::inplace\_stop\_source}}\&\ source\_;}
+\DoxyCodeLine{00032\ \};}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ StopToken>}
+\DoxyCodeLine{00035\ \textcolor{keyword}{using\ }stop\_callback\_t\ =}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{typename}\ StopToken::template\ callback\_type<stop\_callback>;}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ StopCallback>}
+\DoxyCodeLine{00039\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__callback}{fused\_stop\_callback}}\ \{}
+\DoxyCodeLine{00040\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__callback}{fused\_stop\_callback}}(\mbox{\hyperlink{classunifex_1_1inplace__stop__source}{unifex::inplace\_stop\_source}}\&)\ \textcolor{keyword}{noexcept}\ \{\}}
+\DoxyCodeLine{00041\ \};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ First,\ \textcolor{keyword}{typename}...\ Rest>}
+\DoxyCodeLine{00044\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__callback}{fused\_stop\_callback}}<First,\ Rest...>\ \{}
+\DoxyCodeLine{00045\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ StopToken,\ \textcolor{keyword}{typename}...\ StopTokens>}
+\DoxyCodeLine{00046\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__callback}{fused\_stop\_callback}}(}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{unifex::inplace\_stop\_source}}\&\ source,}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ StopToken\ first,}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ StopTokens...\ rest)\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__callback}{fused\_stop\_callback}}<Rest...>,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{decltype}(source),}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{decltype}(rest)...>\&\&\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ First,}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{decltype}(first),}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__fss_1_1stop__callback}{stop\_callback}}>)}
+\DoxyCodeLine{00058\ \ \ \ \ :\ callback\_(std::move(first),\ \mbox{\hyperlink{structunifex_1_1__fss_1_1stop__callback}{stop\_callback}}\{source\})}
+\DoxyCodeLine{00059\ \ \ \ \ ,\ rest\_(source,\ std::move(rest)...)\ \{\}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ First\ callback\_;}
+\DoxyCodeLine{00062\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__callback}{fused\_stop\_callback}}<Rest...>\ rest\_;}
+\DoxyCodeLine{00063\ \};}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ StopTokens>}
+\DoxyCodeLine{00066\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__source}{fused\_stop\_source}}\ :\ \mbox{\hyperlink{classunifex_1_1inplace__stop__source}{unifex::inplace\_stop\_source}}\ \{}
+\DoxyCodeLine{00067\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__callback}{fused\_callback\_type}}\ =}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__callback}{fused\_stop\_callback<stop\_callback\_t<StopTokens>}}...>;}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \textcolor{keywordtype}{void}\ register\_callbacks(StopTokens...\ tokens)\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ callbacks\_.emplace(*\textcolor{keyword}{this},\ std::move(tokens)...);}
+\DoxyCodeLine{00072\ \ \ \}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \textcolor{keywordtype}{void}\ deregister\_callbacks()\ \textcolor{keyword}{noexcept}\ \{\ callbacks\_.reset();\ \}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00077\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ std::optional<fused\_callback\_type>\ callbacks\_;}
+\DoxyCodeLine{00078\ \};}
+\DoxyCodeLine{00079\ \}\ \ \textcolor{comment}{//\ namespace\ \_fss}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__fss_1_1fused__stop__source}{\_fss::fused\_stop\_source}};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \}\ \ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

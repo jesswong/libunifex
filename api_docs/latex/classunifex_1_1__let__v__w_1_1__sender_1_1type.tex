@@ -1,0 +1,34 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} State\+Factory, Successor\+Factory \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__let__v__w_1_1__sender_1_1type}{}\label{classunifex_1_1__let__v__w_1_1__sender_1_1type}\index{\_sender$<$ StateFactory, SuccessorFactory $>$::type@{\_sender$<$ StateFactory, SuccessorFactory $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__v__w_1_1__sender_1_1type_aaa08aadf50f8719cd46ba694bca09457}\label{classunifex_1_1__let__v__w_1_1__sender_1_1type_aaa08aadf50f8719cd46ba694bca09457} 
+using {\bfseries Inner\+Op} = std\+::invoke\+\_\+result\+\_\+t$<$ Successor\+Factory, callable\+\_\+result\+\_\+t$<$ State\+Factory $>$ \& $>$
+\item 
+\Hypertarget{classunifex_1_1__let__v__w_1_1__sender_1_1type_ab582747f85c19bccd0cbe1dc57010c8a}\label{classunifex_1_1__let__v__w_1_1__sender_1_1type_ab582747f85c19bccd0cbe1dc57010c8a} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Inner\+Op, Variant, Tuple $>$
+\item 
+\Hypertarget{classunifex_1_1__let__v__w_1_1__sender_1_1type_ae4856bd2ed43711329fb6444122e52e2}\label{classunifex_1_1__let__v__w_1_1__sender_1_1type_ae4856bd2ed43711329fb6444122e52e2} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = sender\+\_\+error\+\_\+types\+\_\+t$<$ Inner\+Op, Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__v__w_1_1__sender_1_1type_a164237b6e9af03372db32e26c58ede87}\label{classunifex_1_1__let__v__w_1_1__sender_1_1type_a164237b6e9af03372db32e26c58ede87} 
+{\footnotesize template$<$typename State\+Factory2 , typename Successor\+Factory2 $>$ }\\{\bfseries type} (State\+Factory2 \&\&state\+Factory, Successor\+Factory2 \&\&func)
+\item 
+\Hypertarget{classunifex_1_1__let__v__w_1_1__sender_1_1type_a0832af95878bdea79068a7b1187df9bb}\label{classunifex_1_1__let__v__w_1_1__sender_1_1type_a0832af95878bdea79068a7b1187df9bb} 
+{\bfseries template} (typename Self, typename Receiver)(AND receiver$<$ Receiver $>$) friend auto tag\+\_\+invoke(tag\+\_\+t$<$ unifex
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__v__w_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__let__v__w_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\+\_\+traits}}$<$Inner\+Op$>$\+::sends\+\_\+done
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/let\+\_\+value\+\_\+with.\+hpp\end{DoxyCompactItemize}

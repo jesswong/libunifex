@@ -1,0 +1,47 @@
+\doxysection{\+\_\+sndr\texorpdfstring{$<$}{<} Source, Func \texorpdfstring{$>$}{>}\+::type Class Reference}
+\hypertarget{classunifex_1_1__let__e_1_1__sndr_1_1type}{}\label{classunifex_1_1__let__e_1_1__sndr_1_1type}\index{\_sndr$<$ Source, Func $>$::type@{\_sndr$<$ Source, Func $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__e_1_1__sndr_1_1type_aead3e4bc0721bd3debc2c8f4e0622679}\label{classunifex_1_1__let__e_1_1__sndr_1_1type_aead3e4bc0721bd3debc2c8f4e0622679} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = type\+\_\+list\+\_\+nested\+\_\+apply\+\_\+t$<$ concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+value\+\_\+type\+\_\+list\+\_\+t$<$ Source $>$, apply\+\_\+to\+\_\+type\+\_\+list\+\_\+t$<$ concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t, map\+\_\+type\+\_\+list\+\_\+t$<$ final\+\_\+senders\+\_\+list, sender\+\_\+value\+\_\+type\+\_\+list\+\_\+t $>$ $>$ $>$, Variant, Tuple $>$
+\item 
+\Hypertarget{classunifex_1_1__let__e_1_1__sndr_1_1type_a55c71615f0ab5a742cc2c0c78ead9634}\label{classunifex_1_1__let__e_1_1__sndr_1_1type_a55c71615f0ab5a742cc2c0c78ead9634} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+type\+\_\+list\+\_\+t$<$ Source $>$, apply\+\_\+to\+\_\+type\+\_\+list\+\_\+t$<$ concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t, map\+\_\+type\+\_\+list\+\_\+t$<$ final\+\_\+senders\+\_\+list, sender\+\_\+error\+\_\+type\+\_\+list\+\_\+t $>$ $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classunifex_1_1__let__e_1_1__sndr_1_1type_a4dafab555bbbe8adb041f3bad7a3ebb6}\label{classunifex_1_1__let__e_1_1__sndr_1_1type_a4dafab555bbbe8adb041f3bad7a3ebb6} 
+{\footnotesize template$<$typename Source2 , typename Func2 $>$ }\\{\bfseries type} (Source2 \&\&source, Func2 \&\&func) noexcept(std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Source, Source2 $>$ \&\&std\+::is\+\_\+nothrow\+\_\+constructible\+\_\+v$<$ Func, Func2 $>$)
+\item 
+\Hypertarget{classunifex_1_1__let__e_1_1__sndr_1_1type_adee4cc27e98f96f9cb3d19126e9ff05a}\label{classunifex_1_1__let__e_1_1__sndr_1_1type_adee4cc27e98f96f9cb3d19126e9ff05a} 
+{\bfseries template} (typename Sender, typename Receiver, typename..., typename Source\+Receiver=receiver\+\_\+type$<$ member\+\_\+t$<$ Sender, Source $>$, Func, Receiver $>$)(AND const ructible\+\_\+from$<$ Func
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr bool \mbox{\hyperlink{classunifex_1_1__let__e_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a}{sends\+\_\+done}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classunifex_1_1__let__e_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{classunifex_1_1__let__e_1_1__sndr_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+\index{\_sndr$<$ Source, Func $>$::type@{\_sndr$<$ Source, Func $>$::type}!sends\_done@{sends\_done}}
+\index{sends\_done@{sends\_done}!\_sndr$<$ Source, Func $>$::type@{\_sndr$<$ Source, Func $>$::type}}
+\doxysubsubsection{\texorpdfstring{sends\_done}{sends\_done}}
+{\footnotesize\ttfamily template$<$typename Source , typename Func $>$ \\
+constexpr bool sends\+\_\+done\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\ \ \ \ sender\_traits<Source>::sends\_done\ ||}
+\DoxyCodeLine{\ \ \ \ sender\_error\_types\_t<Source,\ sends\_done\_impl>::value}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/let\+\_\+error.\+hpp\end{DoxyCompactItemize}

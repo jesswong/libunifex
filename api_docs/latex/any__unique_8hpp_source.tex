@@ -1,0 +1,515 @@
+\doxysection{any\+\_\+unique.\+hpp}
+\hypertarget{any__unique_8hpp_source}{}\label{any__unique_8hpp_source}\index{include/unifex/any\_unique.hpp@{include/unifex/any\_unique.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/overload.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/this.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/std\_concepts.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00031\ \textcolor{keyword}{namespace\ }\_any\_unique\ \{}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO>}
+\DoxyCodeLine{00034\ \textcolor{keyword}{using\ }base\_cpo\_t\ =\ \_overload::base\_cpo\_t<CPO>;}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ T,\ \textcolor{keywordtype}{bool}\ NoExcept,\ \textcolor{keyword}{typename}\ Ret,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00037\ Ret\ \_invoke(}
+\DoxyCodeLine{00038\ \ \ \ \ base\_cpo\_t<CPO>\ cpo,}
+\DoxyCodeLine{00039\ \ \ \ \ replace\_this\_with\_void\_ptr\_t<Args>...\ args)\ \textcolor{keyword}{noexcept}(NoExcept)\ \{}
+\DoxyCodeLine{00040\ \ \ \textcolor{keyword}{static\_assert}(!NoExcept\ ||\ \textcolor{keyword}{noexcept}(extract\_this<Args...>\{\}(args...)));}
+\DoxyCodeLine{00041\ \ \ \textcolor{keywordtype}{void}*\ thisPointer\ =\ extract\_this<Args...>\{\}(args...);}
+\DoxyCodeLine{00042\ \ \ \textcolor{keyword}{static\_assert}(!NoExcept\ ||\ \textcolor{keyword}{noexcept}(Ret(((base\_cpo\_t<CPO>\&\&)\ cpo)(}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ replace\_this<Args>::get(}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ (\textcolor{keyword}{decltype}(args)\&\&)\ args,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ *\textcolor{keyword}{static\_cast<}T*\textcolor{keyword}{>}(thisPointer))...))));}
+\DoxyCodeLine{00046\ \ \ \textcolor{keywordflow}{return}\ ((base\_cpo\_t<CPO>\&\&)\ cpo)(}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ replace\_this<Args>::get(}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ (\textcolor{keyword}{decltype}(args)\&\&)\ args,}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ *\textcolor{keyword}{static\_cast<}T*\textcolor{keyword}{>}(thisPointer))...);}
+\DoxyCodeLine{00050\ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ Sig\ =\ \textcolor{keyword}{typename}\ CPO::type\_erased\_signature\_t>}
+\DoxyCodeLine{00053\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ Ret,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00056\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}}<CPO,\ Ret(Args...)\ noexcept>\ \{}
+\DoxyCodeLine{00057\ \ \ \textcolor{keyword}{using\ }fn\_t\ =}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ Ret(base\_cpo\_t<CPO>,\ replace\_this\_with\_void\_ptr\_t<Args>...)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \textcolor{keyword}{constexpr}\ fn\_t*\ get()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordflow}{return}\ fn\_;}
+\DoxyCodeLine{00062\ \ \ \}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}}\ \mbox{\hyperlink{namespaceunifex_af53c403f25c01d30f4aa96d3c992d67f}{create}}()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}}\{\_any\_unique::\_invoke<CPO,\ T,\ \textcolor{keyword}{true},\ Ret,\ Args...>\};}
+\DoxyCodeLine{00067\ \ \ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00070\ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}}(fn\_t*\ fn)\ noexcept}
+\DoxyCodeLine{00071\ \ \ \ \ :\ fn\_(fn)\ \{\}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ fn\_t*\ fn\_;}
+\DoxyCodeLine{00074\ \};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO,\ \textcolor{keyword}{typename}\ Ret,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00077\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}}<CPO,\ Ret(Args...)>\ \{}
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{using\ }fn\_t\ =}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ Ret(base\_cpo\_t<CPO>,\ replace\_this\_with\_void\_ptr\_t<Args>...);}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{constexpr}\ fn\_t*\ get()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordflow}{return}\ fn\_;}
+\DoxyCodeLine{00083\ \ \ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00086\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}}\ \mbox{\hyperlink{namespaceunifex_af53c403f25c01d30f4aa96d3c992d67f}{create}}()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}}\{\_any\_unique::\_invoke<CPO,\ T,\ \textcolor{keyword}{false},\ Ret,\ Args...>\};}
+\DoxyCodeLine{00088\ \ \ \}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00091\ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}}(fn\_t*\ fn)\ noexcept}
+\DoxyCodeLine{00092\ \ \ \ \ :\ fn\_(fn)\ \{\}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ fn\_t*\ fn\_;}
+\DoxyCodeLine{00095\ \};}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00098\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}\ :\ \textcolor{keyword}{private}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry}}<CPOs>...\ \{}
+\DoxyCodeLine{00099\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00100\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}\ create()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}\{\mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry<CPOs>::template}}\ create<T>()...\};}
+\DoxyCodeLine{00102\ \ \ \}}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CPO>}
+\DoxyCodeLine{00105\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ get()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ -\/>\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry<CPO>::fn\_t}}*\ \{}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry<CPO>}}\&\ entry\ =\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordflow}{return}\ entry.get();}
+\DoxyCodeLine{00108\ \ \ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00111\ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}(\mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry<CPOs>}}...\ entries)\ noexcept}
+\DoxyCodeLine{00112\ \ \ \ \ :\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable__entry}{vtable\_entry<CPOs>}}\{entries\}...\ \{\}}
+\DoxyCodeLine{00113\ \};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00116\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1indirect__vtable__holder}{indirect\_vtable\_holder}}\ \{}
+\DoxyCodeLine{00117\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00118\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1indirect__vtable__holder}{indirect\_vtable\_holder}}\ create()\ \{}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}<CPOs...>\ v\ =\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}<CPOs...>::template\ create<T>();}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1indirect__vtable__holder}{indirect\_vtable\_holder}}\{v\};}
+\DoxyCodeLine{00121\ \ \ \}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}<CPOs...>\&\ operator*()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keywordflow}{return}\ *vtable\_;}
+\DoxyCodeLine{00125\ \ \ \}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}<CPOs...>*\ operator-\/>()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keywordflow}{return}\ vtable\_;}
+\DoxyCodeLine{00129\ \ \ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00132\ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1indirect__vtable__holder}{indirect\_vtable\_holder}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable<CPOs...>}}\&\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}})}
+\DoxyCodeLine{00133\ \ \ \ \ :\ vtable\_(\&\mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}})\ \{\}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}<CPOs...>*\ vtable\_;}
+\DoxyCodeLine{00136\ \};}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00139\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1inline__vtable__holder}{inline\_vtable\_holder}}\ \{}
+\DoxyCodeLine{00140\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00141\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1inline__vtable__holder}{inline\_vtable\_holder}}\ create()\ \{}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1inline__vtable__holder}{inline\_vtable\_holder}}\{\mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}<CPOs...>::template\ create<T>()\};}
+\DoxyCodeLine{00143\ \ \ \}}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}<CPOs...>\&\ operator*()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keywordflow}{return}\ vtable\_;}
+\DoxyCodeLine{00147\ \ \ \}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}<CPOs...>*\ operator-\/>()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keywordflow}{return}\ \&vtable\_;}
+\DoxyCodeLine{00151\ \ \ \}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00154\ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1inline__vtable__holder}{inline\_vtable\_holder}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable<CPOs...>}}\&\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}})}
+\DoxyCodeLine{00155\ \ \ \ \ :\ vtable\_(\mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}})\ \{\}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1vtable}{vtable}}<CPOs...>\ vtable\_;}
+\DoxyCodeLine{00158\ \};}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00161\ \textcolor{keyword}{using\ }vtable\_holder\ =\ conditional\_t<}
+\DoxyCodeLine{00162\ \ \ \ \ (\textcolor{keyword}{sizeof}...(CPOs)\ <=\ 4),}
+\DoxyCodeLine{00163\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1inline__vtable__holder}{inline\_vtable\_holder}}<CPOs...>,}
+\DoxyCodeLine{00164\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1indirect__vtable__holder}{indirect\_vtable\_holder}}<CPOs...>>;}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00167\ \ \ \ \ \textcolor{keyword}{typename}\ Derived,}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keyword}{typename}\ CPO,}
+\DoxyCodeLine{00169\ \ \ \ \ \textcolor{keywordtype}{bool}\ NoExcept,}
+\DoxyCodeLine{00170\ \ \ \ \ \textcolor{keyword}{typename}\ Sig>}
+\DoxyCodeLine{00171\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__type__erased__tag__invoke}{\_with\_type\_erased\_tag\_invoke}};}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keyword}{typename}\ Derived,}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keyword}{typename}\ CPO,}
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keywordtype}{bool}\ NoExcept\ =\ \textcolor{keyword}{false},}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keyword}{typename}\ Sig\ =\ \textcolor{keyword}{typename}\ CPO::type\_erased\_signature\_t>}
+\DoxyCodeLine{00178\ \textcolor{keyword}{using\ }with\_type\_erased\_tag\_invoke\ =}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__type__erased__tag__invoke}{\_with\_type\_erased\_tag\_invoke<Derived,\ CPO,\ NoExcept,\ Sig>::type}};}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keyword}{typename}\ Derived,}
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keyword}{typename}\ CPO,}
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keywordtype}{bool}\ NoExcept,}
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keyword}{typename}\ Ret,}
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00187\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__type__erased__tag__invoke}{\_with\_type\_erased\_tag\_invoke}}<}
+\DoxyCodeLine{00188\ \ \ \ \ Derived,}
+\DoxyCodeLine{00189\ \ \ \ \ CPO,}
+\DoxyCodeLine{00190\ \ \ \ \ NoExcept,}
+\DoxyCodeLine{00191\ \ \ \ \ Ret(Args...)>\ \{}
+\DoxyCodeLine{00192\ \ \ \textcolor{keyword}{struct\ }type\ \{}
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{keyword}{friend}\ Ret\ tag\_invoke(base\_cpo\_t<CPO>\ cpo,\ replace\_this\_t<Args,\ Derived>...\ args)}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(NoExcept)\ \{}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \textcolor{keyword}{using\ }cpo\_t\ =\ base\_cpo\_t<CPO>;}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ !NoExcept\ ||\ \textcolor{keyword}{noexcept}(\mbox{\hyperlink{structunifex_1_1__extract__this}{extract\_this}}<Args...>\{\}((\textcolor{keyword}{decltype}(args)\ \&\&)\ args...)));}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\&\ t\ =\ \mbox{\hyperlink{structunifex_1_1__extract__this}{extract\_this}}<Args...>\{\}((\textcolor{keyword}{decltype}(args)\ \&\&)\ args...);}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(!NoExcept\ ||\ \textcolor{keyword}{noexcept}(get\_object\_address(t)));}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \textcolor{keywordtype}{void}*\ objPtr\ =\ get\_object\_address(t);}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(!NoExcept\ ||\ \textcolor{keyword}{noexcept}(get\_vtable(t)-\/>template\ get<CPO>()));}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \textcolor{keyword}{auto}*\ fnPtr\ =\ get\_vtable(t)-\/>template\ get<CPO>();}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(!NoExcept\ ||\ \textcolor{keyword}{noexcept}(fnPtr(}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ (cpo\_t\&\&)\ cpo,}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__replace__this}{replace\_this<Args>::get}}((\textcolor{keyword}{decltype}(args)\ \&\&)\ args,\ objPtr)...)));}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ fnPtr(}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ (cpo\_t\&\&)\ cpo,}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__replace__this}{replace\_this<Args>::get}}((\textcolor{keyword}{decltype}(args)\ \&\&)\ args,\ objPtr)...);}
+\DoxyCodeLine{00209\ \ \ \ \ \}}
+\DoxyCodeLine{00210\ \ \ \};}
+\DoxyCodeLine{00211\ \};}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keyword}{typename}\ Derived,}
+\DoxyCodeLine{00215\ \ \ \ \ \textcolor{keyword}{typename}\ CPO,}
+\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keyword}{typename}\ Ret,}
+\DoxyCodeLine{00217\ \ \ \ \ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00218\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__type__erased__tag__invoke}{\_with\_type\_erased\_tag\_invoke}}<}
+\DoxyCodeLine{00219\ \ \ \ \ Derived,}
+\DoxyCodeLine{00220\ \ \ \ \ CPO,}
+\DoxyCodeLine{00221\ \ \ \ \ false,}
+\DoxyCodeLine{00222\ \ \ \ \ Ret(Args...)\ noexcept>}
+\DoxyCodeLine{00223\ \ \ :\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__type__erased__tag__invoke}{\_with\_type\_erased\_tag\_invoke}}<Derived,\ CPO,\ true,\ Ret(Args...)>\ \{}
+\DoxyCodeLine{00224\ \};}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00227\ \ \ \ \ \textcolor{keyword}{typename}\ Derived,}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keyword}{typename}\ CPO,}
+\DoxyCodeLine{00229\ \ \ \ \ \textcolor{keywordtype}{bool}\ NoExcept,}
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{keyword}{typename}\ Sig>}
+\DoxyCodeLine{00231\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__forwarding__tag__invoke}{\_with\_forwarding\_tag\_invoke}};}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00233\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00234\ \ \ \ \ \textcolor{keyword}{typename}\ Derived,}
+\DoxyCodeLine{00235\ \ \ \ \ \textcolor{keyword}{typename}\ CPO,}
+\DoxyCodeLine{00236\ \ \ \ \ \textcolor{keywordtype}{bool}\ NoExcept\ =\ \textcolor{keyword}{false},}
+\DoxyCodeLine{00237\ \ \ \ \ \textcolor{keyword}{typename}\ Sig\ =\ \textcolor{keyword}{typename}\ CPO::type\_erased\_signature\_t>}
+\DoxyCodeLine{00238\ \textcolor{keyword}{using\ }with\_forwarding\_tag\_invoke\ =}
+\DoxyCodeLine{00239\ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__forwarding__tag__invoke}{\_with\_forwarding\_tag\_invoke<Derived,\ CPO,\ NoExcept,\ Sig>::type}};}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00241\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00242\ \ \ \ \ \textcolor{keyword}{typename}\ Derived,}
+\DoxyCodeLine{00243\ \ \ \ \ \textcolor{keyword}{typename}\ CPO,}
+\DoxyCodeLine{00244\ \ \ \ \ \textcolor{keywordtype}{bool}\ NoExcept,}
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{keyword}{typename}\ Ret,}
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00247\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__forwarding__tag__invoke}{\_with\_forwarding\_tag\_invoke}}<}
+\DoxyCodeLine{00248\ \ \ \ \ Derived,}
+\DoxyCodeLine{00249\ \ \ \ \ CPO,}
+\DoxyCodeLine{00250\ \ \ \ \ NoExcept,}
+\DoxyCodeLine{00251\ \ \ \ \ Ret(Args...)>\ \{}
+\DoxyCodeLine{00252\ \ \ \textcolor{keyword}{struct\ }type\ \{}
+\DoxyCodeLine{00253\ \ \ \ \ \textcolor{keyword}{friend}\ Ret\ tag\_invoke(}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ base\_cpo\_t<CPO>\ cpo,}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ replace\_this\_t<Args,\ Derived>...\ args)\ \textcolor{keyword}{noexcept}(NoExcept)\ \{}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(!NoExcept\ ||\ \textcolor{keyword}{noexcept}(\mbox{\hyperlink{structunifex_1_1__extract__this}{extract\_this}}<Args...>\{\}(args...)));}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ wrapper\ =\ \mbox{\hyperlink{structunifex_1_1__extract__this}{extract\_this}}<Args...>\{\}(args...);}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \textcolor{keyword}{auto}\&\ wrapped\ =\ wrapper.value;}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ !NoExcept\ ||\ \textcolor{keyword}{noexcept}(std::move(cpo)(}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__replace__this}{replace\_this<Args>::get}}((Args\ \&\&)\ args,\ wrapped)...)));}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(cpo)(\mbox{\hyperlink{structunifex_1_1__replace__this}{replace\_this<Args>::get}}((Args\ \&\&)\ args,\ wrapped)...);}
+\DoxyCodeLine{00263\ \ \ \ \ \}}
+\DoxyCodeLine{00264\ \ \ \};}
+\DoxyCodeLine{00265\ \};}
+\DoxyCodeLine{00266\ }
+\DoxyCodeLine{00267\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00268\ \ \ \ \ \textcolor{keyword}{typename}\ Derived,}
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{keyword}{typename}\ CPO,}
+\DoxyCodeLine{00270\ \ \ \ \ \textcolor{keyword}{typename}\ Ret,}
+\DoxyCodeLine{00271\ \ \ \ \ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00272\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__forwarding__tag__invoke}{\_with\_forwarding\_tag\_invoke}}<}
+\DoxyCodeLine{00273\ \ \ \ \ Derived,}
+\DoxyCodeLine{00274\ \ \ \ \ CPO,}
+\DoxyCodeLine{00275\ \ \ \ \ false,}
+\DoxyCodeLine{00276\ \ \ \ \ Ret(Args...)\ noexcept>}
+\DoxyCodeLine{00277\ \ \ :\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__with__forwarding__tag__invoke}{\_with\_forwarding\_tag\_invoke}}<Derived,\ CPO,\ true,\ Ret(Args...)>\ \{}
+\DoxyCodeLine{00278\ \};}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00280\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__deallocate__cpo}{\_deallocate\_cpo}}\ \{}
+\DoxyCodeLine{00281\ \ \ \textcolor{keyword}{using\ }type\_erased\_signature\_t\ =\ void(\mbox{\hyperlink{structunifex_1_1this__}{this\_}}\&)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00283\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00284\ \ \ UNIFEX\_ALWAYS\_INLINE}
+\DoxyCodeLine{00285\ \ \ \textcolor{keywordtype}{void}\ operator()(T\&\ obj)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00286\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (tag\_invocable<\_deallocate\_cpo,\ T\&>)\ \{}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{noexcept}(tag\_invoke(\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__deallocate__cpo}{\_deallocate\_cpo}}\{\},\ obj)));}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ tag\_invoke(\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__deallocate__cpo}{\_deallocate\_cpo}}\{\},\ obj);}
+\DoxyCodeLine{00289\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ std::addressof(obj);}
+\DoxyCodeLine{00291\ \ \ \ \ \}}
+\DoxyCodeLine{00292\ \ \ \}}
+\DoxyCodeLine{00293\ \};}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Concrete,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00296\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl}{\_concrete\_impl}}\ \{}
+\DoxyCodeLine{00297\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1base}{base}}\ \{}
+\DoxyCodeLine{00298\ \ \ \ \ \textcolor{keyword}{using\ }allocator\_type\ =\ \textcolor{keyword}{typename}\ std::allocator\_traits<}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ Allocator>::template\ rebind\_alloc<base>;}
+\DoxyCodeLine{00300\ }
+\DoxyCodeLine{00301\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00302\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1base}{base}}(std::allocator\_arg\_t,\ allocator\_type\ alloc,\ Args\&\&...\ args)}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_move\_constructible\_v<allocator\_type>\ \&\&}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<Concrete,\ Args...>)}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ :\ value((Args\ \&\&)\ args...)}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ ,\ alloc(std::move(alloc))\ \{\}}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ tag\_invoke(\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__deallocate__cpo}{\_deallocate\_cpo}},\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1base}{base}}\&\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1impl}{impl}})\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ allocator\_type\ allocCopy\ =\ std::move(\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1impl}{impl}}.alloc);}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1impl}{impl}}.\string~base();}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ std::allocator\_traits<allocator\_type>::deallocate(}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ allocCopy,\ \&\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1impl}{impl}},\ 1);}
+\DoxyCodeLine{00313\ \ \ \ \ \}}
+\DoxyCodeLine{00314\ }
+\DoxyCodeLine{00315\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ Concrete\ value;}
+\DoxyCodeLine{00316\ \ \ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ allocator\_type\ alloc;}
+\DoxyCodeLine{00317\ \ \ \};}
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00319\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00320\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1impl}{impl}}\ \{}
+\DoxyCodeLine{00321\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1impl_1_1type}{type}}\ :\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl_1_1base}{base}},\ \textcolor{keyword}{private}\ with\_forwarding\_tag\_invoke<base,\ CPOs>...\ \{}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \textcolor{keyword}{using\ }base::base;}
+\DoxyCodeLine{00323\ \ \ \ \ \};}
+\DoxyCodeLine{00324\ \ \ \};}
+\DoxyCodeLine{00325\ \};}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00327\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Concrete,\ \textcolor{keyword}{typename}\ Allocator,\ \textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00328\ \textcolor{keyword}{using\ }concrete\_impl\ =}
+\DoxyCodeLine{00329\ \ \ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__concrete__impl}{\_concrete\_impl<Concrete,\ Allocator>::template}}\ impl<CPOs...>::type;}
+\DoxyCodeLine{00330\ }
+\DoxyCodeLine{00331\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00332\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_in\_place\_type\_tag\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00333\ }
+\DoxyCodeLine{00334\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00335\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_in\_place\_type\_tag<std::in\_place\_type\_t<T>>\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00336\ }
+\DoxyCodeLine{00337\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00338\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__byval}{\_byval}}\ \{}
+\DoxyCodeLine{00339\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}};}
+\DoxyCodeLine{00340\ \};}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00342\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00343\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__byval}{\_byval}}<CPOs...>::\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}}
+\DoxyCodeLine{00344\ \ \ :\ \textcolor{keyword}{private}\ with\_type\_erased\_tag\_invoke<type,\ CPOs>...\ \{}
+\DoxyCodeLine{00345\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00346\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Concrete,\ \textcolor{keyword}{typename}\ Allocator,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00347\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}(}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ std::allocator\_arg\_t,}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ Allocator\ alloc,}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ std::in\_place\_type\_t<Concrete>,}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ Args\&\&...\ args)}
+\DoxyCodeLine{00352\ \ \ \ \ :\ vtable\_(vtable\_holder\_t::template\ \mbox{\hyperlink{namespaceunifex_af53c403f25c01d30f4aa96d3c992d67f}{create}}<}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ concrete\_impl<Concrete,\ Allocator,\ CPOs...>>())\ \{}
+\DoxyCodeLine{00354\ \ \ \ \ \textcolor{keyword}{using\ }concrete\_type\ =\ concrete\_impl<Concrete,\ Allocator,\ CPOs...>;}
+\DoxyCodeLine{00355\ \ \ \ \ \textcolor{keyword}{using\ }allocator\_type\ =\ \textcolor{keyword}{typename}\ concrete\_type::allocator\_type;}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{keyword}{using\ }allocator\_traits\ =\ std::allocator\_traits<allocator\_type>;}
+\DoxyCodeLine{00357\ \ \ \ \ allocator\_type\ typedAllocator\{std::move(alloc)\};}
+\DoxyCodeLine{00358\ \ \ \ \ \textcolor{keyword}{auto}\ ptr\ =\ allocator\_traits::allocate(typedAllocator,\ 1);}
+\DoxyCodeLine{00359\ }
+\DoxyCodeLine{00360\ \ \ \ \ UNIFEX\_TRY\ \{}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \textcolor{comment}{//\ TODO:\ Ideally\ we'd\ use\ allocator\_traits::construct()\ here\ but}}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \textcolor{comment}{//\ that\ makes\ it\ difficult\ to\ provide\ consistent\ behaviour\ across}}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \textcolor{comment}{//\ std::allocator\ and\ std::pmr::polymorphic\_allocator\ as\ the\ latter}}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \textcolor{comment}{//\ automatically\ injects\ the\ extra\ allocator\_arg/alloc\ params\ which}}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \textcolor{comment}{//\ ends\ up\ duplicating\ them.\ But\ std::allocator\ doesn't\ do\ the\ same}}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \textcolor{comment}{//\ injection\ of\ the\ parameters.}}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ ::new\ ((\textcolor{keywordtype}{void}*)ptr)}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ \ \ concrete\_type\{std::allocator\_arg,\ typedAllocator,\ (Args\ \&\&)\ args...\};}
+\DoxyCodeLine{00369\ \ \ \ \ \}\ UNIFEX\_CATCH\ (...)\ \{}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ allocator\_traits::deallocate(typedAllocator,\ ptr,\ 1);}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ UNIFEX\_RETHROW();}
+\DoxyCodeLine{00372\ \ \ \ \ \}}
+\DoxyCodeLine{00373\ }
+\DoxyCodeLine{00374\ \ \ \ \ impl\_\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(ptr);}
+\DoxyCodeLine{00375\ \ \ \}}
+\DoxyCodeLine{00376\ }
+\DoxyCodeLine{00377\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Concrete,\ \textcolor{keyword}{typename}\ Allocator)}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!same\_as<std::allocator\_arg\_t,\ remove\_cvref\_t<Concrete>>)\ AND}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \ \ (!is\_in\_place\_type\_tag<remove\_cvref\_t<Concrete>>))}
+\DoxyCodeLine{00380\ \ \ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}(Concrete\&\&\ concrete,\ Allocator\ alloc)}
+\DoxyCodeLine{00381\ \ \ \ \ :\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}(}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \ \ \ \ std::allocator\_arg,}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ \ \ std::move(alloc),}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ \ \ std::in\_place\_type\_t<remove\_cvref\_t<Concrete>>\{\},}
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ \ \ (Concrete\ \&\&)\ concrete)\ \{\}}
+\DoxyCodeLine{00386\ }
+\DoxyCodeLine{00387\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Concrete,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00388\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}([[maybe\_unused]]\ std::in\_place\_type\_t<Concrete>\ tag,\ Args\&\&...\ args)}
+\DoxyCodeLine{00389\ \ \ \ \ :\ impl\_(\textcolor{keyword}{new}\ Concrete((Args\&\&)\ args...))}
+\DoxyCodeLine{00390\ \ \ \ \ ,\ vtable\_(vtable\_holder\_t::template\ create<Concrete>())\ \{\}}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00392\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Concrete)}
+\DoxyCodeLine{00393\ \ \ \ \ (\textcolor{keyword}{requires}\ (!same\_as<\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}},\ remove\_cvref\_t<Concrete>>)\ AND}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ (!is\_in\_place\_type\_tag<remove\_cvref\_t<Concrete>>))}
+\DoxyCodeLine{00395\ \ \ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}(Concrete\&\&\ concrete)}
+\DoxyCodeLine{00396\ \ \ \ \ :\ impl\_(\textcolor{keyword}{new}\ \textcolor{keyword}{auto}((Concrete\&\&)\ concrete))}
+\DoxyCodeLine{00397\ \ \ \ \ ,\ vtable\_(vtable\_holder\_t::template\ \mbox{\hyperlink{namespaceunifex_af53c403f25c01d30f4aa96d3c992d67f}{create}}<std::decay\_t<Concrete>>())\ \{\}}
+\DoxyCodeLine{00398\ }
+\DoxyCodeLine{00399\ \ \ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}(\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}\&\&\ other)\ noexcept}
+\DoxyCodeLine{00400\ \ \ \ \ :\ impl\_(std::exchange(other.impl\_,\ \textcolor{keyword}{nullptr}))}
+\DoxyCodeLine{00401\ \ \ \ \ ,\ vtable\_(other.vtable\_)\ \{\}}
+\DoxyCodeLine{00402\ }
+\DoxyCodeLine{00403\ \ \ UNIFEX\_ALWAYS\_INLINE\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{\string~type}}()\ \{}
+\DoxyCodeLine{00404\ \ \ \ \ unsafe\_deallocate();}
+\DoxyCodeLine{00405\ \ \ \}}
+\DoxyCodeLine{00406\ }
+\DoxyCodeLine{00407\ \ \ \textcolor{keywordtype}{void}\ swap(\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}\&\ other)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00408\ \ \ \ \ std::swap(vtable\_,\ other.vtable\_);}
+\DoxyCodeLine{00409\ \ \ \ \ std::swap(impl\_,\ other.impl\_);}
+\DoxyCodeLine{00410\ \ \ \}}
+\DoxyCodeLine{00411\ }
+\DoxyCodeLine{00412\ \ \ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}\&\ operator=(\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}\ other)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00413\ \ \ \ \ swap(other);}
+\DoxyCodeLine{00414\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00415\ \ \ \}}
+\DoxyCodeLine{00416\ }
+\DoxyCodeLine{00417\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00418\ \ \ \textcolor{keyword}{using\ }vtable\_holder\_t\ =\ vtable\_holder<\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__deallocate__cpo}{\_deallocate\_cpo}},\ CPOs...>;}
+\DoxyCodeLine{00419\ }
+\DoxyCodeLine{00420\ \ \ UNIFEX\_ALWAYS\_INLINE\ \textcolor{keywordtype}{void}\ unsafe\_deallocate()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00421\ \ \ \ \ \textcolor{comment}{//\ This\ leaves\ the\ any\_unique\ in\ an\ invalid\ state.}}
+\DoxyCodeLine{00422\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{nullptr}\ !=\ impl\_)\ \{}
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{noexcept}(vtable\_-\/>template\ get<\_deallocate\_cpo>()));}
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \textcolor{keyword}{auto}*\ deallocateFn\ =\ vtable\_-\/>template\ get<\_deallocate\_cpo>();}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{noexcept}(deallocateFn(\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__deallocate__cpo}{\_deallocate\_cpo}}\{\},\ impl\_)));}
+\DoxyCodeLine{00426\ \ \ \ \ \ \ deallocateFn(\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__deallocate__cpo}{\_deallocate\_cpo}}\{\},\ impl\_);}
+\DoxyCodeLine{00427\ \ \ \ \ \}}
+\DoxyCodeLine{00428\ \ \ \}}
+\DoxyCodeLine{00429\ }
+\DoxyCodeLine{00430\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ swap(\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}\&\ left,\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}\&\ right)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00431\ \ \ \ \ left.swap(right);}
+\DoxyCodeLine{00432\ \ \ \}}
+\DoxyCodeLine{00433\ }
+\DoxyCodeLine{00434\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{const}\ vtable\_holder\_t\&\ get\_vtable(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}\&\ self)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00435\ \ \ \ \ \textcolor{keywordflow}{return}\ self.vtable\_;}
+\DoxyCodeLine{00436\ \ \ \}}
+\DoxyCodeLine{00437\ }
+\DoxyCodeLine{00438\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}*\ get\_object\_address(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byval_1_1type}{type}}\&\ self)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00439\ \ \ \ \ \textcolor{keywordflow}{return}\ self.impl\_;}
+\DoxyCodeLine{00440\ \ \ \}}
+\DoxyCodeLine{00441\ }
+\DoxyCodeLine{00442\ \ \ \textcolor{keywordtype}{void}*\ impl\_;}
+\DoxyCodeLine{00443\ \ \ vtable\_holder\_t\ vtable\_;}
+\DoxyCodeLine{00444\ \};}
+\DoxyCodeLine{00445\ }
+\DoxyCodeLine{00446\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00447\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__byref}{\_byref}}\ \{}
+\DoxyCodeLine{00448\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}};}
+\DoxyCodeLine{00449\ \};}
+\DoxyCodeLine{00450\ }
+\DoxyCodeLine{00451\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00452\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__any__unique_1_1__byref}{\_byref}}<CPOs...>::\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}}
+\DoxyCodeLine{00453\ \ \ :\ \textcolor{keyword}{private}\ with\_type\_erased\_tag\_invoke<type,\ CPOs>...\ \{}
+\DoxyCodeLine{00454\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00455\ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ Concrete)}
+\DoxyCodeLine{00456\ \ \ \ \ (\textcolor{keyword}{requires}\ (!same\_as<Concrete\ const,\ type\ const>))}
+\DoxyCodeLine{00457\ \ \ \textcolor{comment}{/*implicit*/}\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}(Concrete\&\ impl)}
+\DoxyCodeLine{00458\ \ \ \ \ :\ vtable\_(vtable\_holder\_t::template\ create<Concrete>())}
+\DoxyCodeLine{00459\ \ \ \ \ ,\ impl\_((\textcolor{keywordtype}{void}*)\ std::addressof(impl))\ \{\}}
+\DoxyCodeLine{00460\ }
+\DoxyCodeLine{00461\ \ \ \textcolor{keywordtype}{void}\ swap(\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}\&\ other)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00462\ \ \ \ \ std::swap(vtable\_,\ other.vtable\_);}
+\DoxyCodeLine{00463\ \ \ \ \ std::swap(impl\_,\ other.impl\_);}
+\DoxyCodeLine{00464\ \ \ \}}
+\DoxyCodeLine{00465\ }
+\DoxyCodeLine{00466\ \ \ \textcolor{comment}{//\ Two\ any\_ref's\ compare\ equal\ IFF\ they\ refer\ to\ the\ same\ object\ (shallow).}}
+\DoxyCodeLine{00467\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator==(\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}\ \textcolor{keyword}{const}\&\ left,\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}\ \textcolor{keyword}{const}\&\ right)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00468\ \ \ \ \ \textcolor{keywordflow}{return}\ left.impl\_\ ==\ right.impl\_;}
+\DoxyCodeLine{00469\ \ \ \}}
+\DoxyCodeLine{00470\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ operator!=(\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}\ \textcolor{keyword}{const}\&\ left,\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}\ \textcolor{keyword}{const}\&\ right)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00471\ \ \ \ \ \textcolor{keywordflow}{return}\ !(left\ ==\ right);}
+\DoxyCodeLine{00472\ \ \ \}}
+\DoxyCodeLine{00473\ }
+\DoxyCodeLine{00474\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00475\ \ \ \textcolor{keyword}{using\ }vtable\_holder\_t\ =\ vtable\_holder<CPOs...>;}
+\DoxyCodeLine{00476\ }
+\DoxyCodeLine{00477\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ swap(\mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}\&\ left,\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}\&\ right)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00478\ \ \ \ \ left.swap(right);}
+\DoxyCodeLine{00479\ \ \ \}}
+\DoxyCodeLine{00480\ }
+\DoxyCodeLine{00481\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{const}\ vtable\_holder\_t\&\ get\_vtable(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}\&\ self)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00482\ \ \ \ \ \textcolor{keywordflow}{return}\ self.vtable\_;}
+\DoxyCodeLine{00483\ \ \ \}}
+\DoxyCodeLine{00484\ }
+\DoxyCodeLine{00485\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}*\ get\_object\_address(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1__any__unique_1_1__byref_1_1type}{type}}\&\ self)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00486\ \ \ \ \ \textcolor{keywordflow}{return}\ self.impl\_;}
+\DoxyCodeLine{00487\ \ \ \}}
+\DoxyCodeLine{00488\ }
+\DoxyCodeLine{00489\ \ \ vtable\_holder\_t\ vtable\_;}
+\DoxyCodeLine{00490\ \ \ \textcolor{keywordtype}{void}*\ impl\_;}
+\DoxyCodeLine{00491\ \};}
+\DoxyCodeLine{00492\ }
+\DoxyCodeLine{00493\ \}\ \textcolor{comment}{//\ namespace\ \_any\_unique}}
+\DoxyCodeLine{00494\ }
+\DoxyCodeLine{00495\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00496\ \textcolor{keyword}{using\ }any\_unique\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__byval}{\_any\_unique::\_byval}}<CPOs...>::type;}
+\DoxyCodeLine{00497\ }
+\DoxyCodeLine{00498\ \textcolor{keyword}{template}\ <\textcolor{keyword}{auto}\&...\ CPOs>}
+\DoxyCodeLine{00499\ \textcolor{keyword}{using\ }any\_unique\_t\ =\ any\_unique<tag\_t<CPOs>...>;}
+\DoxyCodeLine{00500\ }
+\DoxyCodeLine{00501\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ CPOs>}
+\DoxyCodeLine{00502\ \textcolor{keyword}{using\ }any\_ref\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__any__unique_1_1__byref}{\_any\_unique::\_byref}}<CPOs...>::type;}
+\DoxyCodeLine{00503\ }
+\DoxyCodeLine{00504\ \textcolor{keyword}{template}\ <\textcolor{keyword}{auto}\&...\ CPOs>}
+\DoxyCodeLine{00505\ \textcolor{keyword}{using\ }any\_ref\_t\ =\ any\_ref<tag\_t<CPOs>...>;}
+\DoxyCodeLine{00506\ }
+\DoxyCodeLine{00507\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00508\ }
+\DoxyCodeLine{00509\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

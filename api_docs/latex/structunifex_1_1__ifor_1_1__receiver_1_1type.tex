@@ -1,0 +1,49 @@
+\doxysection{\+\_\+receiver\texorpdfstring{$<$}{<} Policy, Range, Func, Receiver \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type}{}\label{structunifex_1_1__ifor_1_1__receiver_1_1type}\index{\_receiver$<$ Policy, Range, Func, Receiver $>$::type@{\_receiver$<$ Policy, Range, Func, Receiver $>$::type}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_ac776056dc76c28eb2f761b53c1a27676}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_ac776056dc76c28eb2f761b53c1a27676} 
+{\footnotesize template$<$typename... Values$>$ }\\void {\bfseries set\+\_\+value} (Values \&\&... values) \&\&noexcept
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_afcfd8ad65b73c984cd14f207d3c0948b}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_afcfd8ad65b73c984cd14f207d3c0948b} 
+{\footnotesize template$<$typename Error $>$ }\\void {\bfseries set\+\_\+error} (Error \&\&error) \&\&noexcept
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_a28bf33284c674c8444d59a2fa87f418b}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_a28bf33284c674c8444d59a2fa87f418b} 
+void {\bfseries set\+\_\+done} () \&\&noexcept
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_a5e4f8252fd29650499e3002e59b5d80b}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_a5e4f8252fd29650499e3002e59b5d80b} 
+{\bfseries template} (typename CPO)() friend auto tag\+\_\+invoke(CPO cpo
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_a0464b0e5e68c63776a5f971f86fbc077}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_a0464b0e5e68c63776a5f971f86fbc077} 
+const \mbox{\hyperlink{structunifex_1_1__ifor_1_1__receiver_1_1type}{type}} \&r {\bfseries noexcept} (is\+\_\+nothrow\+\_\+callable\+\_\+v$<$ CPO, const Receiver \& $>$) -\/$>$ callable\+\_\+result\+\_\+t$<$ CPO, const Receiver \& $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_af5ac28bbe77d34b504a3ebba0be9c31c}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_af5ac28bbe77d34b504a3ebba0be9c31c} 
+{\footnotesize template$<$typename... Values$>$ }\\static void {\bfseries apply\+\_\+func\+\_\+with\+\_\+policy} (const execution\+::sequenced\+\_\+policy \&, Range \&\&range, Func \&\&func, Values \&... values) noexcept(std\+::is\+\_\+nothrow\+\_\+invocable\+\_\+v$<$ Func, typename std\+::iterator\+\_\+traits$<$ typename Range\+::iterator $>$\+::reference, Values... $>$)
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_adc219232360beffdfcbe9e4d72e3c251}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_adc219232360beffdfcbe9e4d72e3c251} 
+{\footnotesize template$<$typename... Values$>$ }\\static void {\bfseries apply\+\_\+func\+\_\+with\+\_\+policy} (const execution\+::parallel\+\_\+policy \&, Range \&\&range, Func \&\&func, Values \&... values) noexcept(std\+::is\+\_\+nothrow\+\_\+invocable\+\_\+v$<$ Func, typename std\+::iterator\+\_\+traits$<$ typename Range\+::iterator $>$\+::reference, Values... $>$)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_a6cdb51372da6e6ecd5b4b6efbc400a6e}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_a6cdb51372da6e6ecd5b4b6efbc400a6e} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Func {\bfseries func\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_a6931a1287d91e3eefad74758944efb80}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_a6931a1287d91e3eefad74758944efb80} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Policy {\bfseries policy\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_af75c98fc75ce657e8240d0256189be6b}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_af75c98fc75ce657e8240d0256189be6b} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Range {\bfseries range\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__ifor_1_1__receiver_1_1type_a3be0ca754ec0c558018d71e7a4426369}\label{structunifex_1_1__ifor_1_1__receiver_1_1type_a3be0ca754ec0c558018d71e7a4426369} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Receiver {\bfseries receiver\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/indexed\+\_\+for.\+hpp\end{DoxyCompactItemize}

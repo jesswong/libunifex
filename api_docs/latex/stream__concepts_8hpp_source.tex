@@ -1,0 +1,103 @@
+\doxysection{stream\+\_\+concepts.\+hpp}
+\hypertarget{stream__concepts_8hpp_source}{}\label{stream__concepts_8hpp_source}\index{include/unifex/stream\_concepts.hpp@{include/unifex/stream\_concepts.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }\_streams\ \{}
+\DoxyCodeLine{00025\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__streams_1_1__next__fn}{\_next\_fn}}\ \{}
+\DoxyCodeLine{00026\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Stream>}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{using\ }\_member\_next\_result\_t\ =\ \textcolor{keyword}{decltype}(UNIFEX\_DECLVAL(Stream).next());}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Stream>}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{using\ }\_result\_t\ =}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ conditional\_t<}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ tag\_invocable<\_next\_fn,\ Stream>,}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote1___1_1bind__front}{meta\_tag\_invoke\_result<\_next\_fn>}},}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote1}{meta\_quote1<\_member\_next\_result\_t>}}>::template\ apply<Stream>;}
+\DoxyCodeLine{00035\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Stream)}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_next\_fn,\ Stream\&>)}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{auto}\ operator()(Stream\&\ stream)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_next\_fn,\ Stream\&>)}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<Stream\&>\ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::tag\_invoke(\mbox{\hyperlink{structunifex_1_1__streams_1_1__next__fn}{\_next\_fn}}\{\},\ stream);}
+\DoxyCodeLine{00042\ \ \ \ \ \}}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Stream)}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_next\_fn,\ Stream\&>))}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(Stream\&\ stream)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(stream.next()))}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<Stream\&>\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ stream.next();}
+\DoxyCodeLine{00049\ \ \ \ \ \}}
+\DoxyCodeLine{00050\ \ \ \}\ next\{\};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__streams_1_1__cleanup__fn}{\_cleanup\_fn}}\ \{}
+\DoxyCodeLine{00053\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Stream>}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{using\ }\_member\_cleanup\_result\_t\ =\ \textcolor{keyword}{decltype}(UNIFEX\_DECLVAL(Stream).cleanup());}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Stream>}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{using\ }\_result\_t\ =}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ conditional\_t<}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ tag\_invocable<\_cleanup\_fn,\ Stream>,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote1___1_1bind__front}{meta\_tag\_invoke\_result<\_cleanup\_fn>}},}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structunifex_1_1meta__quote1}{meta\_quote1<\_member\_cleanup\_result\_t>}}>::template\ apply<Stream>;}
+\DoxyCodeLine{00062\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Stream)}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_cleanup\_fn,\ Stream\&>)}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keyword}{auto}\ operator()(Stream\&\ stream)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_cleanup\_fn,\ Stream\&>)}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<Stream\&>\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::tag\_invoke(\mbox{\hyperlink{structunifex_1_1__streams_1_1__cleanup__fn}{\_cleanup\_fn}}\{\},\ stream);}
+\DoxyCodeLine{00069\ \ \ \ \ \}}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Stream)}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_cleanup\_fn,\ Stream\&>))}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(Stream\&\ stream)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(stream.cleanup()))}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ -\/>\ \_result\_t<Stream\&>\ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ stream.cleanup();}
+\DoxyCodeLine{00076\ \ \ \ \ \}}
+\DoxyCodeLine{00077\ \ \ \}\ cleanup\{\};}
+\DoxyCodeLine{00078\ \}\ \textcolor{comment}{//\ namespace\ \_streams}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{keyword}{using\ }\_streams::next;}
+\DoxyCodeLine{00081\ \textcolor{keyword}{using\ }\_streams::cleanup;}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Stream>}
+\DoxyCodeLine{00084\ \textcolor{keyword}{using\ }next\_sender\_t\ =\ \textcolor{keyword}{decltype}(next(std::declval<Stream\&>()));}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Stream>}
+\DoxyCodeLine{00087\ \textcolor{keyword}{using\ }cleanup\_sender\_t\ =\ \textcolor{keyword}{decltype}(cleanup(std::declval<Stream\&>()));}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Stream,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00090\ \textcolor{keyword}{using\ }next\_operation\_t\ =\ connect\_result\_t<next\_sender\_t<Stream>,\ Receiver>;}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Stream,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00093\ \textcolor{keyword}{using\ }cleanup\_operation\_t\ =\ connect\_result\_t<cleanup\_sender\_t<Stream>,\ Receiver>;}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

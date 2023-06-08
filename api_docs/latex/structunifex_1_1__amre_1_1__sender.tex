@@ -1,0 +1,31 @@
+\doxysection{\+\_\+sender Struct Reference}
+\hypertarget{structunifex_1_1__amre_1_1__sender}{}\label{structunifex_1_1__amre_1_1__sender}\index{\_sender@{\_sender}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__amre_1_1__sender_ad0993cef3b28159db0c3c9f30151fdca}\label{structunifex_1_1__amre_1_1__sender_ad0993cef3b28159db0c3c9f30151fdca} 
+{\footnotesize template$<$template$<$ class... $>$ class Variant, template$<$ class... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = Variant$<$ Tuple$<$$>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__amre_1_1__sender_a8b4b8139220ba100d4ae08b62fb1177b}\label{structunifex_1_1__amre_1_1__sender_a8b4b8139220ba100d4ae08b62fb1177b} 
+{\footnotesize template$<$template$<$ class... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = Variant$<$ std\+::exception\+\_\+ptr $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__amre_1_1__sender_ad613f2063b36ffc14260f6ae8fd9e9b2}\label{structunifex_1_1__amre_1_1__sender_ad613f2063b36ffc14260f6ae8fd9e9b2} 
+{\bfseries \+\_\+sender} (\mbox{\hyperlink{structunifex_1_1__amre_1_1async__manual__reset__event}{async\+\_\+manual\+\_\+reset\+\_\+event}} \&evt) noexcept
+\item 
+\Hypertarget{structunifex_1_1__amre_1_1__sender_aca3349a89c7287514ca9e2446b5cfe0e}\label{structunifex_1_1__amre_1_1__sender_aca3349a89c7287514ca9e2446b5cfe0e} 
+{\bfseries template} (typename Receiver)(AND scheduler\+\_\+provider$<$ Receiver $>$) operation$<$ remove\+\_\+cvref\+\_\+t$<$ Receiver $>$ $>$ connect(Receiver \&\&r) const noexcept(noexcept(operation$<$ remove\+\_\+cvref\+\_\+t$<$ Receiver $>$ $>$\{ UNIFEX\+\_\+\+DECLVAL(\mbox{\hyperlink{structunifex_1_1__amre_1_1async__manual__reset__event}{async\+\_\+manual\+\_\+reset\+\_\+event}} \&),(Receiver \&\&) r\}))
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__amre_1_1__sender_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__amre_1_1__sender_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = false
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/async\+\_\+manual\+\_\+reset\+\_\+event.\+hpp\end{DoxyCompactItemize}

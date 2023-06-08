@@ -1,0 +1,144 @@
+\doxysection{async\+\_\+mutex.\+hpp}
+\hypertarget{async__mutex_8hpp_source}{}\label{async__mutex_8hpp_source}\index{include/unifex/async\_mutex.hpp@{include/unifex/async\_mutex.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/detail/atomic\_intrusive\_queue.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/detail/intrusive\_queue.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \{}
+\DoxyCodeLine{00029\ \ \ \textcolor{keyword}{class\ }lock\_sender;}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00032\ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00033\ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00034\ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}(\mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00035\ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex}{\string~async\_mutex}}();}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00038\ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&operator=(\mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ [[nodiscard]]\ \textcolor{keywordtype}{bool}\ try\_lock()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ [[nodiscard]]\ lock\_sender\ async\_lock()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \textcolor{keywordtype}{void}\ unlock()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00047\ \ \ \textcolor{keyword}{struct\ }waiter\_base\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ void\ (*resume\_)(waiter\_base\ *)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00049\ \ \ \ \ waiter\_base\ *next\_;}
+\DoxyCodeLine{00050\ \ \ \};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{class\ }lock\_sender\ \{}
+\DoxyCodeLine{00053\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<>;}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ lock\_sender(\textcolor{keyword}{const}\ lock\_sender\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00064\ \ \ \ \ lock\_sender(lock\_sender\ \&\&)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{friend}\ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{explicit}\ lock\_sender(\mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&mutex)\ noexcept}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ :\ mutex\_(mutex)\ \{\}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{struct\ }\_op\ \{}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1async__mutex_1_1lock__sender_1_1__op_1_1type}{type}}\ :\ waiter\_base\ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ lock\_sender;}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1async__mutex_1_1lock__sender_1_1__op_1_1type}{type}}(\mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&mutex,\ Receiver2\ \&\&r)\ noexcept}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ :\ mutex\_(mutex),\ receiver\_((Receiver2\ \&\&)\ r)\ \{}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ this-\/>resume\_\ =\ [](waiter\_base\ *\ self)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex_1_1lock__sender_1_1__op_1_1type}{type}}\ \&op\ =\ *\textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classunifex_1_1async__mutex_1_1lock__sender_1_1__op_1_1type}{type}}\ *\textcolor{keyword}{>}(self);}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ unifex::set\_value((Receiver\ \&\&)\ op.receiver\_);}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex_1_1lock__sender_1_1__op_1_1type}{type}}(\mbox{\hyperlink{classunifex_1_1async__mutex_1_1lock__sender_1_1__op_1_1type}{type}}\ \&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}\ tag\_invoke(tag\_t<start>,\ \mbox{\hyperlink{classunifex_1_1async__mutex_1_1lock__sender_1_1__op_1_1type}{type}}\ \&op)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!op.try\_enqueue())\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Failed\ to\ enqueue\ because\ we\ acquired\ the\ lock}}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ synchronously.\ Invoke\ the\ continuation\ inline}}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ without\ type-\/erasure\ here.}}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ set\_value((Receiver\ \&\&)\ op.receiver\_);}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ try\_enqueue()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ mutex\_.try\_enqueue(\textcolor{keyword}{this});}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&mutex\_;}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ Receiver\ receiver\_;}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00105\ \ \ \ \ \};}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keyword}{using\ }operation\ =\ \textcolor{keyword}{typename}\ \_op<remove\_cvref\_t<Receiver>>::type;}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver>)}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keyword}{friend}\ operation<Receiver>}
+\DoxyCodeLine{00112\ \ \ \ \ tag\_invoke(tag\_t<connect>,\ lock\_sender\ \&\&s,\ Receiver\ \&\&r)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ operation<Receiver>\{s.mutex\_,\ (Receiver\ \&\&)\ r\};}
+\DoxyCodeLine{00114\ \ \ \ \ \}}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1async__mutex}{async\_mutex}}\ \&mutex\_;}
+\DoxyCodeLine{00117\ \ \ \};}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \ \ \textcolor{comment}{//\ Attempt\ to\ enqueue\ the\ waiter\ object\ to\ the\ queue.}}
+\DoxyCodeLine{00120\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ successfully\ enqueued,\ false\ if\ it\ was\ not\ enqueued\ because}}
+\DoxyCodeLine{00121\ \ \ \textcolor{comment}{//\ the\ lock\ was\ acquired\ synchronously.}}
+\DoxyCodeLine{00122\ \ \ \textcolor{keywordtype}{bool}\ try\_enqueue(waiter\_base\ *waiter)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ atomic\_intrusive\_queue<waiter\_base,\ \&waiter\_base::next\_>\ atomicQueue\_;}
+\DoxyCodeLine{00125\ \ \ intrusive\_queue<waiter\_base,\ \&waiter\_base::next\_>\ pendingQueue\_;}
+\DoxyCodeLine{00126\ \};}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{keyword}{inline}\ async\_mutex::lock\_sender\ async\_mutex::async\_lock()\ noexcept\ \{}
+\DoxyCodeLine{00129\ \ \ \textcolor{keywordflow}{return}\ lock\_sender\{*\textcolor{keyword}{this}\};}
+\DoxyCodeLine{00130\ \}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ async\_mutex::try\_lock()\ noexcept\ \{}
+\DoxyCodeLine{00133\ \ \ \textcolor{keywordflow}{return}\ atomicQueue\_.try\_mark\_active();}
+\DoxyCodeLine{00134\ \}}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

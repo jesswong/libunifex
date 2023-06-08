@@ -1,0 +1,246 @@
+\doxysection{await\+\_\+transform.\+hpp}
+\hypertarget{await__transform_8hpp_source}{}\label{await__transform_8hpp_source}\index{include/unifex/await\_transform.hpp@{include/unifex/await\_transform.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/coroutine.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#if\ UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#\ error\ "{}Coroutine\ support\ is\ required\ to\ use\ <unifex/await\_transform.hpp>"{}}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/async\_trace.hpp>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <unifex/coroutine\_concepts.hpp>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <unifex/manual\_lifetime.hpp>}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00037\ \textcolor{keyword}{namespace\ }\_util\ \{}
+\DoxyCodeLine{00038\ \textcolor{keyword}{enum\ class}\ \_state\ \{\ empty,\ value,\ exception,\ done\ \};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Value>}
+\DoxyCodeLine{00041\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__util_1_1__expected}{\_expected}}\ \{}
+\DoxyCodeLine{00042\ \ \ \mbox{\hyperlink{structunifex_1_1__util_1_1__expected}{\_expected}}()\ \textcolor{keyword}{noexcept}\ \{\}}
+\DoxyCodeLine{00043\ \ \ \textcolor{keywordtype}{void}\ reset\_value()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \_reset\_value(std::exchange(state\_,\ \_state::empty));}
+\DoxyCodeLine{00045\ \ \ \}}
+\DoxyCodeLine{00046\ \ \ \mbox{\hyperlink{structunifex_1_1__util_1_1__expected}{\string~\_expected}}()\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \_reset\_value(state\_);}
+\DoxyCodeLine{00048\ \ \ \}}
+\DoxyCodeLine{00049\ \ \ \_state\ state\_\ =\ \_state::empty;}
+\DoxyCodeLine{00050\ \ \ \textcolor{keyword}{union\ }\{}
+\DoxyCodeLine{00051\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<Value>}}\ value\_;}
+\DoxyCodeLine{00052\ \ \ \ \ \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\_lifetime<std::exception\_ptr>}}\ exception\_;}
+\DoxyCodeLine{00053\ \ \ \};}
+\DoxyCodeLine{00054\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00055\ \ \ \textcolor{keywordtype}{void}\ \_reset\_value(\_state\ s)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordflow}{switch}(s)\ \{}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordflow}{case}\ \_state::value:}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ unifex::deactivate\_union\_member(value\_);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordflow}{case}\ \_state::exception:}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ unifex::deactivate\_union\_member(exception\_);}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordflow}{default}:;}
+\DoxyCodeLine{00064\ \ \ \ \ \}}
+\DoxyCodeLine{00065\ \ \ \}}
+\DoxyCodeLine{00066\ \};}
+\DoxyCodeLine{00067\ \}\ \textcolor{comment}{//\ namespace\ \_util}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{keyword}{namespace\ }\_await\_tfx\ \{}
+\DoxyCodeLine{00070\ \textcolor{keyword}{using\ namespace\ }\_util;}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Value>}
+\DoxyCodeLine{00073\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base}{\_awaitable\_base}}\ \{}
+\DoxyCodeLine{00074\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base_1_1type}{type}};}
+\DoxyCodeLine{00075\ \};}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00078\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable}{\_awaitable}}\ \{}
+\DoxyCodeLine{00079\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable_1_1type}{type}};}
+\DoxyCodeLine{00080\ \};}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Value>}
+\DoxyCodeLine{00083\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base}{\_awaitable\_base}}<Promise,\ Value>::\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base_1_1type}{type}}\ \{}
+\DoxyCodeLine{00084\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base_1_1type_1_1__rec}{\_rec}}\ \{}
+\DoxyCodeLine{00085\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base_1_1type_1_1__rec}{\_rec}}(\mbox{\hyperlink{structunifex_1_1__util_1_1__expected}{\_expected<Value>}}*\ result,\ coro::coroutine\_handle<Promise>\ continuation)\ noexcept}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ :\ result\_(result)}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ ,\ continuation\_(continuation)}
+\DoxyCodeLine{00089\ \ \ \ \ \{\}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base_1_1type_1_1__rec}{\_rec}}(\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base_1_1type_1_1__rec}{\_rec}}\&\&\ r)\ noexcept}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ :\ result\_(std::exchange(r.result\_,\ \textcolor{keyword}{nullptr}))}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ ,\ continuation\_(std::exchange(r.continuation\_,\ \textcolor{keyword}{nullptr}))}
+\DoxyCodeLine{00094\ \ \ \ \ \{\}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{class}...\ Us)}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (constructible\_from<Value,\ Us...>\ ||}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ (std::is\_void\_v<Value>\ \&\&\ \textcolor{keyword}{sizeof}...(Us)\ ==\ 0)))}
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_value(Us\&\&...\ us)\ \&\&}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<Value,\ Us...>\ ||}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_void\_v<Value>)\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ unifex::activate\_union\_member(result\_-\/>value\_,\ (Us\&\&)\ us...);}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ result\_-\/>state\_\ =\ \_state::value;}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ continuation\_.resume();}
+\DoxyCodeLine{00105\ \ \ \ \ \}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_error(std::exception\_ptr\ eptr)\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ unifex::activate\_union\_member(result\_-\/>exception\_,\ std::move(eptr));}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ result\_-\/>state\_\ =\ \_state::exception;}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ continuation\_.resume();}
+\DoxyCodeLine{00111\ \ \ \ \ \}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keywordtype}{void}\ set\_done()\ \&\&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ result\_-\/>state\_\ =\ \_state::done;}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ continuation\_.promise().unhandled\_done().resume();}
+\DoxyCodeLine{00116\ \ \ \ \ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ CPO)}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ is\_receiver\_query\_cpo\_v<CPO>\ AND\ is\_callable\_v<CPO,\ const\ Promise\&>)}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(CPO\ cpo,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base_1_1type_1_1__rec}{\_rec}}\&\ r)}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_callable\_v<CPO,\ const\ Promise\&>)}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ -\/>\ callable\_result\_t<CPO,\ const\ Promise\&>\ \{}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \textcolor{keyword}{const}\ Promise\&\ p\ =\ r.continuation\_.promise();}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(cpo)(p);}
+\DoxyCodeLine{00125\ \ \ \ \ \}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\ \ \#if\ UNIFEX\_ENABLE\_CONTINUATION\_VISITATIONS}}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00130\ \ \ \ \ tag\_invoke(tag\_t<visit\_continuations>,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable__base_1_1type_1_1__rec}{\_rec}}\&\ r,\ Func\&\&\ func)\ \{}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ visit\_continuations(r.continuation\_.promise(),\ (Func\&\&)func);}
+\DoxyCodeLine{00132\ \ \ \ \ \}}
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\ \ \#endif}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00136\ \ \ \ \ \mbox{\hyperlink{structunifex_1_1__util_1_1__expected}{\_expected<Value>}}*\ result\_;}
+\DoxyCodeLine{00137\ \ \ \ \ coro::coroutine\_handle<Promise>\ continuation\_;}
+\DoxyCodeLine{00138\ \ \ \};}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \textcolor{keywordtype}{bool}\ await\_ready()\ const\ noexcept\ \{}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00142\ \ \ \}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ Value\ await\_resume()\ \{}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keywordflow}{switch}\ (result\_.state\_)\ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keywordflow}{case}\ \_state::value:}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(result\_.value\_).get();}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ UNIFEX\_ASSERT(result\_.state\_\ ==\ \_state::exception);}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ std::rethrow\_exception(result\_.exception\_.get());}
+\DoxyCodeLine{00151\ \ \ \ \ \}}
+\DoxyCodeLine{00152\ \ \ \}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00155\ \ \ \_expected<Value>\ result\_;}
+\DoxyCodeLine{00156\ \};}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00159\ \textcolor{keyword}{using\ }\_awaitable\_base\_t\ =}
+\DoxyCodeLine{00160\ \ \ \textcolor{keyword}{typename}\ \_awaitable\_base<}
+\DoxyCodeLine{00161\ \ \ \ \ Promise,}
+\DoxyCodeLine{00162\ \ \ \ \ sender\_single\_value\_return\_type\_t<remove\_cvref\_t<Sender>>>::type;}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00165\ \textcolor{keyword}{using\ }\_receiver\_t\ =\ \textcolor{keyword}{typename}\ \_awaitable\_base\_t<Promise,\ Sender>::\_rec;}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00168\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable}{\_awaitable}}<Promise,\ Sender>::\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable_1_1type}{type}}}
+\DoxyCodeLine{00169\ \ \ :\ \_awaitable\_base\_t<Promise,\ Sender>\ \{}
+\DoxyCodeLine{00170\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00171\ \ \ \textcolor{keyword}{using\ }\_rec\ =\ \_receiver\_t<Promise,\ Sender>;}
+\DoxyCodeLine{00172\ \ \ connect\_result\_t<Sender,\ \_rec>\ op\_;}
+\DoxyCodeLine{00173\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00174\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable_1_1type}{type}}(Sender\&\&\ sender,\ coro::coroutine\_handle<Promise>\ h)}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_connectable\_v<Sender,\ \_rec>)}
+\DoxyCodeLine{00176\ \ \ :\ op\_(unifex::connect((Sender\&\&)sender,\ \_rec\{\&this-\/>result\_,\ h\}))}
+\DoxyCodeLine{00177\ \ \ \{\}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \ \ \textcolor{keywordtype}{void}\ await\_suspend(coro::coroutine\_handle<Promise>)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00180\ \ \ \ \ unifex::start(op\_);}
+\DoxyCodeLine{00181\ \ \ \}}
+\DoxyCodeLine{00182\ \};}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00185\ \textcolor{keyword}{using\ }\_as\_awaitable\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__awaitable_1_1type}{\_awaitable<Promise,\ Sender>::type}};}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00188\ \ \ \textcolor{comment}{//\ Call\ custom\ implementation\ if\ present.}}
+\DoxyCodeLine{00189\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Value)}
+\DoxyCodeLine{00190\ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ Promise\&,\ Value>)}
+\DoxyCodeLine{00191\ \ \ \textcolor{keyword}{auto}\ operator()(Promise\&\ promise,\ Value\&\&\ value)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ Promise\&,\ Value>)}
+\DoxyCodeLine{00193\ \ \ \ \ -\/>\ tag\_invoke\_result\_t<\_fn,\ Promise\&,\ Value>\ \{}
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keyword}{static\_assert}(detail::\_awaitable<tag\_invoke\_result\_t<\_fn,\ Promise\&,\ Value>>,}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ return\ type\ of\ a\ customization\ of\ unifex::await\_transform()\ "{}}}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}must\ satisfy\ the\ awaitable\ concept."{}});}
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::tag\_invoke(\mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__fn}{\_fn}}\{\},\ promise,\ (Value\&\&)value);}
+\DoxyCodeLine{00198\ \ \ \}}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00200\ \ \ \textcolor{comment}{//\ Default\ implementation.}}
+\DoxyCodeLine{00201\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Promise,\ \textcolor{keyword}{typename}\ Value)}
+\DoxyCodeLine{00202\ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_fn,\ Promise\&,\ Value>))}
+\DoxyCodeLine{00203\ \ \ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ operator()(Promise\&\ promise,\ Value\&\&\ value)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{comment}{//\ Note\ we\ don't\ fold\ the\ two\ '(Value\&\&)\ value'-\/returning\ cases\ here}}
+\DoxyCodeLine{00205\ \ \ \ \ \textcolor{comment}{//\ to\ avoid\ instantiating\ 'unifex::sender<Value>'\ concept\ check\ in}}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{comment}{//\ the\ case\ that\ \_awaitable<Value>\ evaluates\ to\ true.}}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (detail::\_awaitable<Value>)\ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (Value\&\&)\ value;}
+\DoxyCodeLine{00209\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (unifex::sender<Value>)\ \{}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (unifex::sender\_to<Value,\ \_receiver\_t<Promise,\ Value>>)\ \{}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ h\ =\ coro::coroutine\_handle<Promise>::from\_promise(promise);}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \_as\_awaitable<Promise,\ Value>\{(Value\&\&)\ value,\ h\};}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ unifex::sender\_to<Value,\ \_receiver\_t<Promise,\ Value>>,}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}This\ sender\ is\ not\ awaitable\ in\ this\ coroutine\ type."{}});}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (Value\&\&)\ value;}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00219\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (Value\&\&)\ value;}
+\DoxyCodeLine{00221\ \ \ \ \ \}}
+\DoxyCodeLine{00222\ \ \ \}}
+\DoxyCodeLine{00223\ \};}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \}\ \textcolor{comment}{//\ namespace\ \_await\_tfx}}
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00227\ \textcolor{comment}{//\ The\ await\_transform()\ customisation\ point\ allows\ value-\/types\ to\ customise}}
+\DoxyCodeLine{00228\ \textcolor{comment}{//\ what\ kind\ of\ awaitable\ object\ should\ be\ used\ for\ this\ type\ when\ it\ is\ used}}
+\DoxyCodeLine{00229\ \textcolor{comment}{//\ within\ a\ co\_await\ expression.\ It\ is\ similar\ to\ 'operator\ co\_await()'\ but}}
+\DoxyCodeLine{00230\ \textcolor{comment}{//\ works\ around\ limitations\ of\ 'operator\ co\_await()'\ by\ providing\ access\ to}}
+\DoxyCodeLine{00231\ \textcolor{comment}{//\ the\ promise\ object\ and\ promise\ type\ so\ that\ different\ awaitable\ types\ can}}
+\DoxyCodeLine{00232\ \textcolor{comment}{//\ be\ returned\ depending\ on\ the\ awaiting\ context.}}
+\DoxyCodeLine{00233\ \textcolor{comment}{//}}
+\DoxyCodeLine{00234\ \textcolor{comment}{//\ Coroutine\ promise\_types\ can\ implement\ their\ .await\_transform()\ methods\ to}}
+\DoxyCodeLine{00235\ \textcolor{comment}{//\ forward\ to\ this\ customisation\ point\ to\ enable\ use\ of\ type\ customisations.}}
+\DoxyCodeLine{00236\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__await__tfx_1_1__fn}{\_await\_tfx::\_fn}}\ await\_transform\ \{\};}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

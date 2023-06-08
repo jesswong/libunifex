@@ -1,0 +1,32 @@
+\doxysection{async\+\_\+auto\+\_\+reset\+\_\+event\+::stream\+\_\+view Struct Reference}
+\hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}{}\label{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view}\index{async\_auto\_reset\_event::stream\_view@{async\_auto\_reset\_event::stream\_view}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_ac62e8b7d212640a01acd23506a9d3e58}\label{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_ac62e8b7d212640a01acd23506a9d3e58} 
+{\bfseries stream\+\_\+view} (\mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event}{async\+\_\+auto\+\_\+reset\+\_\+event}} \texorpdfstring{$\ast$}{*}evt) noexcept
+\item 
+auto \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_a6afc65a7c9588698372b80d35462b354}{next}} () noexcept
+\item 
+auto \mbox{\hyperlink{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_ad6f2925ea316e5ea378604790301830b}{cleanup}} () noexcept
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_ad6f2925ea316e5ea378604790301830b}\label{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_ad6f2925ea316e5ea378604790301830b} 
+\index{async\_auto\_reset\_event::stream\_view@{async\_auto\_reset\_event::stream\_view}!cleanup@{cleanup}}
+\index{cleanup@{cleanup}!async\_auto\_reset\_event::stream\_view@{async\_auto\_reset\_event::stream\_view}}
+\doxysubsubsection{\texorpdfstring{cleanup()}{cleanup()}}
+{\footnotesize\ttfamily auto cleanup (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+Returns a {\itshape Sender} that puts the event in the done state and then completes with set\+\_\+done. \Hypertarget{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_a6afc65a7c9588698372b80d35462b354}\label{structunifex_1_1__aare_1_1async__auto__reset__event_1_1stream__view_a6afc65a7c9588698372b80d35462b354} 
+\index{async\_auto\_reset\_event::stream\_view@{async\_auto\_reset\_event::stream\_view}!next@{next}}
+\index{next@{next}!async\_auto\_reset\_event::stream\_view@{async\_auto\_reset\_event::stream\_view}}
+\doxysubsubsection{\texorpdfstring{next()}{next()}}
+{\footnotesize\ttfamily auto next (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+Returns a {\itshape Sender} that completes with set\+\_\+value when the event is set. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/async\+\_\+auto\+\_\+reset\+\_\+event.\+hpp\end{DoxyCompactItemize}

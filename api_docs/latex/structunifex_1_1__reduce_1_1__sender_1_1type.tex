@@ -1,0 +1,55 @@
+\doxysection{\+\_\+sender\texorpdfstring{$<$}{<} Stream\+Sender, State, Reducer\+Func \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type}{}\label{structunifex_1_1__reduce_1_1__sender_1_1type}\index{\_sender$<$ StreamSender, State, ReducerFunc $>$::type@{\_sender$<$ StreamSender, State, ReducerFunc $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_ac07ba566d8701ee3a05cb3f53448a8e3}\label{structunifex_1_1__reduce_1_1__sender_1_1type_ac07ba566d8701ee3a05cb3f53448a8e3} 
+using {\bfseries sender} = \mbox{\hyperlink{structunifex_1_1__reduce_1_1__sender_1_1type}{type}}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_a53f37c879399644920e4e346b8dbd540}\label{structunifex_1_1__reduce_1_1__sender_1_1type_a53f37c879399644920e4e346b8dbd540} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = Variant$<$ Tuple$<$ State $>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_acca39222cb3df5507c0b1b81f952c488}\label{structunifex_1_1__reduce_1_1__sender_1_1type_acca39222cb3df5507c0b1b81f952c488} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = typename concat\+\_\+type\+\_\+lists\+\_\+unique\+\_\+t$<$ sender\+\_\+error\+\_\+types\+\_\+t$<$ next\+\_\+sender\+\_\+t$<$ Stream\+Sender $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, sender\+\_\+error\+\_\+types\+\_\+t$<$ cleanup\+\_\+sender\+\_\+t$<$ Stream\+Sender $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}} $>$, \mbox{\hyperlink{structunifex_1_1type__list}{type\+\_\+list}}$<$ std\+::exception\+\_\+ptr $>$ $>$\+::template apply$<$ Variant $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_a9bc4a7bb4147e0a04c5b5243f2fcae4d}\label{structunifex_1_1__reduce_1_1__sender_1_1type_a9bc4a7bb4147e0a04c5b5243f2fcae4d} 
+{\footnotesize template$<$typename Receiver $>$ }\\using {\bfseries operation\+\_\+t} = operation$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_a34f53ef4cb8b847adc94e87c68e41958}\label{structunifex_1_1__reduce_1_1__sender_1_1type_a34f53ef4cb8b847adc94e87c68e41958} 
+{\footnotesize template$<$typename Receiver $>$ }\\using {\bfseries next\+\_\+receiver\+\_\+t} = next\+\_\+receiver$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_ac032b729dcd798fbd344ed5ef08198f1}\label{structunifex_1_1__reduce_1_1__sender_1_1type_ac032b729dcd798fbd344ed5ef08198f1} 
+{\footnotesize template$<$typename Receiver $>$ }\\using {\bfseries error\+\_\+cleanup\+\_\+receiver\+\_\+t} = error\+\_\+cleanup\+\_\+receiver$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_ae996d7de93719e92907a3c47158a7459}\label{structunifex_1_1__reduce_1_1__sender_1_1type_ae996d7de93719e92907a3c47158a7459} 
+{\footnotesize template$<$typename Receiver $>$ }\\using {\bfseries done\+\_\+cleanup\+\_\+receiver\+\_\+t} = done\+\_\+cleanup\+\_\+receiver$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_a3d244440649891547658e3d1c0b1ed66}\label{structunifex_1_1__reduce_1_1__sender_1_1type_a3d244440649891547658e3d1c0b1ed66} 
+{\bfseries template} (typename Self, typename Receiver)(AND receiver$<$ Receiver $>$ AND sender\+\_\+to$<$ next\+\_\+sender\+\_\+t$<$ Stream\+Sender $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_a7fcdb45292a799c7f7b870e583068392}\label{structunifex_1_1__reduce_1_1__sender_1_1type_a7fcdb45292a799c7f7b870e583068392} 
+Stream\+Sender {\bfseries stream\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_a5399eb0cff8f149d744373f2e1e86706}\label{structunifex_1_1__reduce_1_1__sender_1_1type_a5399eb0cff8f149d744373f2e1e86706} 
+State {\bfseries initial\+State\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_a8a39c7fb963b5c310783eff05256823c}\label{structunifex_1_1__reduce_1_1__sender_1_1type_a8a39c7fb963b5c310783eff05256823c} 
+Reducer\+Func {\bfseries reducer\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__reduce_1_1__sender_1_1type_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = false
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/reduce\+\_\+stream.\+hpp\end{DoxyCompactItemize}

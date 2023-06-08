@@ -1,0 +1,59 @@
+\doxysection{filesystem.\+hpp}
+\hypertarget{filesystem_8hpp_source}{}\label{filesystem_8hpp_source}\index{include/unifex/filesystem.hpp@{include/unifex/filesystem.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#if\ \_\_cplusplus\ >=\ 201703L}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#\ ifdef\ \_\_has\_include}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#\ \ if\ \_\_has\_include(<version>)}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#\ \ \ include\ <version>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#\ \ \ if\ \_\_cpp\_lib\_filesystem\ >=\ 201703L\ \&\&\ \_\_has\_include(<filesystem>)}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#\ \ \ \ include\ <filesystem>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#\ \ \ \ define\ UNIFEX\_HAVE\_FILESYSTEM\ 1}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{namespace\ }filesystem}
+\DoxyCodeLine{00029\ \ \ \ \ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }std::filesystem::path;}
+\DoxyCodeLine{00031\ \ \ \ \ \}}
+\DoxyCodeLine{00032\ \}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#\ \ endif}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#\ \ ifndef\ UNIFEX\_HAVE\_FILESYSTEM}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#\ \ \ if\ \_\_has\_include(<experimental/filesystem>)}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#\ \ \ \ include\ <experimental/filesystem>}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#\ \ \ \ define\ UNIFEX\_HAVE\_FILESYSTEM\ 1}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}}
+\DoxyCodeLine{00041\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{namespace\ }filesystem}
+\DoxyCodeLine{00043\ \ \ \ \ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }std::experimental::filesystem::path;}
+\DoxyCodeLine{00045\ \ \ \ \ \}}
+\DoxyCodeLine{00046\ \}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#\ \ endif}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#\ endif}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#ifndef\ UNIFEX\_HAVE\_FILESYSTEM}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#\ define\ UNIFEX\_HAVE\_FILESYSTEM\ 0}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

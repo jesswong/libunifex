@@ -1,0 +1,155 @@
+\doxysection{let\+\_\+value\+\_\+with.\+hpp}
+\hypertarget{let__value__with_8hpp_source}{}\label{let__value__with_8hpp_source}\index{include/unifex/let\_value\_with.hpp@{include/unifex/let\_value\_with.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/just.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/let\_value.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/sender\_concepts.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/execution\_policy.hpp>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <unifex/type\_list.hpp>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\_let\_v\_w\ \{}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ StateFactory,\ \textcolor{keyword}{typename}\ InnerOp,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00033\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__operation}{\_operation}}\ \{}
+\DoxyCodeLine{00034\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__operation_1_1type}{type}};}
+\DoxyCodeLine{00035\ \};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ StateFactory,\ \textcolor{keyword}{typename}\ InnerOp,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00038\ \textcolor{keyword}{using\ }operation\ =\ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__operation}{\_operation}}<}
+\DoxyCodeLine{00039\ \ \ StateFactory,\ InnerOp,\ Receiver>::type;}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ StateFactory,\ \textcolor{keyword}{typename}\ SuccessorFactory>}
+\DoxyCodeLine{00042\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__sender}{\_sender}}\ \{}
+\DoxyCodeLine{00043\ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classunifex_1_1__let__v__w_1_1__sender_1_1type}{type}};}
+\DoxyCodeLine{00044\ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ StateFactory,\ \textcolor{keyword}{typename}\ SuccessorFactory>}
+\DoxyCodeLine{00047\ \textcolor{keyword}{using\ }let\_with\_sender\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classunifex_1_1__let__v__w_1_1__sender_1_1type}{\_sender<StateFactory,\ SuccessorFactory>::type}};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ StateFactory,\ \textcolor{keyword}{typename}\ SuccessorFactory>}
+\DoxyCodeLine{00050\ \textcolor{keyword}{class\ }\mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__sender}{\_sender}}<StateFactory,\ SuccessorFactory>::\mbox{\hyperlink{classunifex_1_1__let__v__w_1_1__sender_1_1type}{type}}\ \{}
+\DoxyCodeLine{00051\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{using\ }InnerOp\ =\ std::invoke\_result\_t<SuccessorFactory,\ callable\_result\_t<StateFactory>\&>;}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{template}<\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00055\ \ \ \textcolor{keyword}{using\ }value\_types\ =\ sender\_value\_types\_t<InnerOp,\ Variant,\ Tuple>;}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{template}<\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{using\ }error\_types\ =\ sender\_error\_types\_t<InnerOp,\ Variant>;}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \mbox{\hyperlink{structunifex_1_1sender__traits}{sender\_traits<InnerOp>::sends\_done}};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ StateFactory2,\ \textcolor{keyword}{typename}\ SuccessorFactory2>}
+\DoxyCodeLine{00063\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classunifex_1_1__let__v__w_1_1__sender_1_1type}{type}}(StateFactory2\&\&\ stateFactory,\ SuccessorFactory2\&\&\ func)\ :}
+\DoxyCodeLine{00064\ \ \ \ \ stateFactory\_((StateFactory2\&\&)stateFactory),}
+\DoxyCodeLine{00065\ \ \ \ \ func\_((SuccessorFactory2\&\&)func)}
+\DoxyCodeLine{00066\ \ \ \{\}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Self,\ \textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00069\ \ \ \ \ (\textcolor{keyword}{requires}\ same\_as<remove\_cvref\_t<Self>,\ \mbox{\hyperlink{classunifex_1_1__let__v__w_1_1__sender_1_1type}{type}}>\ AND\ receiver<Receiver>)}
+\DoxyCodeLine{00070\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{auto}\ tag\_invoke(tag\_t<unifex::connect>,\ Self\&\&\ self,\ Receiver\&\&\ r)}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{noexcept}(}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ is\_nothrow\_callable\_v<member\_t<Self,\ StateFactory>>\ \&\&}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ std::is\_nothrow\_invocable\_v<}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ member\_t<Self,\ SuccessorFactory>,}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ callable\_result\_t<member\_t<Self,\ StateFactory>>\&>\ \&\&}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ is\_nothrow\_connectable\_v<}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ callable\_result\_t<}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ member\_t<Self,\ SuccessorFactory>,}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ callable\_result\_t<member\_t<Self,\ StateFactory>>\&>,}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ remove\_cvref\_t<Receiver>>)\ \{}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordflow}{return}\ operation<StateFactory,\ SuccessorFactory,\ Receiver>(}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Self\&\&\textcolor{keyword}{>}(self).stateFactory\_,}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Self\&\&\textcolor{keyword}{>}(self).func\_,}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Receiver\&\&\textcolor{keyword}{>}(r));}
+\DoxyCodeLine{00086\ \ \ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00089\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ StateFactory\ stateFactory\_;}
+\DoxyCodeLine{00090\ \ \ UNIFEX\_NO\_UNIQUE\_ADDRESS\ SuccessorFactory\ func\_;}
+\DoxyCodeLine{00091\ \};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ StateFactory,\ \textcolor{keyword}{typename}\ SuccessorFactory,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00095\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__operation}{\_operation}}<StateFactory,\ SuccessorFactory,\ Receiver>::\mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__operation_1_1type}{type}}\ \{}
+\DoxyCodeLine{00096\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ StateFactory2,\ \textcolor{keyword}{typename}\ SuccessorFactory2,\ \textcolor{keyword}{typename}\ Receiver2>}
+\DoxyCodeLine{00097\ \ \ \mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__operation_1_1type}{type}}(StateFactory2\&\&\ stateFactory,\ SuccessorFactory2\&\&\ func,\ Receiver2\&\&\ r)\ :}
+\DoxyCodeLine{00098\ \ \ \ \ stateFactory\_(\textcolor{keyword}{static\_cast<}StateFactory2\&\&\textcolor{keyword}{>}(stateFactory)),}
+\DoxyCodeLine{00099\ \ \ \ \ func\_(\textcolor{keyword}{static\_cast<}SuccessorFactory2\&\&\textcolor{keyword}{>}(func)),}
+\DoxyCodeLine{00100\ \ \ \ \ state\_(\textcolor{keyword}{static\_cast<}StateFactory\&\&\textcolor{keyword}{>}(stateFactory\_)()),}
+\DoxyCodeLine{00101\ \ \ \ \ innerOp\_(}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ unifex::connect(}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}SuccessorFactory\&\&\textcolor{keyword}{>}(func\_)(state\_),}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}Receiver2\&\&\textcolor{keyword}{>}(r)))\ \{}
+\DoxyCodeLine{00105\ \ \ \}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \textcolor{keywordtype}{void}\ start()\ \&\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00108\ \ \ \ \ unifex::start(innerOp\_);}
+\DoxyCodeLine{00109\ \ \ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ StateFactory\ stateFactory\_;}
+\DoxyCodeLine{00112\ \ \ SuccessorFactory\ func\_;}
+\DoxyCodeLine{00113\ \ \ callable\_result\_t<StateFactory>\ state\_;}
+\DoxyCodeLine{00114\ \ \ connect\_result\_t<}
+\DoxyCodeLine{00115\ \ \ \ \ callable\_result\_t<SuccessorFactory,\ callable\_result\_t<StateFactory>\&>,}
+\DoxyCodeLine{00116\ \ \ \ \ remove\_cvref\_t<Receiver>>}
+\DoxyCodeLine{00117\ \ \ \ \ innerOp\_;}
+\DoxyCodeLine{00118\ \};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{keyword}{namespace\ }\_cpo\ \{}
+\DoxyCodeLine{00121\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__cpo_1_1__fn}{\_fn}}\ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{template}\ (\textcolor{keyword}{typename}\ StateFactory,\ \textcolor{keyword}{typename}\ SuccessorFactory)}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ (\textcolor{keyword}{requires}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ callable<std::decay\_t<StateFactory>>\ AND}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ callable<}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ std::decay\_t<SuccessorFactory>,}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ callable\_result\_t<std::decay\_t<StateFactory>>\&>\ AND}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ sender<}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ callable\_result\_t<}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ std::decay\_t<SuccessorFactory>,}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ callable\_result\_t<std::decay\_t<StateFactory>>\&>>)}
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{auto}\ operator()(StateFactory\&\&\ stateFactory,\ SuccessorFactory\&\&\ successor\_factory)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(std::is\_nothrow\_constructible\_v<std::decay\_t<SuccessorFactory>,\ SuccessorFactory>\ \&\&}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ std::is\_nothrow\_constructible\_v<std::decay\_t<StateFactory>,\ StateFactory>)}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ -\/>\ \_let\_v\_w::let\_with\_sender<}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ std::decay\_t<StateFactory>,\ std::decay\_t<SuccessorFactory>>\ \{}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \_let\_v\_w::let\_with\_sender<}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ std::decay\_t<StateFactory>,\ std::decay\_t<SuccessorFactory>>\{}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ (StateFactory\&\&)stateFactory,\ (SuccessorFactory\&\&)successor\_factory\};}
+\DoxyCodeLine{00140\ \ \ \ \ \}}
+\DoxyCodeLine{00141\ \ \ \};}
+\DoxyCodeLine{00142\ \}\ \textcolor{comment}{//\ namespace\ \_cpo}}
+\DoxyCodeLine{00143\ \}\ \textcolor{comment}{//\ namespace\ \_let\_v\_w}}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{structunifex_1_1__let__v__w_1_1__cpo_1_1__fn}{\_let\_v\_w::\_cpo::\_fn}}\ let\_value\_with\{\};}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

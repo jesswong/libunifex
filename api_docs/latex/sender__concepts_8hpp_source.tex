@@ -1,0 +1,405 @@
+\doxysection{sender\+\_\+concepts.\+hpp}
+\hypertarget{sender__concepts_8hpp_source}{}\label{sender__concepts_8hpp_source}\index{include/unifex/sender\_concepts.hpp@{include/unifex/sender\_concepts.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/detail/unifex\_fwd.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/tag\_invoke.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <unifex/type\_list.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <unifex/receiver\_concepts.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#if\ !UNIFEX\_NO\_COROUTINES}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <unifex/coroutine\_concepts.hpp>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <tuple>}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1sender__base}{sender\_base}}\ \{\};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>}
+\DoxyCodeLine{00041\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1sender__traits}{sender\_traits}};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{namespace\ }detail\ \{}
+\DoxyCodeLine{00045\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class},\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class}>\ \textcolor{keyword}{class}>}
+\DoxyCodeLine{00046\ \ \ \textcolor{keyword}{struct\ }\_has\_value\_types;}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class}>\ \textcolor{keyword}{class}>}
+\DoxyCodeLine{00049\ \ \ \textcolor{keyword}{struct\ }\_has\_error\_types;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00052\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00053\ \ \ \ \ \_has\_sender\_types\_impl,\ \textcolor{comment}{//}}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \textcolor{keyword}{requires}()\ (\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ (std::bool\_constant<S::sends\_done>),}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ (\_has\_value\_types<S::template\ value\_types>),}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ (\_has\_error\_types<S::template\ error\_types>)}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00059\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00060\ \ \ UNIFEX\_CONCEPT\ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00061\ \ \ \ \ \_has\_sender\_types\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(detail::\_has\_sender\_types\_impl,\ S);}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00065\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00066\ \ \ \ \ \_has\_bulk\_sender\_types\_impl,\ \textcolor{comment}{//}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \textcolor{keyword}{requires}()\ (\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ (std::bool\_constant<S::sends\_done>),}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ (\_has\_value\_types<S::template\ value\_types>),}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ (\_has\_value\_types<S::template\ next\_types>),}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ (\_has\_error\_types<S::template\ error\_types>)}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00073\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00074\ \ \ UNIFEX\_CONCEPT\ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00075\ \ \ \ \ \_has\_bulk\_sender\_types\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(detail::\_has\_bulk\_sender\_types\_impl,\ S);}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{struct\ }\_void\_sender\_traits\ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ Variant<Tuple<>>;}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ Variant<std::exception\_ptr>;}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00088\ \ \ \};}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00091\ \ \ \textcolor{keyword}{struct\ }\_typed\_sender\_traits\ \{}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{using\ }value\_types\ =\ \textcolor{keyword}{typename}\ S::template\ value\_types<Variant,\ Tuple>;}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{using\ }error\_types\ =\ \textcolor{keyword}{typename}\ S::template\ error\_types<Variant>;}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ sends\_done\ =\ S::sends\_done;}
+\DoxyCodeLine{00101\ \ \ \};}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00104\ \ \ \textcolor{keyword}{struct\ }\_typed\_bulk\_sender\_traits\ :\ \_typed\_sender\_traits<S>\ \{}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keyword}{using\ }next\_types\ =\ \textcolor{keyword}{typename}\ S::template\ next\_types<Variant,\ Tuple>;}
+\DoxyCodeLine{00109\ \ \ \};}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \textcolor{keyword}{struct\ }\_no\_sender\_traits\ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{keyword}{using\ }\_unspecialized\ =\ void;}
+\DoxyCodeLine{00113\ \ \ \};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{comment}{//\ Workaround\ for\ unknown\ MSVC\ (19.28.29333)\ bug}}
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00117\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00118\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \_has\_sender\_traits\ =}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ !std::is\_base\_of\_v<\_no\_sender\_traits,\ sender\_traits<S>>;}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#elif\ UNIFEX\_CXX\_CONCEPTS}}
+\DoxyCodeLine{00121\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00122\ \ \ \textcolor{keyword}{concept\ }\_has\_sender\_traits\ =}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ !\textcolor{keyword}{requires}\ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ sender\_traits<S>::\_unspecialized;}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00128\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00129\ \ \ \ \ \_not\_has\_sender\_traits,\ \textcolor{comment}{//}}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \textcolor{keyword}{requires}()\ (\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ (\textcolor{keyword}{typename}\ sender\_traits<S>::\_unspecialized)}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00133\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00134\ \ \ UNIFEX\_CONCEPT\ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00135\ \ \ \ \ \_has\_sender\_traits\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ (!UNIFEX\_FRAGMENT(detail::\_not\_has\_sender\_traits,\ S));}
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00140\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ \_select\_sender\_traits()\ noexcept\ \{}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (\_has\_bulk\_sender\_types<S>)\ \{}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \_typed\_bulk\_sender\_traits<S>\{\};}
+\DoxyCodeLine{00143\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (\_has\_sender\_types<S>)\ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \_typed\_sender\_traits<S>\{\};}
+\DoxyCodeLine{00145\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_base\_of\_v<sender\_base,\ S>)\ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ sender\_base\{\};}
+\DoxyCodeLine{00147\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \_no\_sender\_traits\{\};}
+\DoxyCodeLine{00149\ \ \ \ \ \}}
+\DoxyCodeLine{00150\ \ \ \}}
+\DoxyCodeLine{00151\ \}\ \textcolor{comment}{//\ namespace\ detail}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00154\ \textcolor{keyword}{struct\ }sender\_traits\ :\ decltype(detail::\_select\_sender\_traits<S>())\ \{\};}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00157\ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00158\ \ \ sender\ =\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00159\ \ \ \ \ move\_constructible<remove\_cvref\_t<S>>\ \&\&}
+\DoxyCodeLine{00160\ \ \ \ \ detail::\_has\_sender\_traits<remove\_cvref\_t<S>>;}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00163\ UNIFEX\_CONCEPT\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00164\ \ \ typed\_sender\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00165\ \ \ \ \ sender<S>\ \&\&\ \textcolor{comment}{//}}
+\DoxyCodeLine{00166\ \ \ \ \ detail::\_has\_sender\_types<sender\_traits<remove\_cvref\_t<S>>>;}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ S>}
+\DoxyCodeLine{00169\ UNIFEX\_CONCEPT\ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00170\ \ \ typed\_bulk\_sender\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00171\ \ \ \ \ sender<S>\ \&\&\ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00172\ \ \ \ \ detail::\_has\_bulk\_sender\_types<sender\_traits<remove\_cvref\_t<S>>>;}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \textcolor{keyword}{namespace\ }\_start\_cpo\ \{}
+\DoxyCodeLine{00175\ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{struct\ }\_fn\ \{}
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Operation)}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ tag\_invocable<\_fn,\ Operation\&>)}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keyword}{auto}\ operator()(Operation\&\ op)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ -\/>\ tag\_invoke\_result\_t<\_fn,\ Operation\&>\ \{}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ is\_nothrow\_tag\_invocable\_v<\_fn,\ Operation\&>,}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}start()\ customisation\ must\ be\ noexcept"{}});}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::tag\_invoke(\_fn\{\},\ op);}
+\DoxyCodeLine{00184\ \ \ \ \ \}}
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Operation)}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ (!tag\_invocable<\_fn,\ Operation\&>))}
+\DoxyCodeLine{00187\ \ \ \ \ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(Operation\&\ op)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ -\/>\ \textcolor{keyword}{decltype}(op.start())\ \{}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(op.start()),}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}start()\ customisation\ must\ be\ noexcept"{}});}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ op.start();}
+\DoxyCodeLine{00192\ \ \ \ \ \}}
+\DoxyCodeLine{00193\ \ \ \}\ start\{\};}
+\DoxyCodeLine{00194\ \}\ \textcolor{comment}{//\ namespace\ \_start\_cpo}}
+\DoxyCodeLine{00195\ \textcolor{keyword}{using\ }\_start\_cpo::start;}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \textcolor{keyword}{namespace\ }\_connect\ \{}
+\DoxyCodeLine{00198\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00199\ \ \ \textcolor{keyword}{using\ }\_member\_connect\_result\_t\ =}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \textcolor{keyword}{decltype}((UNIFEX\_DECLVAL(Sender\&\&)).connect(}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ UNIFEX\_DECLVAL(Receiver\&\&)));}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00204\ \ \ UNIFEX\_CONCEPT\_FRAGMENT(\ \textcolor{comment}{//}}
+\DoxyCodeLine{00205\ \ \ \ \ \_has\_member\_connect\_,\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \textcolor{keyword}{requires}()\ (\ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}(\_member\_connect\_result\_t<Sender,\ Receiver>)}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ ));}
+\DoxyCodeLine{00209\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00210\ \ \ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00211\ \ \ \ \ \_with\_member\_connect\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ sender<Sender>\ \&\&}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ UNIFEX\_FRAGMENT(\_connect::\_has\_member\_connect\_,\ Sender,\ Receiver);}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00216\ \ \ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00217\ \ \ \ \ \_with\_tag\_invoke\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ sender<Sender>\ \&\&\ tag\_invocable<\_cpo::\_fn,\ Sender,\ Receiver>;}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \ \ \textcolor{keyword}{namespace\ }\_cpo\ \{}
+\DoxyCodeLine{00221\ \ \ \ \ \textcolor{keyword}{struct\ }\_fn\ \{}
+\DoxyCodeLine{00222\ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{auto}\ \_select()\ \{}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (\_with\_tag\_invoke<Sender,\ Receiver>)\ \{}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ meta\_tag\_invoke\_result<\_fn>\{\};}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (\_with\_member\_connect<Sender,\ Receiver>)\ \{}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ meta\_quote2<\_member\_connect\_result\_t>\{\};}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ type\_always<void>\{\};}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \textcolor{keyword}{using\ }\_result\_t\ =\ \textcolor{keyword}{typename}\ \textcolor{keyword}{decltype}(\_fn::\_select<Sender,\ Receiver>())}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ ::template\ apply<Sender,\ Receiver>;}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver>\ AND}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ \_with\_tag\_invoke<Sender,\ Receiver>)}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ operator()(Sender\&\&\ s,\ Receiver\&\&\ r)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(is\_nothrow\_tag\_invocable\_v<\_fn,\ Sender,\ Receiver>)\ -\/>}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \_result\_t<Sender,\ Receiver>\ \{}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ unifex::tag\_invoke(\_fn\{\},\ (Sender\ \&\&)\ s,\ (Receiver\ \&\&)\ r);}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \textcolor{keyword}{template}(\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver)}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ (\textcolor{keyword}{requires}\ receiver<Receiver>\ AND}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ (!\_with\_tag\_invoke<Sender,\ Receiver>)\ AND}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \ \ \ \ \_with\_member\_connect<Sender,\ Receiver>)}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ \textcolor{keyword}{operator}()(Sender\&\&\ s,\ Receiver\&\&\ r)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{noexcept}(\textcolor{keyword}{noexcept}(((Sender\ \&\&)\ s).connect((Receiver\ \&\&)\ r)))\ -\/>}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \ \ \_result\_t<Sender,\ Receiver>\ \{}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ((Sender\ \&\&)\ s).connect((Receiver\ \&\&)\ r);}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00256\ \ \ \ \ \};}
+\DoxyCodeLine{00257\ \ \ \}\ \textcolor{comment}{//\ namespace\ \_cpo}}
+\DoxyCodeLine{00258\ \}\ \textcolor{comment}{//\ namespace\ \_connect}}
+\DoxyCodeLine{00259\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \_connect::\_cpo::\_fn\ connect\ \{\};}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00261\ \textcolor{preprocessor}{\#if\ UNIFEX\_CXX\_CONCEPTS}}
+\DoxyCodeLine{00262\ \textcolor{comment}{//\ Define\ the\ sender\_to\ concept\ without\ macros\ for}}
+\DoxyCodeLine{00263\ \textcolor{comment}{//\ improved\ diagnostics:}}
+\DoxyCodeLine{00264\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00265\ \textcolor{keyword}{concept\ }\textcolor{comment}{//}}
+\DoxyCodeLine{00266\ \ \ sender\_to\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00267\ \ \ \ \ sender<Sender>\ \&\&}
+\DoxyCodeLine{00268\ \ \ \ \ receiver<Receiver>\ \&\&}
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{keyword}{requires}\ (Sender\&\&\ s,\ Receiver\&\&\ r)\ \{}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ connect((Sender\&\&)\ s,\ (Receiver\&\&)\ r);}
+\DoxyCodeLine{00271\ \ \ \ \ \};}
+\DoxyCodeLine{00272\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00273\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00274\ UNIFEX\_CONCEPT\_FRAGMENT(\ \textcolor{comment}{//}}
+\DoxyCodeLine{00275\ \ \ \_sender\_to,\ \textcolor{comment}{//}}
+\DoxyCodeLine{00276\ \ \ \ \ \textcolor{keyword}{requires}\ (Sender\&\&\ s,\ Receiver\&\&\ r)\ (\ \textcolor{comment}{//}}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ connect((Sender\&\&)\ s,\ (Receiver\&\&)\ r)}
+\DoxyCodeLine{00278\ \ \ \ \ ));}
+\DoxyCodeLine{00279\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00280\ UNIFEX\_CONCEPT\ \textcolor{comment}{//}}
+\DoxyCodeLine{00281\ \ \ sender\_to\ =}
+\DoxyCodeLine{00282\ \ \ \ \ sender<Sender>\ \&\&}
+\DoxyCodeLine{00283\ \ \ \ \ receiver<Receiver>\ \&\&}
+\DoxyCodeLine{00284\ \ \ \ \ UNIFEX\_FRAGMENT(\_sender\_to,\ Sender,\ Receiver);}
+\DoxyCodeLine{00285\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00288\ \textcolor{keyword}{using\ }connect\_result\_t\ =}
+\DoxyCodeLine{00289\ \ \ \textcolor{keyword}{decltype}(connect(UNIFEX\_DECLVAL(Sender),\ UNIFEX\_DECLVAL(Receiver)));}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00292\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00293\ \textcolor{keyword}{using\ }operation\_t\ [[deprecated(\textcolor{stringliteral}{"{}Use\ connect\_result\_t\ instead\ of\ operation\_t"{}})]]\ =}
+\DoxyCodeLine{00294\ \ \ \ \ connect\_result\_t<Sender,\ Receiver>;}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00297\ [[deprecated(\textcolor{stringliteral}{"{}Use\ sender\_to\ instead\ of\ is\_connectable\_v"{}})]]}
+\DoxyCodeLine{00298\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_connectable\_v\ =}
+\DoxyCodeLine{00299\ \ \ is\_callable\_v<\textcolor{keyword}{decltype}(connect),\ Sender,\ Receiver>;}
+\DoxyCodeLine{00300\ }
+\DoxyCodeLine{00301\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00302\ \textcolor{keyword}{using\ }is\_connectable\ [[deprecated]]\ =}
+\DoxyCodeLine{00303\ \ \ is\_callable<\textcolor{keyword}{decltype}(connect),\ Sender,\ Receiver>;}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00306\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00307\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_nothrow\_connectable\_v\ =}
+\DoxyCodeLine{00308\ \ \ is\_nothrow\_callable\_v<\textcolor{keyword}{decltype}(connect),\ Sender,\ Receiver>;}
+\DoxyCodeLine{00309\ }
+\DoxyCodeLine{00310\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender,\ \textcolor{keyword}{typename}\ Receiver>}
+\DoxyCodeLine{00311\ \textcolor{keyword}{using\ }is\_nothrow\_connectable\ =\ is\_nothrow\_callable<\textcolor{keyword}{decltype}(connect),\ Sender,\ Receiver>;}
+\DoxyCodeLine{00312\ }
+\DoxyCodeLine{00313\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00314\ \ \ \ \ \textcolor{keyword}{typename}\ Sender,}
+\DoxyCodeLine{00315\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant,}
+\DoxyCodeLine{00316\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Tuple>}
+\DoxyCodeLine{00317\ \textcolor{keyword}{using\ }sender\_value\_types\_t\ =}
+\DoxyCodeLine{00318\ \ \ \ \ \textcolor{keyword}{typename}\ sender\_traits<Sender>::template\ value\_types<Variant,\ Tuple>;}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00320\ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00321\ \ \ \ \ \textcolor{keyword}{typename}\ Sender,}
+\DoxyCodeLine{00322\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...>\ \textcolor{keyword}{class\ }Variant>}
+\DoxyCodeLine{00323\ \textcolor{keyword}{using\ }sender\_error\_types\_t\ =}
+\DoxyCodeLine{00324\ \ \ \ \ \textcolor{keyword}{typename}\ sender\_traits<Sender>::template\ error\_types<Variant>;}
+\DoxyCodeLine{00325\ }
+\DoxyCodeLine{00326\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Types>}
+\DoxyCodeLine{00327\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1single__value__type}{single\_value\_type}}\ \{}
+\DoxyCodeLine{00328\ \ \ \textcolor{keyword}{using\ }type\ =\ std::tuple<Types...>;}
+\DoxyCodeLine{00329\ \};}
+\DoxyCodeLine{00330\ }
+\DoxyCodeLine{00331\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00332\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1single__value__type}{single\_value\_type}}<T>\ \{}
+\DoxyCodeLine{00333\ \ \ \textcolor{keyword}{using\ }type\ =\ T;}
+\DoxyCodeLine{00334\ \};}
+\DoxyCodeLine{00335\ }
+\DoxyCodeLine{00336\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00337\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1single__value__type}{single\_value\_type}}<>\ \{}
+\DoxyCodeLine{00338\ \ \ \textcolor{keyword}{using\ }type\ =\ void;}
+\DoxyCodeLine{00339\ \};}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Overloads>}
+\DoxyCodeLine{00342\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1single__overload}{single\_overload}}\ \{\};}
+\DoxyCodeLine{00343\ }
+\DoxyCodeLine{00344\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Overload>}
+\DoxyCodeLine{00345\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1single__overload}{single\_overload}}<Overload>\ \{}
+\DoxyCodeLine{00346\ \ \ \textcolor{keyword}{using\ }type\ =\ Overload;}
+\DoxyCodeLine{00347\ \};}
+\DoxyCodeLine{00348\ }
+\DoxyCodeLine{00349\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00350\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1single__overload}{single\_overload}}<>\ \{}
+\DoxyCodeLine{00351\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00352\ \ \ \textcolor{keyword}{struct\ }impl\ \{}
+\DoxyCodeLine{00353\ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ void;}
+\DoxyCodeLine{00354\ \ \ \};}
+\DoxyCodeLine{00355\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00356\ \ \ \textcolor{keyword}{using\ }type\ =\ impl;}
+\DoxyCodeLine{00357\ \};}
+\DoxyCodeLine{00358\ }
+\DoxyCodeLine{00359\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00360\ \textcolor{keyword}{using\ }sender\_single\_value\_return\_type\_t\ =}
+\DoxyCodeLine{00361\ \ \ \ \ \textcolor{keyword}{typename}\ sender\_value\_types\_t<Sender,\ single\_overload,\ single\_value\_type>::type::type;}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00363\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00364\ \textcolor{keyword}{using\ }sender\_single\_value\_result\_t\ =}
+\DoxyCodeLine{00365\ \ \ \ \ non\_void\_t<wrap\_reference\_t<decay\_rvalue\_t<sender\_single\_value\_return\_type\_t<Sender>>>>;}
+\DoxyCodeLine{00366\ }
+\DoxyCodeLine{00367\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00368\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_sender\_nofail\_v\ =}
+\DoxyCodeLine{00369\ \ \ \ \ sender\_error\_types\_t<Sender,\ is\_empty\_list>::value;}
+\DoxyCodeLine{00370\ }
+\DoxyCodeLine{00371\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00372\ \textcolor{keyword}{using\ }sender\_value\_type\_list\_t\ =}
+\DoxyCodeLine{00373\ \ \ \ \ sender\_value\_types\_t<Sender,\ type\_list,\ type\_list>;}
+\DoxyCodeLine{00374\ }
+\DoxyCodeLine{00375\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00376\ \textcolor{keyword}{using\ }sender\_error\_type\_list\_t\ =\ sender\_error\_types\_t<Sender,\ type\_list>;}
+\DoxyCodeLine{00377\ }
+\DoxyCodeLine{00379\ \textcolor{keyword}{namespace\ }\_single\_sender\ \{}
+\DoxyCodeLine{00380\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Types>}
+\DoxyCodeLine{00381\ \textcolor{keyword}{using\ }\_is\_single\_valued\_tuple\ =\ std::bool\_constant<1\ >=\ \textcolor{keyword}{sizeof}...(Types)>;}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00383\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Types>}
+\DoxyCodeLine{00384\ \textcolor{keyword}{using\ }\_is\_single\_valued\_variant\ =}
+\DoxyCodeLine{00385\ \ \ \ \ std::bool\_constant<\textcolor{keyword}{sizeof}...(Types)\ ==\ 1\ \&\&\ (Types::value\ \&\&\ ...)>;}
+\DoxyCodeLine{00386\ \}\ \ \textcolor{comment}{//\ namespace\ \_single\_sender}}
+\DoxyCodeLine{00388\ \textcolor{comment}{}}
+\DoxyCodeLine{00389\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00390\ UNIFEX\_CONCEPT\_FRAGMENT(\ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00391\ \ \ \ \ \_single\_typed\_sender\_impl,\ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00392\ \ \ \ \ \textcolor{keyword}{requires}()(0)\ \&\&\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ sender\_traits<remove\_cvref\_t<Sender>>::template\ value\_types<}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \ \ \ \ \ \ \_single\_sender::\_is\_single\_valued\_variant,}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ \ \ \ \ \_single\_sender::\_is\_single\_valued\_tuple>::value);}
+\DoxyCodeLine{00396\ }
+\DoxyCodeLine{00397\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Sender>}
+\DoxyCodeLine{00398\ UNIFEX\_CONCEPT\ \_single\_typed\_sender\ =\ \textcolor{comment}{//}}
+\DoxyCodeLine{00399\ \ \ \ \ typed\_sender<Sender>\ \&\&}
+\DoxyCodeLine{00400\ \ \ \ \ UNIFEX\_FRAGMENT(unifex::\_single\_typed\_sender\_impl,\ Sender);}
+\DoxyCodeLine{00401\ }
+\DoxyCodeLine{00402\ \}\ \ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00403\ }
+\DoxyCodeLine{00404\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

@@ -1,0 +1,42 @@
+\doxysection{\+\_\+stream\texorpdfstring{$<$}{<} Values \texorpdfstring{$>$}{>}\+::type\+::next\+\_\+sender Struct Reference}
+\hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender}{}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender}\index{\_stream$<$ Values $>$::type::next\_sender@{\_stream$<$ Values $>$::type::next\_sender}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_1_1__op}{\+\_\+op}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_a25aa66399f550a9f3adebec5709691a7}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_a25aa66399f550a9f3adebec5709691a7} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant, template$<$ typename... $>$ class Tuple$>$ }\\using {\bfseries value\+\_\+types} = Variant$<$ Tuple$<$ Values... $>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_a8b4b8139220ba100d4ae08b62fb1177b}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_a8b4b8139220ba100d4ae08b62fb1177b} 
+{\footnotesize template$<$template$<$ typename... $>$ class Variant$>$ }\\using {\bfseries error\+\_\+types} = Variant$<$ std\+::exception\+\_\+ptr $>$
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_a0b279cfecc6bc5678bb449cf4bdec95a}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_a0b279cfecc6bc5678bb449cf4bdec95a} 
+{\footnotesize template$<$typename Receiver $>$ }\\using {\bfseries operation} = typename \mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_1_1__op}{\+\_\+op}}$<$ remove\+\_\+cvref\+\_\+t$<$ Receiver $>$ $>$\+::type
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_a2805155934dcfabcd0b2d837b8e5ec13}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_a2805155934dcfabcd0b2d837b8e5ec13} 
+{\footnotesize template$<$typename Receiver $>$ }\\operation$<$ Receiver $>$ {\bfseries connect} (Receiver \&\&receiver)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_ae6c74d3514d43f140c588f5afa019d2a}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_ae6c74d3514d43f140c588f5afa019d2a} 
+\mbox{\hyperlink{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1stream__base}{stream\+\_\+base}} \& {\bfseries stream\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_ac41dff3c938d73c768f10929fecc333a}\label{structunifex_1_1__type__erase_1_1__stream_1_1type_1_1next__sender_ac41dff3c938d73c768f10929fecc333a} 
+static constexpr bool {\bfseries sends\+\_\+done} = true
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/type\+\_\+erased\+\_\+stream.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,55 @@
+\doxysection{\+\_\+op\texorpdfstring{$<$}{<} Stream\+Sender, State, Reducer\+Func, Receiver \texorpdfstring{$>$}{>}\+::type Struct Reference}
+\hypertarget{structunifex_1_1__reduce_1_1__op_1_1type}{}\label{structunifex_1_1__reduce_1_1__op_1_1type}\index{\_op$<$ StreamSender, State, ReducerFunc, Receiver $>$::type@{\_op$<$ StreamSender, State, ReducerFunc, Receiver $>$::type}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_adb01116ed7c1c011741f0ae91164b44f}\label{structunifex_1_1__reduce_1_1__op_1_1type_adb01116ed7c1c011741f0ae91164b44f} 
+using {\bfseries next\+\_\+receiver\+\_\+t} = next\+\_\+receiver$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_a13ac7b83cc44823b7e93775aebc4f3a2}\label{structunifex_1_1__reduce_1_1__op_1_1type_a13ac7b83cc44823b7e93775aebc4f3a2} 
+using {\bfseries error\+\_\+cleanup\+\_\+receiver\+\_\+t} = error\+\_\+cleanup\+\_\+receiver$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_a5ed783cd99be30e497895dc51cf8de12}\label{structunifex_1_1__reduce_1_1__op_1_1type_a5ed783cd99be30e497895dc51cf8de12} 
+using {\bfseries done\+\_\+cleanup\+\_\+receiver\+\_\+t} = done\+\_\+cleanup\+\_\+receiver$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_a99ae0335e05458ef1940dcf6f9b77906}\label{structunifex_1_1__reduce_1_1__op_1_1type_a99ae0335e05458ef1940dcf6f9b77906} 
+using {\bfseries next\+\_\+op} = \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\+\_\+lifetime}}$<$ next\+\_\+operation\+\_\+t$<$ Stream\+Sender, next\+\_\+receiver\+\_\+t $>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_ac1d086522705ccacc2840a8d0305c655}\label{structunifex_1_1__reduce_1_1__op_1_1type_ac1d086522705ccacc2840a8d0305c655} 
+using {\bfseries error\+\_\+op} = \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\+\_\+lifetime}}$<$ cleanup\+\_\+operation\+\_\+t$<$ Stream\+Sender, error\+\_\+cleanup\+\_\+receiver\+\_\+t $>$ $>$
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_aa0de11a125137484c1ec5a99bd5641f6}\label{structunifex_1_1__reduce_1_1__op_1_1type_aa0de11a125137484c1ec5a99bd5641f6} 
+using {\bfseries done\+\_\+op} = \mbox{\hyperlink{classunifex_1_1manual__lifetime}{manual\+\_\+lifetime}}$<$ cleanup\+\_\+operation\+\_\+t$<$ Stream\+Sender, done\+\_\+cleanup\+\_\+receiver\+\_\+t $>$ $>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_afb6671dca1501c12ee39ae379bc4de73}\label{structunifex_1_1__reduce_1_1__op_1_1type_afb6671dca1501c12ee39ae379bc4de73} 
+{\footnotesize template$<$typename Stream\+Sender2 , typename State2 , typename Reducer\+Func2 , typename Receiver2 $>$ }\\{\bfseries type} (Stream\+Sender2 \&\&stream, State2 \&\&state, Reducer\+Func2 \&\&reducer, Receiver2 \&\&receiver)
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_af49c603a002db3c46b470d2fcfd96046}\label{structunifex_1_1__reduce_1_1__op_1_1type_af49c603a002db3c46b470d2fcfd96046} 
+void {\bfseries start} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_a19609a933887d8a1e139ce7079154f5c}\label{structunifex_1_1__reduce_1_1__op_1_1type_a19609a933887d8a1e139ce7079154f5c} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Stream\+Sender {\bfseries stream\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_ab344ef327ead59684a80c269764044da}\label{structunifex_1_1__reduce_1_1__op_1_1type_ab344ef327ead59684a80c269764044da} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS State {\bfseries state\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_a0a1f437d8501c78aad36661f03f758ee}\label{structunifex_1_1__reduce_1_1__op_1_1type_a0a1f437d8501c78aad36661f03f758ee} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Reducer\+Func {\bfseries reducer\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_a3be0ca754ec0c558018d71e7a4426369}\label{structunifex_1_1__reduce_1_1__op_1_1type_a3be0ca754ec0c558018d71e7a4426369} 
+UNIFEX\+\_\+\+NO\+\_\+\+UNIQUE\+\_\+\+ADDRESS Receiver {\bfseries receiver\+\_\+}
+\item 
+\Hypertarget{structunifex_1_1__reduce_1_1__op_1_1type_aedd356f15d610f570ff479f963db9940}\label{structunifex_1_1__reduce_1_1__op_1_1type_aedd356f15d610f570ff479f963db9940} 
+union \mbox{\hyperlink{structunifex_1_1__reduce_1_1__op}{unifex\+::\+\_\+reduce\+::\+\_\+op}}$<$ Stream\+Sender, State, Reducer\+Func, Receiver $>$\+::type\+:: \{ ... \}  
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/reduce\+\_\+stream.\+hpp\end{DoxyCompactItemize}

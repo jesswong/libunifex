@@ -13,6 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/*! \file any_scheduler.hpp
+    \brief A documented file.
+
+   Details.
+*/
+
+/*! \typedef any_scheduler 
+    \brief Returns an any_scheduler to be used
+    
+    Details.
+*/
+
 #pragma once
 
 #include <unifex/any_ref.hpp>

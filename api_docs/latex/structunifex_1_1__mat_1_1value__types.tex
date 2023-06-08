@@ -1,0 +1,19 @@
+\doxysection{value\+\_\+types\texorpdfstring{$<$}{<} Source, Variant, Tuple \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structunifex_1_1__mat_1_1value__types}{}\label{structunifex_1_1__mat_1_1value__types}\index{value\_types$<$ Source, Variant, Tuple $>$@{value\_types$<$ Source, Variant, Tuple $>$}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structunifex_1_1__mat_1_1value__types_ad1f01524024d178921d4f353ddf019d4}\label{structunifex_1_1__mat_1_1value__types_ad1f01524024d178921d4f353ddf019d4} 
+{\footnotesize template$<$typename... Values$>$ }\\using {\bfseries value\+\_\+tuple} = Tuple$<$ decltype(set\+\_\+value), Values... $>$
+\item 
+\Hypertarget{structunifex_1_1__mat_1_1value__types_ab37f3a234c2e0b2c6e3af1c24e5e5b17}\label{structunifex_1_1__mat_1_1value__types_ab37f3a234c2e0b2c6e3af1c24e5e5b17} 
+{\footnotesize template$<$typename... Value\+Tuples$>$ }\\using {\bfseries value\+\_\+variant} = sender\+\_\+error\+\_\+types\+\_\+t$<$ Source, \mbox{\hyperlink{structunifex_1_1__mat_1_1error__variant}{error\+\_\+variant}}$<$ Variant, Tuple, Value\+Tuples... $>$\+::template apply $>$
+\item 
+\Hypertarget{structunifex_1_1__mat_1_1value__types_ab090418f8a1a07d188ed345239570d47}\label{structunifex_1_1__mat_1_1value__types_ab090418f8a1a07d188ed345239570d47} 
+using {\bfseries type} = sender\+\_\+value\+\_\+types\+\_\+t$<$ Source, value\+\_\+variant, value\+\_\+tuple $>$
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/unifex/materialize.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,152 @@
+\doxysection{this.\+hpp}
+\hypertarget{this_8hpp_source}{}\label{this_8hpp_source}\index{include/unifex/this.hpp@{include/unifex/this.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ Facebook,\ Inc.\ and\ its\ affiliates.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Licensed\ under\ the\ Apache\ License\ Version\ 2.0\ with\ LLVM\ Exceptions}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ (the\ "{}License"{});\ you\ may\ not\ use\ this\ file\ except\ in\ compliance\ with}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ the\ License.\ You\ may\ obtain\ a\ copy\ of\ the\ License\ at}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ \ \ https://llvm.org/LICENSE.txt}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ Unless\ required\ by\ applicable\ law\ or\ agreed\ to\ in\ writing,\ software}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ distributed\ under\ the\ License\ is\ distributed\ on\ an\ "{}AS\ IS"{}\ BASIS,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ WITHOUT\ WARRANTIES\ OR\ CONDITIONS\ OF\ ANY\ KIND,\ either\ express\ or\ implied.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ See\ the\ License\ for\ the\ specific\ language\ governing\ permissions\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ limitations\ under\ the\ License.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unifex/config.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unifex/detail/unifex\_fwd.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <unifex/type\_traits.hpp>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <unifex/detail/prologue.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceunifex}{unifex}}\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1this__}{this\_}}\ \{\};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00029\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_this\_v\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00030\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00031\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_this\_v<this\_>\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00033\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_this\_v<this\_\&>\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00034\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00035\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_this\_v<this\_\&\&>\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00036\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00037\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_this\_v<const\ this\_>\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00038\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00039\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_this\_v<const\ this\_\&>\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00040\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00041\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_this\_v<const\ this\_\&\&>\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>}
+\DoxyCodeLine{00044\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__replace__this}{\_replace\_this}};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00047\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__replace__this}{\_replace\_this}}<void>\ \{}
+\DoxyCodeLine{00048\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Arg,\ \textcolor{keyword}{typename}>}
+\DoxyCodeLine{00049\ \ \ \textcolor{keyword}{using\ }apply\ =\ Arg;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Arg>}
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{static}\ Arg\&\&\ get(Arg\&\&\ arg,\ detail::\_ignore)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordflow}{return}\ (Arg\ \&\&)\ arg;}
+\DoxyCodeLine{00054\ \ \ \}}
+\DoxyCodeLine{00055\ \};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00058\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__replace__this}{\_replace\_this}}<\mbox{\hyperlink{structunifex_1_1this__}{this\_}}>\ \{}
+\DoxyCodeLine{00059\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename},\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00060\ \ \ \textcolor{keyword}{using\ }apply\ =\ T;}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00063\ \ \ \textcolor{keyword}{static}\ T\&\&\ get(detail::\_ignore,\ T\&\ obj)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordflow}{return}\ (T\ \&\&)\ obj;}
+\DoxyCodeLine{00065\ \ \ \}}
+\DoxyCodeLine{00066\ \};}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00069\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__replace__this}{\_replace\_this}}<\mbox{\hyperlink{structunifex_1_1this__}{this\_}}\&>\ \{}
+\DoxyCodeLine{00070\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename},\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00071\ \ \ \textcolor{keyword}{using\ }apply\ =\ T\&;}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00074\ \ \ \textcolor{keyword}{static}\ T\&\ get(detail::\_ignore,\ T\&\ obj)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordflow}{return}\ obj;}
+\DoxyCodeLine{00076\ \ \ \}}
+\DoxyCodeLine{00077\ \};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00080\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__replace__this}{\_replace\_this}}<\mbox{\hyperlink{structunifex_1_1this__}{this\_}}\&\&>\ \{}
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename},\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00082\ \ \ \textcolor{keyword}{using\ }apply\ =\ T\&\&;}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00085\ \ \ \textcolor{keyword}{static}\ T\&\&\ get(detail::\_ignore,\ T\&\ obj)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordflow}{return}\ (T\ \&\&)\ obj;}
+\DoxyCodeLine{00087\ \ \ \}}
+\DoxyCodeLine{00088\ \};}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00091\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__replace__this}{\_replace\_this}}<const\ \mbox{\hyperlink{structunifex_1_1this__}{this\_}}\&>\ \{}
+\DoxyCodeLine{00092\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename},\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00093\ \ \ \textcolor{keyword}{using\ }apply\ =\ \textcolor{keyword}{const}\ T\&;}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00096\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ T\&\ get(detail::\_ignore,\ T\&\ obj)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keywordflow}{return}\ obj;}
+\DoxyCodeLine{00098\ \ \ \}}
+\DoxyCodeLine{00099\ \};}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00102\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__replace__this}{\_replace\_this}}<const\ \mbox{\hyperlink{structunifex_1_1this__}{this\_}}\&\&>\ \{}
+\DoxyCodeLine{00103\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename},\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00104\ \ \ \textcolor{keyword}{using\ }type\ =\ \textcolor{keyword}{const}\ T\&\&;}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00107\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ T\&\&\ get(detail::\_ignore,\ T\&\ obj)\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{const}\ T\&\&)\ obj;}
+\DoxyCodeLine{00109\ \ \ \}}
+\DoxyCodeLine{00110\ \};}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Arg>}
+\DoxyCodeLine{00113\ \textcolor{keyword}{using\ }\_normalize\_t\ =\ conditional\_t<is\_this\_v<Arg>,\ Arg,\ \textcolor{keywordtype}{void}>;}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00116\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__replace__this}{replace\_this}}\ =\ \mbox{\hyperlink{structunifex_1_1__replace__this}{\_replace\_this<\_normalize\_t<T>}}>;}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Arg,\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00119\ \textcolor{keyword}{using\ }replace\_this\_t\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structunifex_1_1__replace__this}{replace\_this<Arg>::template}}\ apply<Arg,\ T>;}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Arg>}
+\DoxyCodeLine{00122\ \textcolor{keyword}{using\ }replace\_this\_with\_void\_ptr\_t\ =}
+\DoxyCodeLine{00123\ \ \ \ \ conditional\_t<is\_this\_v<Arg>,\ \textcolor{keywordtype}{void}*,\ Arg>;}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{bool}...>}
+\DoxyCodeLine{00126\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__extract__this}{\_extract\_this}}\ \{}
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TFirst,\ \textcolor{keyword}{typename}...\ TRest>}
+\DoxyCodeLine{00128\ \ \ TFirst\&\&\ operator()(TFirst\&\&\ first,\ TRest\&\&...)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordflow}{return}\ (TFirst\&\&)\ first;}
+\DoxyCodeLine{00130\ \ \ \}}
+\DoxyCodeLine{00131\ \};}
+\DoxyCodeLine{00132\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{bool}...\ IsThis>}
+\DoxyCodeLine{00133\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structunifex_1_1__extract__this}{\_extract\_this}}<false,\ IsThis...>\ \{}
+\DoxyCodeLine{00134\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ TRest>}
+\DoxyCodeLine{00135\ \ \ \textcolor{keyword}{decltype}(\textcolor{keyword}{auto})\ \textcolor{keyword}{operator}()(detail::\_ignore,\ TRest\&\&...\ rest)\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}...(IsThis)\ >\ 0,\ \textcolor{stringliteral}{"{}Arguments\ to\ extract\_this"{}});}
+\DoxyCodeLine{00137\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structunifex_1_1__extract__this}{\_extract\_this}}<IsThis...>\{\}((TRest\ \&\&)\ rest...);}
+\DoxyCodeLine{00138\ \ \ \}}
+\DoxyCodeLine{00139\ \};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00142\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structunifex_1_1__extract__this}{extract\_this}}\ =\ \mbox{\hyperlink{structunifex_1_1__extract__this}{\_extract\_this<is\_this\_v<Ts>}}...>;}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \}\ \textcolor{comment}{//\ namespace\ unifex}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \textcolor{preprocessor}{\#include\ <unifex/detail/epilogue.hpp>}}
+
+\end{DoxyCode}

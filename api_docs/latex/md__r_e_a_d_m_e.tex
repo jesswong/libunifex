@@ -1,0 +1,123 @@
+\chapter{Overview}
+\hypertarget{md__r_e_a_d_m_e}{}\label{md__r_e_a_d_m_e}\index{Overview@{Overview}}
+\label{md__r_e_a_d_m_e_autotoc_md12}%
+\Hypertarget{md__r_e_a_d_m_e_autotoc_md12}%
+ The \textquotesingle{}libunifex\textquotesingle{} project is a prototype implementation of the C++ sender/receiver async programming model that is currently being considered for standardisation.
+
+This project contains implementations of the following\+:
+\begin{DoxyItemize}
+\item Schedulers
+\item Timers
+\item Asynchronous I/O (Linux w/ io\+\_\+uring)
+\item Algorithms that encapsulate certain concurrency patterns
+\item Async streams
+\item Cancellation
+\item Coroutine integration
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md13}{}\doxysection{\texorpdfstring{Status}{Status}}\label{md__r_e_a_d_m_e_autotoc_md13}
+This project is still evolving and should be considered experimental in nature. No guarantee is made for API or ABI stability.
+
+{\bfseries{Build status}}
+\begin{DoxyItemize}
+\item on Github Actions\+: \href{https://github.com/facebookexperimental/libunifex/actions}{\texttt{ }}
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md14}{}\doxysection{\texorpdfstring{Documentation}{Documentation}}\label{md__r_e_a_d_m_e_autotoc_md14}
+
+\begin{DoxyItemize}
+\item Overview
+\item Concepts
+\item API Reference
+\item Topics
+\begin{DoxyItemize}
+\item Cancellation
+\item Debugging
+\item Customisation Points
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md15}{}\doxysection{\texorpdfstring{Requirements}{Requirements}}\label{md__r_e_a_d_m_e_autotoc_md15}
+A recent compiler that supports C++17 or later. Libunifex is known to work with the following compilers\+:
+
+
+\begin{DoxyItemize}
+\item GCC, 9.\+x and later
+\item Clang, 10.\+x and later
+\item MSVC 2019.\+6 and later
+\end{DoxyItemize}
+
+This library also supports C++20 coroutines. You will need to compile with coroutine support enabled if you want to use the coroutine integrations. This generally means adding {\ttfamily -\/std=c++2a} or {\ttfamily -\/fcoroutines-\/ts} on Clang (see \"{}\+Configuring\"{} below).\hypertarget{md__r_e_a_d_m_e_autotoc_md16}{}\doxysubsection{\texorpdfstring{Linux}{Linux}}\label{md__r_e_a_d_m_e_autotoc_md16}
+The io\+\_\+uring support on Linux requires a recent kernel version (5.\+6 or later).
+
+See \href{http://git.kernel.dk/cgit/linux-block/log/?h=for-5.5/io_uring}{\texttt{ http\+://git.\+kernel.\+dk/cgit/linux-\/block/log/?h=for-\/5.\+5/io\+\_\+uring}}
+
+The io\+\_\+uring support depends on liburing\+: \href{https://github.com/axboe/liburing/}{\texttt{ https\+://github.\+com/axboe/liburing/}}\hypertarget{md__r_e_a_d_m_e_autotoc_md17}{}\doxysubsection{\texorpdfstring{Windows}{Windows}}\label{md__r_e_a_d_m_e_autotoc_md17}
+{\ttfamily windows\+\_\+thread\+\_\+pool} executor requires Windows Vista or later.\hypertarget{md__r_e_a_d_m_e_autotoc_md18}{}\doxysection{\texorpdfstring{Building}{Building}}\label{md__r_e_a_d_m_e_autotoc_md18}
+This project can be built using CMake.
+
+The examples below assume using the \href{https://ninja-build.org/}{\texttt{ Ninja}} build system. You can use other build systems supported by CMake.\hypertarget{md__r_e_a_d_m_e_autotoc_md19}{}\doxysubsection{\texorpdfstring{Configuring}{Configuring}}\label{md__r_e_a_d_m_e_autotoc_md19}
+First generate the build files under the {\ttfamily ./build} subdirectory.
+
+From the libunifex project root\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cmake\ -\/G\ Ninja\ -\/H.\ -\/Bbuild\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ -\/DCMAKE\_CXX\_COMPILER:PATH=/path/to/compiler}
+
+\end{DoxyCode}
+
+
+By default, this builds libunifex in C++17 without coroutines. If you want to turn on coroutines with clang, add\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/DCMAKE\_CXX\_FLAGS:STRING=-\/fcoroutines-\/ts}
+
+\end{DoxyCode}
+
+
+To use libc++ with clang, which has coroutine support, you should also add\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/DCMAKE\_CXX\_FLAGS:STRING=-\/stdlib=libc++\ \(\backslash\)}
+\DoxyCodeLine{-\/DCMAKE\_EXE\_LINKER\_FLAGS:STRING="{}-\/L/path/to/libc++/lib"{}}
+
+\end{DoxyCode}
+
+
+If you want to build libunifex as C++20, add\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/DCMAKE\_CXX\_STANDARD:STRING=20}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md20}{}\doxysubsection{\texorpdfstring{Building Library + Running Tests}{Building Library + Running Tests}}\label{md__r_e_a_d_m_e_autotoc_md20}
+To build the library and tests.
+
+From the {\ttfamily ./build} subdirectory run\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ninja}
+
+\end{DoxyCode}
+
+
+Once the tests have been built you can run them.
+
+From the {\ttfamily ./build} subdirectory run\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ninja\ test}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md21}{}\doxysection{\texorpdfstring{License}{License}}\label{md__r_e_a_d_m_e_autotoc_md21}
+This project is made available under the Apache License, version 2.\+0, with LLVM Exceptions.
+
+See \href{LICENSE.txt}{\texttt{ LICENSE.\+txt}} for details.
+
+See also\+:
+\begin{DoxyItemize}
+\item Terms of Use -\/ \href{https://opensource.facebook.com/legal/terms}{\texttt{ https\+://opensource.\+facebook.\+com/legal/terms}}
+\item Privacy Policy -\/ \href{https://opensource.facebook.com/legal/privacy}{\texttt{ https\+://opensource.\+facebook.\+com/legal/privacy}}
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md22}{}\doxysection{\texorpdfstring{References}{References}}\label{md__r_e_a_d_m_e_autotoc_md22}
+C++ standardisation papers\+:
+\begin{DoxyItemize}
+\item \href{https://wg21.link/P2300r1}{\texttt{ P2300r1}} \"{}\`{}std\+::execution\`{}\"{}
+\item ... 
+\end{DoxyItemize}
